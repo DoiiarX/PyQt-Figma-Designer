@@ -1,4 +1,5 @@
 from typing import Iterator
+from config import scale
 
 image_counter = 0
 
@@ -21,10 +22,10 @@ def get_style_sheet(element: dict) -> str:
     if color is None:
         image_ref = element['fills'][0]['imageRef']
         image = f'url("../resources/{image_ref}.png")'
-    if len(element['strokes']) == 0:
-        stroke_color, stroke_size = 'rgb(0, 0, 0)', 0
+    if len(element['strokes']) == 0 or 'color' not in element['strokes'][0]:
+        stroke_color, stroke_size = 'argb(0, 0, 0, 0)', 0
     else:
-        stroke_color, stroke_size = element['strokes'][0]['color'], element['strokeWeight']
+        stroke_color, stroke_size = element['strokes'][0]['color'], element['strokeWeight'] * scale
         stroke_color = f'rgb({stroke_color["r"] * 255}, {stroke_color["g"] * 255}, {stroke_color["b"] * 255})'
     if color is not None:
         return (f'color: {color}; '
@@ -78,17 +79,18 @@ def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize({width}, {height})
+        MainWindow.resize({width * scale}, {height * scale})
         centralWidget = QWidget(MainWindow)""".splitlines()
     for child in frame['children']:
         yield from map(indent, map(indent, generate_ui_element(child, (start_x, start_y))))
     yield indent(indent('MainWindow.setCentralWidget(centralWidget)'))
 
 
-def generate_rect(child, start_coordinates=(0, 0)):
+def generate_bounds(child, start_coordinates=(0, 0)):
     bounds = child['absoluteBoundingBox']
     x, y = bounds['x'] - start_coordinates[0], bounds['y'] - start_coordinates[1]
     width, height = bounds['width'], bounds['height']
+    x, y, width, height = x * scale, y * scale, width * scale, height * scale
     return f'QRect({int(x)}, {int(y)}, {int(width)}, {int(height)})'
 
 
@@ -120,7 +122,7 @@ def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
 def generate_text(child, start_coordinates=(0, 0)):
     text = child['characters']
     font = child['style']['fontFamily']
-    font_size = child['style']['fontSize'] / 1.5
+    font_size = child['style']['fontSize'] / 1.5 * scale
     yield 'label = QLabel(centralWidget)'
     yield f'label.setText("{text}")'
     yield from f"""font = QFont()
@@ -128,20 +130,20 @@ font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
 label.setFont(font)""".splitlines()
     yield f'label.setStyleSheet(\'color: {get_color(child)}\')'
-    yield f'label.setGeometry({generate_rect(child, start_coordinates)})'
+    yield f'label.setGeometry({generate_bounds(child, start_coordinates)})'
 
 
 def generate_rectangle(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
     yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
-    yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
+    yield f'frame.setGeometry({generate_bounds(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
 
 
 def generate_vector(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
     yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
-    yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
+    yield f'frame.setGeometry({generate_bounds(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
     yield 'frame.setFrameShadow(QFrame.Raised)'
 
@@ -149,14 +151,14 @@ def generate_vector(child, start_coordinates=(0, 0)):
 def generate_line(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
     yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
-    yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
+    yield f'frame.setGeometry({generate_bounds(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.HLine)'
     yield 'frame.setFrameShadow(QFrame.Sunken)'
 
 
 def generate_image(child, start_coordinates):
     yield 'label = QLabel(centralWidget)'
-    yield f'label.setGeometry({generate_rect(child, start_coordinates)})'
+    yield f'label.setGeometry({generate_bounds(child, start_coordinates)})'
     yield f'label.setStyleSheet(\'background-image: url({child["imageRef"]})\')'
     yield 'label.setText("")'
     yield 'label.setScaledContents(True)'
