@@ -4,18 +4,21 @@ from typing import Iterator
 def indent(s: str): return '    ' + s
 
 
-def get_color(element: dict) -> str:
+def get_color(element: dict):
     if len(element['fills']) == 0:
         return 'rgb(0, 0, 0)'
     color = element['fills'][0]['color']
     return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
 
 
-def get_stroke(element: dict) -> (str, float):
+def get_style_sheet(element: dict) -> str:
+    color = get_color(element)
     if len(element['strokes']) == 0:
-        return 'rgb(0, 0, 0)', 0
-    color = element['strokes'][0]['color']
-    return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})', element['strokeWeight']
+        stroke_color, stroke_size = 'rgb(0, 0, 0)', 0
+    else:
+        stroke_color, stroke_size = element['strokes'][0]['color'], element['strokeWeight']
+        stroke_color = f'rgb({stroke_color["r"] * 255}, {stroke_color["g"] * 255}, {stroke_color["b"] * 255})'
+    return f'color: {color}; background-color: {color}; border: {stroke_size}px solid {stroke_color};'
 
 
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
@@ -111,17 +114,15 @@ label.setFont(font)""".splitlines()
 
 
 def generate_rectangle(child, start_coordinates=(0, 0)):
-    stroke_color, stroke_weight = get_stroke(child)
     yield 'frame = QFrame(centralWidget)'
-    yield (f'frame.setStyleSheet("background-color: {get_color(child)};'
-           f'border: {stroke_weight}px solid {stroke_color};")')
+    yield (f'frame.setStyleSheet("{get_style_sheet(child)}")')
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
 
 
 def generate_vector(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet("background-color: {get_color(child)}")'
+    yield f'frame.setStyleSheet("{get_style_sheet(child)}")'
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
     yield 'frame.setFrameShadow(QFrame.Raised)'
@@ -129,10 +130,7 @@ def generate_vector(child, start_coordinates=(0, 0)):
 
 def generate_line(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet("background-color: {get_color(child)}")'
+    yield f'frame.setStyleSheet("{get_style_sheet(child)}")'
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.HLine)'
     yield 'frame.setFrameShadow(QFrame.Sunken)'
-    stroke_color, stroke_weight = get_stroke(child)
-    yield f'frame.setStyleSheet("background-color: {stroke_color}")'
-    yield f'frame.setLineWidth({stroke_weight})'
