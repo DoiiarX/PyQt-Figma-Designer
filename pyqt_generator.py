@@ -11,7 +11,7 @@ def get_color(element: dict):
         return 'argb(0, 0, 0, 0)'
     elif 'color' in element['fills'][0]:
         color = element['fills'][0]['color']
-        return f'argb({color["a"] * 255, color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
+        return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
     else:
         return None
 
