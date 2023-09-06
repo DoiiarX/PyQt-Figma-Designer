@@ -1,5 +1,5 @@
 import re
-
+import pickle
 from figma import endpoints
 
 
@@ -17,7 +17,8 @@ file_url = 'https://www.figma.com/file/DEtNOgq9OGnkGPfPpiQeEK/Untitled?type=desi
 
 match = re.search(r'https://www.figma.com/file/([0-9A-Za-z]+)', file_url.strip())
 file_key = match.group(1).strip()
-print(file_key)
 figma_file = endpoints.Files(token, file_key)
 f = figma_file.get_file()
 show_dict_tree(f['document']['children'][0]['children'][0])
+with open('../resources/f.fig', 'wb') as file:
+    pickle.dump(f, file)
