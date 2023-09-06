@@ -9,10 +9,10 @@ def indent(s: str): return '    ' + s
 
 def get_color(element: dict):
     if len(element['fills']) == 0:
-        return 'argb(0, 0, 0, 0)'
+        return 'rgba(0, 0, 0, 0)'
     elif 'color' in element['fills'][0]:
         color = element['fills'][0]['color']
-        return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
+        return f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color["a"] * 255})'
     else:
         return None
 
@@ -159,6 +159,6 @@ def generate_line(child, start_coordinates=(0, 0)):
 def generate_image(child, start_coordinates):
     yield 'label = QLabel(centralWidget)'
     yield f'label.setGeometry({generate_bounds(child, start_coordinates)})'
-    yield f'label.setStyleSheet(\'background-image: url({child["imageRef"]})\')'
+    yield f'label.setStyleSheet(\'background-image: url({child["imageRef"]});background-size: cover;\')'
     yield 'label.setText("")'
     yield 'label.setScaledContents(True)'
