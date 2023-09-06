@@ -1,51 +1,10 @@
 from typing import Iterator
 from config import scale
 
-image_counter = 0
+TEXT_SCALE = 1.5
 
 
 def indent(s: str): return '    ' + s
-
-
-def get_color(element: dict):
-    if len(element['fills']) == 0:
-        return 'rgba(0, 0, 0, 0)'
-    elif 'color' in element['fills'][0]:
-        for fill in element['fills']:
-            a, r, g, b = 0, 0, 0, 0
-            if 'color' in fill:
-                color = fill['color']
-                opacity = fill.get('opacity', 1)
-
-                def mix(v1, v2, o): return v1 * (1 - o) + v2 * o
-
-                a = mix(a, color['a'], opacity)
-                r = mix(r, color['r'], opacity)
-                g = mix(g, color['g'], opacity)
-                b = mix(b, color['b'], opacity)
-
-        color = {'a': a, 'r': r, 'g': g, 'b': b}
-        return f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color["a"] * 255})'
-    else:
-        return None
-
-
-def get_style_sheet(element: dict) -> str:
-    color = get_color(element)
-    if color is None:
-        image_ref = element['fills'][0]['imageRef']
-        image = f'url("../resources/images/{image_ref}.png")'
-        scale_mode = element['fills'][0]['scaleMode'].lower()
-        return f'border-image: {image} 0 0 0 0 stretch {scale_mode}; border: 0px solid black ;'
-    if len(element['strokes']) == 0 or 'color' not in element['strokes'][0]:
-        stroke_color, stroke_size = 'rgba(0, 0, 0, 0)', 0
-    else:
-        stroke_color, stroke_size = element['strokes'][0]['color'], element['strokeWeight'] * scale
-        stroke_color = f'rgb({stroke_color["r"] * 255}, {stroke_color["g"] * 255}, {stroke_color["b"] * 255})'
-    if color is not None:
-        return (f'color: {color}; '
-                f'background-color: {color}; '
-                f'border: {stroke_size}px solid {stroke_color};')
 
 
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
@@ -98,7 +57,7 @@ def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
     yield indent(indent('MainWindow.setCentralWidget(centralWidget)'))
 
 
-def generate_bounds(child, start_coordinates=(0, 0)):
+def generate_bounds(child, start_coordinates):
     bounds = child['absoluteBoundingBox']
     x, y = bounds['x'] - start_coordinates[0], bounds['y'] - start_coordinates[1]
     width, height = bounds['width'], bounds['height']
@@ -106,27 +65,65 @@ def generate_bounds(child, start_coordinates=(0, 0)):
     return f'QRect({int(x)}, {int(y)}, {int(width)}, {int(height)})'
 
 
+def generate_fills(element: dict, start_coordinates=(0, 0)):
+    for fill in element['fills']:
+        match fill['type']:
+            case 'IMAGE':
+                image_ref = fill['imageRef']
+                image = f'url("../resources/images/{image_ref}.png")'
+                scale_mode = fill['scaleMode'].lower()
+                stylesheet = f'border-image: {image} 0 0 0 0 stretch {scale_mode}; border: 0px solid black ;'
+                yield 'frame = QFrame(centralWidget)'
+                yield f'frame.setStyleSheet(\'{stylesheet}\')'
+                yield f'frame.setGeometry({generate_bounds(element, start_coordinates)})'
+                yield 'frame.setFrameShape(QFrame.StyledPanel)'
+                yield 'frame.setFrameShadow(QFrame.Raised)'
+            case 'SOLID':
+                color = fill['color']
+                opacity = fill.get('opacity', 1)
+                yield 'frame = QFrame(centralWidget)'
+                color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255 * opacity})'
+                yield f'frame.setStyleSheet(\'background-color: {color}; color: {color}\')'
+                yield f'frame.setGeometry({generate_bounds(element, start_coordinates)})'
+                yield 'frame.setFrameShape(QFrame.StyledPanel)'
+                yield 'frame.setFrameShadow(QFrame.Raised)'
+            case _:
+                print(f'Unknown fill type: {fill["type"]} for element {element["name"]}')
+
+
+def generate_strokes(element: dict, start_coordinates=(0, 0)):
+    for stroke in element['strokes']:
+        match stroke['type']:
+            case 'SOLID':
+                color = stroke['color']
+                opacity = stroke.get('opacity', 1)
+                yield 'frame = QFrame(centralWidget)'
+                yield f'frame.setStyleSheet(\'border: {element["strokeWeight"] * scale}px solid rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {opacity * 255});\')'
+                yield f'frame.setGeometry({generate_bounds(element, start_coordinates)})'
+                yield 'frame.setFrameShape(QFrame.StyledPanel)'
+                yield 'frame.setFrameShadow(QFrame.Raised)'
+            case _:
+                print(f'Unknown stroke type: {stroke["type"]} for element {element["name"]}')
+
+
 def generate_ui_element(child, start_coordinates=(0, 0)):
     match child['type']:
-        case 'RECTANGLE':
-            yield from generate_rectangle(child, start_coordinates)
         case 'TEXT':
             yield from generate_text(child, start_coordinates)
         case 'GROUP':
             yield from generate_group(child, start_coordinates)
-        case 'VECTOR':
-            yield from generate_vector(child, start_coordinates)
-        case 'LINE':
-            yield from generate_line(child, start_coordinates)
-        case 'COMPONENT_SET' | 'COMPONENT' | 'FRAME' | 'INSTANCE':
+        case 'COMPONENT_SET' | 'COMPONENT' | 'FRAME' | 'INSTANCE' | 'RECTANGLE' | 'VECTOR' | 'STAR' | 'LINE' | 'ELLIPSE' | 'REGULAR_POLYGON' | 'SLICE' | 'BOOLEAN_OPERATION' | 'STICKY_GUIDES':
             # TODO handle these cases properly
-            yield from generate_rectangle(child, start_coordinates)
+            yield from generate_fills(child, start_coordinates)
+            yield from generate_strokes(child, start_coordinates)
             yield from generate_group(child, start_coordinates)
         case _:
             print(f'Unknown type: {child["type"]}')
 
 
 def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
+    if 'children' not in group:
+        return []
     for child in group['children']:
         yield from generate_ui_element(child, start_coordinates)
 
@@ -134,35 +131,17 @@ def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
 def generate_text(child, start_coordinates=(0, 0)):
     text = child['characters']
     font = child['style']['fontFamily']
-    font_size = child['style']['fontSize'] / 1.5 * scale
+    font_size = child['style']['fontSize'] / TEXT_SCALE * scale
     yield 'label = QLabel(centralWidget)'
     yield f'label.setText("{text}")'
     yield from f"""font = QFont()
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
 label.setFont(font)""".splitlines()
-    yield f'label.setStyleSheet(\'color: {get_color(child)}\')'
+    color = 'rgba(0, 0, 0, 0)'
+
+    if len(child['fills']) > 0 and 'color' in child['fills'][0]:
+        color = child['fills'][0]['color']
+        color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
+    yield f'label.setStyleSheet(\'color: {color}\')'
     yield f'label.setGeometry({generate_bounds(child, start_coordinates)})'
-
-
-def generate_rectangle(child, start_coordinates=(0, 0)):
-    yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
-    yield f'frame.setGeometry({generate_bounds(child, start_coordinates)})'
-    yield 'frame.setFrameShape(QFrame.StyledPanel)'
-
-
-def generate_vector(child, start_coordinates=(0, 0)):
-    yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
-    yield f'frame.setGeometry({generate_bounds(child, start_coordinates)})'
-    yield 'frame.setFrameShape(QFrame.StyledPanel)'
-    yield 'frame.setFrameShadow(QFrame.Raised)'
-
-
-def generate_line(child, start_coordinates=(0, 0)):
-    yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
-    yield f'frame.setGeometry({generate_bounds(child, start_coordinates)})'
-    yield 'frame.setFrameShape(QFrame.HLine)'
-    yield 'frame.setFrameShadow(QFrame.Sunken)'
