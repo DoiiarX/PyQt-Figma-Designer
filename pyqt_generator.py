@@ -1,5 +1,10 @@
 from typing import Iterator
 
+from config import token, file_key
+from figma import endpoints
+
+image_counter = 0
+
 
 def indent(s: str): return '    ' + s
 
@@ -7,18 +12,29 @@ def indent(s: str): return '    ' + s
 def get_color(element: dict):
     if len(element['fills']) == 0:
         return 'rgb(0, 0, 0)'
-    color = element['fills'][0]['color']
-    return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
+    elif 'color' in element['fills'][0]:
+        color = element['fills'][0]['color']
+        return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
+    else:
+        return None
+        ref = element['fills'][0]['imageRef']
+        return 'background-image:url("C://Users/rombi/OneDrive/Images/Captures d’écran/a.png");\nborder: 28px solid black;'
 
 
 def get_style_sheet(element: dict) -> str:
     color = get_color(element)
+    if color is None:
+        image_ref = element['fills'][0]['imageRef']
+        image = f'url("../resources/{image_ref}.png")'
     if len(element['strokes']) == 0:
         stroke_color, stroke_size = 'rgb(0, 0, 0)', 0
     else:
         stroke_color, stroke_size = element['strokes'][0]['color'], element['strokeWeight']
         stroke_color = f'rgb({stroke_color["r"] * 255}, {stroke_color["g"] * 255}, {stroke_color["b"] * 255})'
-    return f'color: {color}; background-color: {color}; border: {stroke_size}px solid {stroke_color};'
+    if color is not None:
+        return f'color: {color}; background-color: {color}; border: {stroke_size}px solid {stroke_color};'
+    else:
+        return f'background-image: {image}; border: {stroke_size}px solid {stroke_color};'
 
 
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
@@ -90,6 +106,10 @@ def generate_ui_element(child, start_coordinates=(0, 0)):
             yield from generate_vector(child, start_coordinates)
         case 'LINE':
             yield from generate_line(child, start_coordinates)
+        case 'COMPONENT_SET' | 'COMPONENT' | 'FRAME' | 'INSTANCE':
+            # TODO handle these cases properly
+            yield from generate_rectangle(child, start_coordinates)
+            yield from generate_group(child, start_coordinates)
         case _:
             print(f'Unknown type: {child["type"]}')
 
@@ -109,20 +129,20 @@ def generate_text(child, start_coordinates=(0, 0)):
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
 label.setFont(font)""".splitlines()
-    yield f'label.setStyleSheet("color: {get_color(child)}")'
+    yield f'label.setStyleSheet(\'color: {get_color(child)}\')'
     yield f'label.setGeometry({generate_rect(child, start_coordinates)})'
 
 
 def generate_rectangle(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
-    yield (f'frame.setStyleSheet("{get_style_sheet(child)}")')
+    yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
 
 
 def generate_vector(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet("{get_style_sheet(child)}")'
+    yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
     yield 'frame.setFrameShadow(QFrame.Raised)'
@@ -130,7 +150,15 @@ def generate_vector(child, start_coordinates=(0, 0)):
 
 def generate_line(child, start_coordinates=(0, 0)):
     yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet("{get_style_sheet(child)}")'
+    yield f'frame.setStyleSheet(\'{get_style_sheet(child)}\')'
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.HLine)'
     yield 'frame.setFrameShadow(QFrame.Sunken)'
+
+
+def generate_image(child, start_coordinates):
+    yield 'label = QLabel(centralWidget)'
+    yield f'label.setGeometry({generate_rect(child, start_coordinates)})'
+    yield f'label.setStyleSheet(\'background-image: url({child["imageRef"]})\')'
+    yield 'label.setText("")'
+    yield 'label.setScaledContents(True)'

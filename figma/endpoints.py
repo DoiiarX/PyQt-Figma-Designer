@@ -31,10 +31,9 @@ class Files:
         else:
             return response.json()
 
-    def get_image(self, item_id) -> str:
+    def get_images(self) -> dict:
         response = requests.get(
-            f"{self.API_ENDPOINT_URL}/images/{self.file_key}?ids={item_id}&scale=2",
+            f"{self.API_ENDPOINT_URL}/files/{self.file_key}/images",
             headers={"X-FIGMA-TOKEN": self.token}
         )
-
-        return response.json()["images"][item_id]
+        return response.json()['meta']["images"]
