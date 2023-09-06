@@ -132,6 +132,10 @@ def generate_ui_element(child, start_coordinates=(0, 0)) -> Iterator[str]:
         case _:
             print(f'Unknown type: {child["type"]}')
 
+        # generate inputs and touchzones for buttons
+    if child['name'].lower().strip().startswith('button'):
+        yield from generate_button(child, start_coordinates)
+
 
 def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
     if 'children' not in group:
@@ -162,7 +166,7 @@ font.setPointSize({int(font_size)})
 
 def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
     for i, geometry in enumerate(child.get('fillGeometry', [])):
-        svg_data = geometry['path']
+        svg_data = './resources/410.svg'  # geometry['path']
         name = get_legal_name(child) + f'_geometry{i}'
 
         painter_name = 'painter_' + name
@@ -182,3 +186,21 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
         yield f'{painter_name}.scale({scale}, {scale})'
         yield f'{qtsvg_name}.render({painter_name})'
         yield f'{painter_name}.end()'
+
+
+def generate_button(child, start_coordinates):
+    button_name = 'button_' + get_legal_name(child)
+    yield f'{button_name} = QPushButton(central_widget)'
+    yield f'{button_name}.setGeometry({get_bounds(child, start_coordinates)})'
+    yield f'{button_name}.setStyleSheet(\'background-color: rgba(0, 0, 0, 0);\')'
+    yield f'{button_name}.setFlat(True)'
+    yield f'{button_name}.setAutoFillBackground(False)'
+    yield f'{button_name}.setObjectName("{button_name}")'
+    yield f'{button_name}.setMouseTracking(True)'
+    yield f'{button_name}.setFocusPolicy(Qt.NoFocus)'
+    yield f'{button_name}.setContextMenuPolicy(Qt.NoContextMenu)'
+    yield f'{button_name}.setAcceptDrops(False)'
+    yield from f"""def {button_name}_clicked(self):
+    print("{button_name} clicked")""".splitlines()
+    yield f'{button_name}.clicked.connect({button_name}_clicked)'
+
