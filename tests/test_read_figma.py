@@ -16,7 +16,7 @@ def run():
     for image_id, image_url in figma_file.get_images().items():
         # download the url to resources/id.png
         response = requests.get(image_url)
-        with open(f'../resources/{image_id}.png', 'wb') as file:
+        with open(f'../resources/images/{image_id}.png', 'wb') as file:
             file.write(response.content)
 
 

@@ -34,19 +34,17 @@ def get_style_sheet(element: dict) -> str:
     color = get_color(element)
     if color is None:
         image_ref = element['fills'][0]['imageRef']
-        image = f'url("../resources/{image_ref}.png")'
+        image = f'url("../resources/images/{image_ref}.png")'
+        scale_mode = element['fills'][0]['scaleMode'].lower()
+        return f'border-image: {image} 0 0 0 0 stretch {scale_mode}; border: 0px solid black ;'
     if len(element['strokes']) == 0 or 'color' not in element['strokes'][0]:
-        stroke_color, stroke_size = 'argb(0, 0, 0, 0)', 0
+        stroke_color, stroke_size = 'rgba(0, 0, 0, 0)', 0
     else:
         stroke_color, stroke_size = element['strokes'][0]['color'], element['strokeWeight'] * scale
         stroke_color = f'rgb({stroke_color["r"] * 255}, {stroke_color["g"] * 255}, {stroke_color["b"] * 255})'
     if color is not None:
         return (f'color: {color}; '
                 f'background-color: {color}; '
-                f'border: {stroke_size}px solid {stroke_color};')
-    else:
-        return (f'background-image: {image};'
-                f'stretch: fill;'
                 f'border: {stroke_size}px solid {stroke_color};')
 
 
@@ -168,11 +166,3 @@ def generate_line(child, start_coordinates=(0, 0)):
     yield f'frame.setGeometry({generate_bounds(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.HLine)'
     yield 'frame.setFrameShadow(QFrame.Sunken)'
-
-
-def generate_image(child, start_coordinates):
-    yield 'label = QLabel(centralWidget)'
-    yield f'label.setGeometry({generate_bounds(child, start_coordinates)})'
-    yield f'label.setStyleSheet(\'background-image: url({child["imageRef"]});background-size: cover;\')'
-    yield 'label.setText("")'
-    yield 'label.setScaledContents(True)'
