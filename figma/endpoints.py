@@ -19,7 +19,7 @@ class Files:
     def get_file(self) -> dict:
         try:
             response = requests.get(
-                f"{self.API_ENDPOINT_URL}/files/{self.file_key}",
+                f"{self.API_ENDPOINT_URL}/files/{self.file_key}?geometry=paths",
                 headers={"X-FIGMA-TOKEN": self.token}
             )
         except ValueError:
