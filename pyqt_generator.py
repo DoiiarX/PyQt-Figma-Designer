@@ -26,7 +26,11 @@ def get_bounds(element: dict, start_coordinates: (float, float)) -> str:
 
 
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
-    yield from """from PySide6 import QtSvg
+    yield from """try:
+    import GuiHandler
+except:
+    print("No GuiHandler found, events will not be handled.")
+from PySide6 import QtSvg
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
@@ -189,7 +193,7 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
 
 
 def generate_button(child, start_coordinates):
-    button_name = 'button_' + get_legal_name(child)
+    button_name = get_legal_name(child)
     yield f'{button_name} = QPushButton(central_widget)'
     yield f'{button_name}.setGeometry({get_bounds(child, start_coordinates)})'
     yield f'{button_name}.setStyleSheet(\'background-color: rgba(0, 0, 0, 0);\')'
@@ -200,7 +204,9 @@ def generate_button(child, start_coordinates):
     yield f'{button_name}.setFocusPolicy(Qt.NoFocus)'
     yield f'{button_name}.setContextMenuPolicy(Qt.NoContextMenu)'
     yield f'{button_name}.setAcceptDrops(False)'
-    yield from f"""def {button_name}_clicked(self):
-    print("{button_name} clicked")""".splitlines()
-    yield f'{button_name}.clicked.connect({button_name}_clicked)'
-
+    yield from f"""def __{button_name}_clicked(self):
+    try : 
+        GuiHandler.{button_name}_clicked()
+    except :
+        print("No function {button_name}_clicked defined")""".splitlines()
+    yield f'{button_name}.clicked.connect(__{button_name}_clicked)'
