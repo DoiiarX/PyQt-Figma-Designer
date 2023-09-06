@@ -7,6 +7,16 @@ TEXT_SCALE = 1.5
 def indent(s: str): return '    ' + s
 
 
+def get_legal_name(element: dict):
+    object_name = element.get('name', '').strip()
+    if object_name == '':
+        object_name = element['id']
+    object_name = ''.join(c for c in object_name if c.isalnum() or c == ' ').strip().replace(' ', '_')
+    while '__' in object_name:
+        object_name = object_name.replace('__', '_')
+    return object_name.lower()
+
+
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
     yield from """from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -23,9 +33,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
     frames = canvas['children']
     classes = []
     for frame in frames:
-        frame_name = frame['name']
-        # ensure class name is valid
-        class_name = 'UI_' + ''.join(c for c in frame_name if c.isalnum()).title()
+        class_name = 'UI_' + get_legal_name(frame)
         yield from generate_frame(frame, class_name)
         classes.append(class_name)
     yield from f"""
@@ -37,8 +45,7 @@ if __name__ == '__main__':
     ui = {classes[0]}()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    """.splitlines()
-    yield '    sys.exit(app.exec())'
+    sys.exit(app.exec())""".splitlines()
 
 
 def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
@@ -51,10 +58,10 @@ def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize({width * scale}, {height * scale})
-        centralWidget = QWidget(MainWindow)""".splitlines()
+        central_widget = QWidget(MainWindow)""".splitlines()
     for child in frame['children']:
         yield from map(indent, map(indent, generate_ui_element(child, (start_x, start_y))))
-    yield indent(indent('MainWindow.setCentralWidget(centralWidget)'))
+    yield indent(indent('MainWindow.setCentralWidget(central_widget)'))
 
 
 def generate_bounds(child, start_coordinates):
@@ -66,42 +73,44 @@ def generate_bounds(child, start_coordinates):
 
 
 def generate_fills(element: dict, start_coordinates=(0, 0)):
-    for fill in element['fills']:
+    for i, fill in enumerate(element['fills']):
+        frame_name = 'frame_' + get_legal_name(element) + f'_fill{i}'
         match fill['type']:
             case 'IMAGE':
                 image_ref = fill['imageRef']
                 image = f'url("../resources/images/{image_ref}.png")'
                 scale_mode = fill['scaleMode'].lower()
                 stylesheet = f'border-image: {image} 0 0 0 0 stretch {scale_mode}; border: 0px solid black ;'
-                yield 'frame = QFrame(centralWidget)'
-                yield f'frame.setStyleSheet(\'{stylesheet}\')'
-                yield f'frame.setGeometry({generate_bounds(element, start_coordinates)})'
-                yield 'frame.setFrameShape(QFrame.StyledPanel)'
-                yield 'frame.setFrameShadow(QFrame.Raised)'
+                yield f'{frame_name} = QFrame(central_widget)'
+                yield f'{frame_name}.setStyleSheet(\'{stylesheet}\')'
+                yield f'{frame_name}.setGeometry({generate_bounds(element, start_coordinates)})'
+                yield f'{frame_name}.setFrameShape(QFrame.StyledPanel)'
+                yield f'{frame_name}.setFrameShadow(QFrame.Raised)'
             case 'SOLID':
                 color = fill['color']
                 opacity = fill.get('opacity', 1)
-                yield 'frame = QFrame(centralWidget)'
+                yield f'{frame_name} = QFrame(central_widget)'
                 color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255 * opacity})'
-                yield f'frame.setStyleSheet(\'background-color: {color}; color: {color}\')'
-                yield f'frame.setGeometry({generate_bounds(element, start_coordinates)})'
-                yield 'frame.setFrameShape(QFrame.StyledPanel)'
-                yield 'frame.setFrameShadow(QFrame.Raised)'
+                yield f'{frame_name}.setStyleSheet(\'background-color: {color}; color: {color}\')'
+                yield f'{frame_name}.setGeometry({generate_bounds(element, start_coordinates)})'
+                yield f'{frame_name}.setFrameShape(QFrame.StyledPanel)'
+                yield f'{frame_name}.setFrameShadow(QFrame.Raised)'
             case _:
                 print(f'Unknown fill type: {fill["type"]} for element {element["name"]}')
 
 
 def generate_strokes(element: dict, start_coordinates=(0, 0)):
-    for stroke in element['strokes']:
+    for i, stroke in enumerate(element['strokes']):
+        frame_name = 'frame_' + get_legal_name(element) + f'_stroke{i}'
         match stroke['type']:
             case 'SOLID':
                 color = stroke['color']
                 opacity = stroke.get('opacity', 1)
-                yield 'frame = QFrame(centralWidget)'
-                yield f'frame.setStyleSheet(\'border: {element["strokeWeight"] * scale}px solid rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {opacity * 255});\')'
-                yield f'frame.setGeometry({generate_bounds(element, start_coordinates)})'
-                yield 'frame.setFrameShape(QFrame.StyledPanel)'
-                yield 'frame.setFrameShadow(QFrame.Raised)'
+                yield f'{frame_name} = QFrame(central_widget)'
+                yield f'{frame_name}.setStyleSheet(\'border: {element["strokeWeight"] * scale}px solid rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {opacity * 255});\')'
+                yield f'{frame_name}.setGeometry({generate_bounds(element, start_coordinates)})'
+                yield f'{frame_name}.setFrameShape(QFrame.StyledPanel)'
+                yield f'{frame_name}.setFrameShadow(QFrame.Raised)'
             case _:
                 print(f'Unknown stroke type: {stroke["type"]} for element {element["name"]}')
 
@@ -132,16 +141,17 @@ def generate_text(child, start_coordinates=(0, 0)):
     text = child['characters']
     font = child['style']['fontFamily']
     font_size = child['style']['fontSize'] / TEXT_SCALE * scale
-    yield 'label = QLabel(centralWidget)'
-    yield f'label.setText("{text}")'
+    label_name = 'label_' + get_legal_name(child)
+    yield f'{label_name} = QLabel(central_widget)'
+    yield f'{label_name}.setText("{text}")'
     yield from f"""font = QFont()
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
-label.setFont(font)""".splitlines()
+{label_name}.setFont(font)""".splitlines()
     color = 'rgba(0, 0, 0, 0)'
 
     if len(child['fills']) > 0 and 'color' in child['fills'][0]:
         color = child['fills'][0]['color']
         color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
-    yield f'label.setStyleSheet(\'color: {color}\')'
-    yield f'label.setGeometry({generate_bounds(child, start_coordinates)})'
+    yield f'{label_name}.setStyleSheet(\'color: {color}\')'
+    yield f'{label_name}.setGeometry({generate_bounds(child, start_coordinates)})'
