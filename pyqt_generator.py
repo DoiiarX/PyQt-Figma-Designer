@@ -1,8 +1,5 @@
 from typing import Iterator
 
-from config import token, file_key
-from figma import endpoints
-
 image_counter = 0
 
 
@@ -11,14 +8,12 @@ def indent(s: str): return '    ' + s
 
 def get_color(element: dict):
     if len(element['fills']) == 0:
-        return 'rgb(0, 0, 0)'
+        return 'argb(0, 0, 0, 0)'
     elif 'color' in element['fills'][0]:
         color = element['fills'][0]['color']
-        return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
+        return f'argb({color["a"] * 255, color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
     else:
         return None
-        ref = element['fills'][0]['imageRef']
-        return 'background-image:url("C://Users/rombi/OneDrive/Images/Captures d’écran/a.png");\nborder: 28px solid black;'
 
 
 def get_style_sheet(element: dict) -> str:
@@ -32,9 +27,12 @@ def get_style_sheet(element: dict) -> str:
         stroke_color, stroke_size = element['strokes'][0]['color'], element['strokeWeight']
         stroke_color = f'rgb({stroke_color["r"] * 255}, {stroke_color["g"] * 255}, {stroke_color["b"] * 255})'
     if color is not None:
-        return f'color: {color}; background-color: {color}; border: {stroke_size}px solid {stroke_color};'
+        return (f'color: {color}; '
+                f'background-color: {color}; '
+                f'border: {stroke_size}px solid {stroke_color};')
     else:
-        return f'background-image: {image}; border: {stroke_size}px solid {stroke_color};'
+        return (f'background-image: {image}; '
+                f'border: {stroke_size}px solid {stroke_color};')
 
 
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
