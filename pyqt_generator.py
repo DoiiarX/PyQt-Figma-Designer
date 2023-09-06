@@ -4,6 +4,20 @@ from typing import Iterator
 def indent(s: str): return '    ' + s
 
 
+def get_color(element: dict) -> str:
+    if len(element['fills']) == 0:
+        return 'rgb(0, 0, 0)'
+    color = element['fills'][0]['color']
+    return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})'
+
+
+def get_stroke(element: dict) -> (str, float):
+    if len(element['strokes']) == 0:
+        return 'rgb(0, 0, 0)', 0
+    color = element['strokes'][0]['color']
+    return f'rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})', element['strokeWeight']
+
+
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
     yield from """from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -83,7 +97,6 @@ def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
 
 
 def generate_text(child, start_coordinates=(0, 0)):
-    color = child['fills'][0]['color']
     text = child['characters']
     font = child['style']['fontFamily']
     font_size = child['style']['fontSize'] / 1.5
@@ -93,27 +106,33 @@ def generate_text(child, start_coordinates=(0, 0)):
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
 label.setFont(font)""".splitlines()
-    yield f'label.setStyleSheet("color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})")'
+    yield f'label.setStyleSheet("color: {get_color(child)}")'
     yield f'label.setGeometry({generate_rect(child, start_coordinates)})'
 
 
 def generate_rectangle(child, start_coordinates=(0, 0)):
-    color = child['fills'][0]['color']
+    stroke_color, stroke_weight = get_stroke(child)
     yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet("background-color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})")'
+    yield (f'frame.setStyleSheet("background-color: {get_color(child)};'
+           f'border: {stroke_weight}px solid {stroke_color};")')
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
-    yield 'frame.setFrameShadow(QFrame.Raised)'
 
 
 def generate_vector(child, start_coordinates=(0, 0)):
-    color = child['fills'][0]['color']
     yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet("background-color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})")'
+    yield f'frame.setStyleSheet("background-color: {get_color(child)}")'
     yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
     yield 'frame.setFrameShadow(QFrame.Raised)'
 
 
 def generate_line(child, start_coordinates=(0, 0)):
-    yield ''
+    yield 'frame = QFrame(centralWidget)'
+    yield f'frame.setStyleSheet("background-color: {get_color(child)}")'
+    yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
+    yield 'frame.setFrameShape(QFrame.HLine)'
+    yield 'frame.setFrameShadow(QFrame.Sunken)'
+    stroke_color, stroke_weight = get_stroke(child)
+    yield f'frame.setStyleSheet("background-color: {stroke_color}")'
+    yield f'frame.setLineWidth({stroke_weight})'
