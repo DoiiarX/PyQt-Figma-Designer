@@ -64,22 +64,21 @@ def generate_rect(child, start_coordinates=(0, 0)):
 def generate_ui_element(child, start_coordinates=(0, 0)):
     match child['type']:
         case 'RECTANGLE':
-            yield from generate_rectangle(child)
+            yield from generate_rectangle(child, start_coordinates)
         case 'TEXT':
-            yield from generate_text(child)
+            yield from generate_text(child, start_coordinates)
         case 'GROUP':
-            yield from generate_group(child)
+            yield from generate_group(child, start_coordinates)
         case _:
             print(f'Unknown type: {child["type"]}')
 
 
 def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
     for child in group['children']:
-        yield from generate_ui_element(child)
+        yield from generate_ui_element(child, start_coordinates)
 
 
 def generate_text(child, start_coordinates=(0, 0)):
-    bounds = child['absoluteBoundingBox']
     color = child['fills'][0]['color']
     text = child['characters']
     font = child['style']['fontFamily']
@@ -92,7 +91,6 @@ def generate_text(child, start_coordinates=(0, 0)):
 
 
 def generate_rectangle(child, start_coordinates=(0, 0)):
-    bounds = child['absoluteBoundingBox']
     color = child['fills'][0]['color']
     yield 'frame = QFrame(centralWidget)'
     yield f'frame.setStyleSheet("background-color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255});")'
