@@ -11,7 +11,20 @@ def get_color(element: dict):
     if len(element['fills']) == 0:
         return 'rgba(0, 0, 0, 0)'
     elif 'color' in element['fills'][0]:
-        color = element['fills'][0]['color']
+        for fill in element['fills']:
+            a, r, g, b = 0, 0, 0, 0
+            if 'color' in fill:
+                color = fill['color']
+                opacity = fill.get('opacity', 1)
+
+                def mix(v1, v2, o): return v1 * (1 - o) + v2 * o
+
+                a = mix(a, color['a'], opacity)
+                r = mix(r, color['r'], opacity)
+                g = mix(g, color['g'], opacity)
+                b = mix(b, color['b'], opacity)
+
+        color = {'a': a, 'r': r, 'g': g, 'b': b}
         return f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color["a"] * 255})'
     else:
         return None
@@ -32,7 +45,8 @@ def get_style_sheet(element: dict) -> str:
                 f'background-color: {color}; '
                 f'border: {stroke_size}px solid {stroke_color};')
     else:
-        return (f'background-image: {image}; '
+        return (f'background-image: {image};'
+                f'stretch: fill;'
                 f'border: {stroke_size}px solid {stroke_color};')
 
 
