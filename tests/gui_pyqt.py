@@ -1,15 +1,24 @@
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-                            QMetaObject, QObject, QPoint, QRect,
-                            QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
-                           QCursor, QFont, QFontDatabase, QGradient,
-                           QIcon, QImage, QKeySequence, QLinearGradient,
-                           QPainter, QPalette, QPixmap, QRadialGradient,
-                           QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
-                               QLineEdit, QMainWindow, QPushButton, QSizePolicy,
-                               QStatusBar, QTableView, QWidget)
+# -*- coding: utf-8 -*-
 
+################################################################################
+## Form generated from reading UI file 'mainwindowsNxRLm.ui'
+##
+## Created by: Qt User Interface Compiler version 6.4.3
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
+    QCursor, QFont, QFontDatabase, QGradient,
+    QIcon, QImage, QKeySequence, QLinearGradient,
+    QPainter, QPalette, QPixmap, QRadialGradient,
+    QTransform)
+from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
+    QLineEdit, QMainWindow, QPushButton, QSizePolicy,
+    QStatusBar, QTableView, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -39,6 +48,10 @@ class Ui_MainWindow(object):
         self.buttonRebuild = QPushButton(self.centralwidget)
         self.buttonRebuild.setObjectName(u"buttonRebuild")
         self.buttonRebuild.setGeometry(QRect(180, 370, 75, 24))
+        font = QFont()
+        font.setFamilies([u"Cascadia Mono Light"])
+        font.setPointSize(6)
+        self.buttonRebuild.setFont(font)
         self.buttonRefreshOverrides = QPushButton(self.centralwidget)
         self.buttonRefreshOverrides.setObjectName(u"buttonRefreshOverrides")
         self.buttonRefreshOverrides.setGeometry(QRect(320, 120, 75, 24))
@@ -64,7 +77,6 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
-
     # setupUi
 
     def retranslateUi(self, MainWindow):
@@ -79,6 +91,7 @@ class Ui_MainWindow(object):
         self.editTextApkPath.setText(QCoreApplication.translate("MainWindow", u"Input apk file", None))
         self.buttonBrowseApk.setText(QCoreApplication.translate("MainWindow", u"Browse", None))
     # retranslateUi
+
 
 
 if __name__ == '__main__':

@@ -35,7 +35,7 @@ if __name__ == '__main__':
     ui.setupUi(MainWindow)
     MainWindow.show()
     """.splitlines()
-    yield '    sys.exit(app.exec_())'
+    yield '    sys.exit(app.exec())'
 
 
 def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
@@ -58,7 +58,7 @@ def generate_rect(child, start_coordinates=(0, 0)):
     bounds = child['absoluteBoundingBox']
     x, y = bounds['x'] - start_coordinates[0], bounds['y'] - start_coordinates[1]
     width, height = bounds['width'], bounds['height']
-    return f'QRect({x}, {y}, {width}, {height})'
+    return f'QRect({int(x)}, {int(y)}, {int(width)}, {int(height)})'
 
 
 def generate_ui_element(child, start_coordinates=(0, 0)):
@@ -69,6 +69,10 @@ def generate_ui_element(child, start_coordinates=(0, 0)):
             yield from generate_text(child, start_coordinates)
         case 'GROUP':
             yield from generate_group(child, start_coordinates)
+        case 'VECTOR':
+            yield from generate_vector(child, start_coordinates)
+        case 'LINE':
+            yield from generate_line(child, start_coordinates)
         case _:
             print(f'Unknown type: {child["type"]}')
 
@@ -82,18 +86,34 @@ def generate_text(child, start_coordinates=(0, 0)):
     color = child['fills'][0]['color']
     text = child['characters']
     font = child['style']['fontFamily']
-    fontSize = child['style']['fontSize']
+    font_size = child['style']['fontSize'] / 1.5
     yield 'label = QLabel(centralWidget)'
     yield f'label.setText("{text}")'
-    yield f'label.setFont(QFont("{font}", {fontSize}))'
-    yield f'label.setStyleSheet("color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255});")'
-    yield f'label.setGeometry({generate_rect(child, start_coordinates)});'
+    yield from f"""font = QFont()
+font.setFamilies([u"{font}"])
+font.setPointSize({int(font_size)})
+label.setFont(font)""".splitlines()
+    yield f'label.setStyleSheet("color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})")'
+    yield f'label.setGeometry({generate_rect(child, start_coordinates)})'
 
 
 def generate_rectangle(child, start_coordinates=(0, 0)):
     color = child['fills'][0]['color']
     yield 'frame = QFrame(centralWidget)'
-    yield f'frame.setStyleSheet("background-color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255});")'
-    yield f'frame.setGeometry({generate_rect(child, start_coordinates)});'
+    yield f'frame.setStyleSheet("background-color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})")'
+    yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
     yield 'frame.setFrameShape(QFrame.StyledPanel)'
     yield 'frame.setFrameShadow(QFrame.Raised)'
+
+
+def generate_vector(child, start_coordinates=(0, 0)):
+    color = child['fills'][0]['color']
+    yield 'frame = QFrame(centralWidget)'
+    yield f'frame.setStyleSheet("background-color: rgb({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255})")'
+    yield f'frame.setGeometry({generate_rect(child, start_coordinates)})'
+    yield 'frame.setFrameShape(QFrame.StyledPanel)'
+    yield 'frame.setFrameShadow(QFrame.Raised)'
+
+
+def generate_line(child, start_coordinates=(0, 0)):
+    yield ''
