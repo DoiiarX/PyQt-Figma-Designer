@@ -1,4 +1,3 @@
-import random
 from typing import Iterator
 from config import scale
 
@@ -138,31 +137,31 @@ font.setPointSize({int(font_size)})
         color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
     yield f'{label_name}.setStyleSheet("color: {color}")'
     yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
-    # align horizontally
-    alignment = child['style']['textAlignHorizontal']
-    match alignment:
-        case 'LEFT':
-            yield f'{label_name}.setAlignment(Qt.AlignLeft)'
-        case 'RIGHT':
-            yield f'{label_name}.setAlignment(Qt.AlignRight)'
-        case 'CENTER':
-            yield f'{label_name}.setAlignment(Qt.AlignCenter)'
-        case 'JUSTIFIED':
-            yield f'{label_name}.setAlignment(Qt.AlignJustify)'
-        case _:
-            yield f'{label_name}.setAlignment(Qt.AlignCenter)'
-    # align vertically
-    alignment = child['style']['textAlignVertical']
-    match alignment:
+    vertical_alignment_figma = child['style']['textAlignVertical']
+    horizontal_alignment_figma = child['style']['textAlignHorizontal']
+    vertical_alignment = 'Qt.AlignVCenter'
+    horizontal_alignment = 'Qt.AlignHCenter'
+    match vertical_alignment_figma:
         case 'TOP':
-            yield f'{label_name}.setAlignment(Qt.AlignTop)'
+            vertical_alignment = 'Qt.AlignTop'
         case 'BOTTOM':
-            yield f'{label_name}.setAlignment(Qt.AlignBottom)'
+            vertical_alignment = 'Qt.AlignBottom'
         case 'CENTER':
-            yield f'{label_name}.setAlignment(Qt.AlignVCenter)'
+            vertical_alignment = 'Qt.AlignVCenter'
         case _:
-            yield f'{label_name}.setAlignment(Qt.AlignVCenter)'
-
+            vertical_alignment = 'Qt.AlignVCenter'
+    match horizontal_alignment_figma:
+        case 'LEFT':
+            horizontal_alignment = 'Qt.AlignLeft'
+        case 'RIGHT':
+            horizontal_alignment = 'Qt.AlignRight'
+        case 'CENTER':
+            horizontal_alignment = 'Qt.AlignHCenter'
+        case 'JUSTIFIED':
+            horizontal_alignment = 'Qt.AlignJustify'
+        case _:
+            horizontal_alignment = 'Qt.AlignHCenter'
+    yield f'{label_name}.setAlignment({vertical_alignment} | {horizontal_alignment})'
     yield f'{label_name}.setMouseTracking(False)'
     yield f'{label_name}.setContextMenuPolicy(Qt.NoContextMenu)'
 
