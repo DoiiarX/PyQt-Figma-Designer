@@ -91,13 +91,13 @@ def generate_ui_element(child, start_coordinates=(0, 0)) -> Iterator[str]:
     if child['type'] == 'TEXT':
         yield from generate_text(child, start_coordinates)
 
-    # generate inputs
-    if child['name'].lower().strip().startswith('button'):
-        yield from generate_button(child, start_coordinates)
-
     # generate children
     if 'children' in child and len(child['children']) > 0:
         yield from generate_group(child, start_coordinates)
+
+    # generate inputs
+    if child['name'].lower().strip().startswith('button'):
+        yield from generate_button(child, start_coordinates)
 
 
 def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
@@ -123,7 +123,7 @@ font.setPointSize({int(font_size)})
     if len(child['fills']) > 0 and 'color' in child['fills'][0]:
         color = child['fills'][0]['color']
         color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
-    yield f'{label_name}.setStyleSheet(\'color: {color}\')'
+    yield f'{label_name}.setStyleSheet("color: {color}")'
     yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
     alignment = child['style']['textAlignHorizontal']
     match alignment:
@@ -137,6 +137,9 @@ font.setPointSize({int(font_size)})
             yield f'{label_name}.setAlignment(Qt.AlignJustify)'
         case _:
             yield f'{label_name}.setAlignment(Qt.AlignCenter)'
+
+    yield f'{label_name}.setMouseTracking(False)'
+    yield f'{label_name}.setContextMenuPolicy(Qt.NoContextMenu)'
 
 
 def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
@@ -158,7 +161,7 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 color = color['r'], color['g'], color['b']
                 color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
                 yield (f'<path '
-                       f'fill="{color}" stroke-width="{stroke_width}" ' + (f'stroke="{color}" ' if stroke else "") +
+                       f'fill="{color}" stroke-width="{stroke_width}" ' 
                        f'fill-opacity="{opacity}" stroke-opacity="{opacity}" '
                        f'd="{path_data}"/>')
             case 'IMAGE':
@@ -201,12 +204,10 @@ def generate_button(child, start_coordinates):
     button_name = get_legal_name(child)
     yield f'{button_name} = QPushButton(central_widget)'
     yield f'{button_name}.setGeometry({get_bounds(child, start_coordinates)})'
-    yield f'{button_name}.setStyleSheet(\'background-color: rgba(0, 0, 0, 0);\')'
     yield f'{button_name}.setFlat(True)'
     yield f'{button_name}.setAutoFillBackground(False)'
     yield f'{button_name}.setObjectName("{button_name}")'
     yield f'{button_name}.setMouseTracking(True)'
-    yield f'{button_name}.setFocusPolicy(Qt.NoFocus)'
     yield f'{button_name}.setContextMenuPolicy(Qt.NoContextMenu)'
     yield f'{button_name}.setAcceptDrops(False)'
     yield from f"""def __{button_name}_clicked(self):
@@ -215,3 +216,5 @@ def generate_button(child, start_coordinates):
     except :
         print("No function {button_name}_clicked defined")""".splitlines()
     yield f'{button_name}.clicked.connect(__{button_name}_clicked)'
+    yield f'{button_name}.setFocusPolicy(Qt.NoFocus)'
+    yield f'{button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")'
