@@ -1,7 +1,10 @@
+import random
 from typing import Iterator
 from config import scale
 
 TEXT_SCALE = 1 / 1.5
+
+svg_counter = 0
 
 
 def indent(s: str): return '    ' + s
@@ -30,7 +33,7 @@ def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
     import GuiHandler
 except:
     print("No GuiHandler found, events will not be handled.")
-from PySide6 import QtSvg
+from PySide6.QtSvgWidgets import QSvgWidget
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
@@ -63,7 +66,6 @@ if __name__ == '__main__':
 
 def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
     bounds = frame['absoluteBoundingBox']
-
     width, height = bounds['width'], bounds['height']
     start_x, start_y = bounds['x'], bounds['y']
     yield from f"""class {class_name}(object):
@@ -169,27 +171,33 @@ font.setPointSize({int(font_size)})
 
 
 def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
-    for i, geometry in enumerate(child.get('fillGeometry', [])):
-        svg_data = './resources/410.svg'  # geometry['path']
-        name = get_legal_name(child) + f'_geometry{i}'
+    global svg_counter
+    svg_counter += 1
 
-        painter_name = 'painter_' + name
-        yield f'{painter_name} = QPainter()'
-        yield f'{painter_name}.begin(central_widget)'
-        yield f'{painter_name}.setRenderHint(QPainter.Antialiasing)'
-        yield f'{painter_name}.setBrush(QBrush(Qt.white, Qt.SolidPattern))'
-        yield f'{painter_name}.setPen(QPen(Qt.black, 1, Qt.SolidLine))'
-        qtsvg_name = 'qtsvg_' + name
-        yield f'{qtsvg_name} = QtSvg.QSvgRenderer(\'{svg_data}\')'
-        color = 'rgba(0, 0, 0, 255)'
-        if len(child['fills']) > 0 and 'color' in child['fills'][0]:
-            color = child['fills'][0]['color']
-            color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
-        yield f'{painter_name}.setBrush(QBrush(QColor("{color}")))'
-        yield f'{painter_name}.setPen(QPen(QColor("{color}")))'
-        yield f'{painter_name}.scale({scale}, {scale})'
-        yield f'{qtsvg_name}.render({painter_name})'
-        yield f'{painter_name}.end()'
+    svg_filename = '../resources/svg/' + f'file{svg_counter}.svg'
+
+    def create_svg_file():
+        svg_file_data = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">"""
+        for i, (geometry, fill) in enumerate(zip(child.get('fillGeometry', []), child.get('fills', []))):
+            svg_data = geometry['path']
+            color = 0, 0, 0, 1
+            if 'color' in fill:
+                color = fill['color']
+                color = color['r'], color['g'], color['b'], color.get('a', 1)
+            color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
+            svg_file_data += f'\n\t<path d="{svg_data}" stroke="{color}" stroke-width="5" fill="{color}" />'
+        svg_file_data += '\n</svg>'
+        with open(svg_filename, 'w') as file:
+            file.write(svg_file_data)
+
+    create_svg_file()
+
+    svg_widget_name = 'svg_' + get_legal_name(child)
+    yield f'{svg_widget_name} = QSvgWidget(central_widget)'
+    yield f'{svg_widget_name}.setGeometry({get_bounds(child, start_coordinates)})'
+    yield f'{svg_widget_name}.load("{svg_filename}")'
+    yield f'{svg_widget_name}.setFixedSize({int(child["absoluteBoundingBox"]["width"] * scale)}, {int(child["absoluteBoundingBox"]["height"] * scale)})'
 
 
 def generate_button(child, start_coordinates):
