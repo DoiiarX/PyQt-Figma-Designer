@@ -297,13 +297,14 @@ def generate_text_field(child, start_coordinates):
     yield f'{text_field_name}.setContextMenuPolicy(Qt.NoContextMenu)'
     yield f'{text_field_name}.setAcceptDrops(False)'
     handler_function_name = f'{text_field_name}_text_changed'
-    handler_functions.add(f"""def {handler_function_name}() :
-    print("Text field {text_field_name} text changed")""")
+    handler_functions.add(f"""def {handler_function_name}(current_text:str) :
+    print("Text field {text_field_name} text changed to " + current_text)""")
     yield from f"""def __{text_field_name}_text_changed(self):
     try : 
-        GuiHandler.{handler_function_name}()
+        current_text = {text_field_name}.text()
+        GuiHandler.{handler_function_name}(current_text)
     except :
-        print("No function {text_field_name}_clicked defined")""".splitlines()
+        print("No function {text_field_name}_clicked defined. Current text : " + current_text)""".splitlines()
     yield f'{text_field_name}.textChanged.connect(__{text_field_name}_text_changed)'
     yield (f'{text_field_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); '
            # cursor color
