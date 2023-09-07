@@ -128,13 +128,17 @@ def generate_ui_element(child, start_coordinates=(0, 0)) -> Iterator[str]:
             yield from generate_text(child, start_coordinates)
         case 'GROUP':
             yield from generate_group(child, start_coordinates)
-        case 'VECTOR':
-            yield from generate_vector(child, start_coordinates)
-        case 'COMPONENT_SET' | 'COMPONENT' | 'FRAME' | 'INSTANCE' | 'RECTANGLE' | 'STAR' | 'LINE' | 'ELLIPSE' | 'REGULAR_POLYGON' | 'SLICE' | 'BOOLEAN_OPERATION' | 'STICKY_GUIDES':
+        case 'VECTOR' | 'COMPONENT_SET' | 'COMPONENT' | 'FRAME' | 'INSTANCE' | 'RECTANGLE' | 'STAR' | 'LINE' | 'ELLIPSE' | 'REGULAR_POLYGON' | 'SLICE' | 'BOOLEAN_OPERATION' | 'STICKY_GUIDES':
             # TODO handle these cases properly
-            yield from generate_fills(child, start_coordinates)
-            yield from generate_strokes(child, start_coordinates)
+            if ('fillGeometry' in child and len(child['fillGeometry']) > 0) \
+                    or ('strokeGeometry' in child and len(child['strokeGeometry']) > 0):
+                yield from generate_vector(child, start_coordinates)
+            else:
+                yield from generate_fills(child, start_coordinates)
+                yield from generate_strokes(child, start_coordinates)
+
             yield from generate_group(child, start_coordinates)
+
         case _:
             print(f'Unknown type: {child["type"]}')
 
@@ -176,9 +180,9 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
 
     svg_filename = '../resources/svg/' + f'file{svg_counter}.svg'
 
-    def create_svg_file():
+    def create_fill_svg_file():
         svg_file_data = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">"""
+<svg >"""
         for i, (geometry, fill) in enumerate(zip(child.get('fillGeometry', []), child.get('fills', []))):
             svg_data = geometry['path']
             color = 0, 0, 0, 1
@@ -186,18 +190,30 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 color = fill['color']
                 color = color['r'], color['g'], color['b'], color.get('a', 1)
             color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-            svg_file_data += f'\n\t<path d="{svg_data}" stroke="{color}" stroke-width="5" fill="{color}" />'
+            svg_file_data += f'\n\t<path d="{svg_data}" fill="{color}" />'
+
+        for i, (geometry, stroke) in enumerate(zip(child.get('strokeGeometry', []), child.get('strokes', []))):
+            svg_data = geometry['path']
+            color = 0, 0, 0, 1
+            if 'color' in stroke:
+                color = stroke['color']
+                color = color['r'], color['g'], color['b'], color.get('a', 1)
+            color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
+            svg_file_data += f'\n\t<path d="{svg_data}" stroke-width="{child["strokeWeight"] / 10}" stroke="{color}" />'
+
         svg_file_data += '\n</svg>'
         with open(svg_filename, 'w') as file:
             file.write(svg_file_data)
 
-    create_svg_file()
-
+    create_fill_svg_file()
+    label_name = 'label_' + get_legal_name(child)
     svg_widget_name = 'svg_' + get_legal_name(child)
-    yield f'{svg_widget_name} = QSvgWidget(central_widget)'
-    yield f'{svg_widget_name}.setGeometry({get_bounds(child, start_coordinates)})'
+    yield f'{label_name} = QLabel(central_widget)'
+    yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
+    yield f'{svg_widget_name} = QSvgWidget({label_name})'
+    width, height = child['absoluteBoundingBox']['width'], child['absoluteBoundingBox']['height']
+    yield f'{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * scale)}, {int(height * scale)}))'
     yield f'{svg_widget_name}.load("{svg_filename}")'
-    yield f'{svg_widget_name}.setFixedSize({int(child["absoluteBoundingBox"]["width"] * scale)}, {int(child["absoluteBoundingBox"]["height"] * scale)})'
 
 
 def generate_button(child, start_coordinates):
