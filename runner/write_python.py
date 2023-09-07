@@ -14,6 +14,5 @@ if overwrite_handler:
     with open(gui_handler_path, 'w', encoding="utf-8") as file:
         file.write(handler_code)
 
-# run the generated code
-subprocess.Popen(f'python gui.py',
+subprocess.Popen(f'python gui.py', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                  cwd=project_directory)

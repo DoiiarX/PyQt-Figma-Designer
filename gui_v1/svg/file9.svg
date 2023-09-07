@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg version="1.2" baseProfile="tiny" viewBox="0 0 248 90" xmlns="http://www.w3.org/2000/svg">
+	<radialGradient id="gradient0" cx="0.5" cy="0.49999999999999994" r="0.5">
+		<stop offset="0.0" stop-color="#df0000" stop-opacity="1.0"/>
+		<stop offset="0.9998999834060669" stop-color="#2300ff" stop-opacity="1.0"/>
+		<stop offset="1.0" stop-color="#ffffff" stop-opacity="1.0"/>
+	</radialGradient>
+	<path fill="url(#gradient0)" stroke-width="1.0" fill-opacity="1.0" stroke-opacity="1.0" d="M0 0L248 0L248 90L0 90L0 0Z"/>
+</svg>

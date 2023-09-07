@@ -1,2 +1,0 @@
-import test_read_figma
-import test_write_python
