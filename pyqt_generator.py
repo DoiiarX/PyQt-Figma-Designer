@@ -201,7 +201,9 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 yield f'<path fill="url(#gradient{image_counter})" stroke-width="{stroke_width}" fill-opacity="{opacity}" stroke-opacity="{opacity}" d="{path_data}"/>'
             case 'GRADIENT_RADIAL':
                 gradient = graphic['gradientHandlePositions']
-                gradient = f'cx="{gradient[0]["x"]}" cy="{gradient[0]["y"]}"'
+                p0, p1 = gradient[0], gradient[-1]
+                radius = ((p0['x'] - p1['x']) ** 2 + (p0['y'] - p1['y']) ** 2) ** .5
+                gradient = f'cx="{p0["x"]}" cy="{p0["y"]}" r="{radius}"'
                 stops = graphic['gradientStops']
                 yield f'<radialGradient id="gradient{image_counter}" {gradient}>'
                 for stop in stops:
