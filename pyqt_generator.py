@@ -125,7 +125,7 @@ font.setPointSize({int(font_size)})
         color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
     yield f'{label_name}.setStyleSheet(\'color: {color}\')'
     yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
-
+    yield f'{label_name}.setAlignment(Qt.AlignCenter)'
 
 def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
     global svg_counter
