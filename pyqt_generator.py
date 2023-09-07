@@ -130,27 +130,37 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
 
     svg_filename = '../resources/svg/' + f'file{svg_counter}.svg'
 
+    def get_graphic_properties(graphic: dict):
+        stroke_width = child['strokeWeight'] if 'strokeWeight' in child else 0
+
+        match graphic['type']:
+            case 'SOLID':
+                color = graphic['color']
+                opacity = color.get('a', 1)
+                if 'opacity' in graphic:
+                    opacity *= graphic['opacity']
+                color = color['r'], color['g'], color['b']
+                color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
+                return (f'fill="{color}" stroke="{color}" stroke-width="{stroke_width}" '
+                        f'fill-opacity="{opacity}" stroke-opacity="{opacity}"')
+            case 'IMAGE':
+                image_ref = graphic['imageRef']
+                image = f'../resources/images/{image_ref}.png'
+                return f'fill="{image}" stroke-width="{stroke_width}"'
+            case _ :
+                return 'fill="none" stroke-width="0" stroke="none"'
+
     def create_svg_file():
         bounds = f'0 0 {int(child["absoluteBoundingBox"]["width"])} {int(child["absoluteBoundingBox"]["height"])}'
         svg_file_data = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg version="1.1" viewBox="{bounds}" xmlns="http://www.w3.org/2000/svg">"""
         for i, (geometry, fill) in enumerate(zip(child.get('fillGeometry', []), child.get('fills', []))):
             svg_data = geometry['path']
-            color = 1, 1, 1, 0
-            if 'color' in fill:
-                color = fill['color']
-                color = color['r'], color['g'], color['b'], color.get('a', 1)
-            color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-            svg_file_data += f'\n\t<path d="{svg_data}" fill="{color}" stroke="{color}" />'
+            svg_file_data += f'\n\t<path d="{svg_data}" {get_graphic_properties(fill)} />'
 
         for i, (geometry, stroke) in enumerate(zip(child.get('strokeGeometry', []), child.get('strokes', []))):
             svg_data = geometry['path']
-            color = 1, 1, 1
-            if 'color' in stroke:
-                color = stroke['color']
-                color = color['r'], color['g'], color['b']
-            color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-            svg_file_data += f'\n\t<path d="{svg_data}" stroke-width="{child["strokeWeight"]}" stroke="{color}" fill="{color}" />'
+            svg_file_data += f'\n\t<path d="{svg_data}" {get_graphic_properties(stroke)} />'
 
         svg_file_data += '\n</svg>'
         with open(svg_filename, 'w') as file:
