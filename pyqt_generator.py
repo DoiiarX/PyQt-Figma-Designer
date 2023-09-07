@@ -76,13 +76,17 @@ def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
         central_widget = QWidget(MainWindow)
         MainWindow.setFixedSize({width * scale}, {height * scale})
         MainWindow.setWindowTitle("{frame['name']}")
+        
         """.splitlines()
+    yield from map(indent, map(indent, generate_vector(frame, (start_x, start_y))))
     for child in frame['children']:
         yield from map(indent, map(indent, generate_ui_element(child, (start_x, start_y))))
     yield indent(indent('MainWindow.setCentralWidget(central_widget)'))
 
 
 def generate_ui_element(child, start_coordinates=(0, 0)) -> Iterator[str]:
+    if not child.get('visible', True):
+        return []
     # generate visuals
     if ('fillGeometry' in child and len(child['fillGeometry']) > 0) \
             or ('strokeGeometry' in child and len(child['strokeGeometry']) > 0):
@@ -125,6 +129,7 @@ font.setPointSize({int(font_size)})
         color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
     yield f'{label_name}.setStyleSheet("color: {color}")'
     yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
+    # align horizontally
     alignment = child['style']['textAlignHorizontal']
     match alignment:
         case 'LEFT':
@@ -137,6 +142,17 @@ font.setPointSize({int(font_size)})
             yield f'{label_name}.setAlignment(Qt.AlignJustify)'
         case _:
             yield f'{label_name}.setAlignment(Qt.AlignCenter)'
+    # align vertically
+    alignment = child['style']['textAlignVertical']
+    match alignment:
+        case 'TOP':
+            yield f'{label_name}.setAlignment(Qt.AlignTop)'
+        case 'BOTTOM':
+            yield f'{label_name}.setAlignment(Qt.AlignBottom)'
+        case 'CENTER':
+            yield f'{label_name}.setAlignment(Qt.AlignVCenter)'
+        case _:
+            yield f'{label_name}.setAlignment(Qt.AlignVCenter)'
 
     yield f'{label_name}.setMouseTracking(False)'
     yield f'{label_name}.setContextMenuPolicy(Qt.NoContextMenu)'
