@@ -125,7 +125,19 @@ font.setPointSize({int(font_size)})
         color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
     yield f'{label_name}.setStyleSheet(\'color: {color}\')'
     yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
-    yield f'{label_name}.setAlignment(Qt.AlignCenter)'
+    alignment = child['style']['textAlignHorizontal']
+    match alignment:
+        case 'LEFT':
+            yield f'{label_name}.setAlignment(Qt.AlignLeft)'
+        case 'RIGHT':
+            yield f'{label_name}.setAlignment(Qt.AlignRight)'
+        case 'CENTER':
+            yield f'{label_name}.setAlignment(Qt.AlignCenter)'
+        case 'JUSTIFIED':
+            yield f'{label_name}.setAlignment(Qt.AlignJustify)'
+        case _:
+            yield f'{label_name}.setAlignment(Qt.AlignCenter)'
+
 
 def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
     global svg_counter
@@ -142,7 +154,7 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
         match graphic['type']:
             case 'SOLID':
                 color = graphic['color']
-                opacity *= color.get('a', 1)
+                opacity *= color.get('a', 0)
                 color = color['r'], color['g'], color['b']
                 color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
                 yield (f'<path '
