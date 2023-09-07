@@ -103,6 +103,15 @@ def generate_ui_element(child, start_coordinates=(0, 0)) -> Iterator[str]:
     if child['name'].lower().strip().startswith('button'):
         yield from generate_button(child, start_coordinates)
 
+    if child['name'].lower().replace(' ', '').replace('-', '').startswith('textfield'):
+        yield from generate_text_field(child, start_coordinates)
+
+    if child['name'].lower().replace(' ', '').replace('-', '').startswith('checkbox'):
+        children = {c['name']: c for c in child['children']}
+        checked = children.get('Checked', None)
+        if checked is not None:
+            yield from generate_checkbox(child, checked, start_coordinates)
+
 
 def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
     if 'children' not in group:
@@ -263,3 +272,46 @@ def generate_button(child, start_coordinates):
     yield f'{button_name}.clicked.connect(__{button_name}_clicked)'
     yield f'{button_name}.setFocusPolicy(Qt.NoFocus)'
     yield f'{button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")'
+
+
+def generate_text_field(child, start_coordinates):
+    text_field_name = get_legal_name(child)
+    yield f'{text_field_name} = QLineEdit(central_widget)'
+    yield f'{text_field_name}.setGeometry({get_bounds(child, start_coordinates)})'
+    yield f'{text_field_name}.setAutoFillBackground(False)'
+    yield f'{text_field_name}.setObjectName("{text_field_name}")'
+    yield f'{text_field_name}.setMouseTracking(True)'
+    yield f'{text_field_name}.setContextMenuPolicy(Qt.NoContextMenu)'
+    yield f'{text_field_name}.setAcceptDrops(False)'
+    yield from f"""def __{text_field_name}_text_changed(self):
+    try : 
+        GuiHandler.{text_field_name}_text_changed()
+    except :
+        print("No function {text_field_name}_clicked defined")""".splitlines()
+    yield f'{text_field_name}.textChanged.connect(__{text_field_name}_text_changed)'
+    yield (f'{text_field_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); '
+           # cursor color
+           f'border: 0px solid rgba(255, 255, 255, 255);'
+           f'color: rgba(255, 255, 255, 255); ")')
+    yield f'{text_field_name}.setPlaceholderText("{child["name"]}")'
+
+
+def generate_checkbox(child, checked, start_coordinates):
+    checkbox_name = get_legal_name(child)
+    checked_name = 'label_' + get_legal_name(checked)
+    yield f'{checkbox_name} = QPushButton(central_widget)'
+    yield f'{checkbox_name}.setGeometry({get_bounds(child, start_coordinates)})'
+    yield f'{checkbox_name}.setFlat(True)'
+    yield f'{checkbox_name}.setAutoFillBackground(False)'
+    yield f'{checkbox_name}.setObjectName("{checkbox_name}")'
+    yield f'{checkbox_name}.setMouseTracking(True)'
+    yield f'{checkbox_name}.setContextMenuPolicy(Qt.NoContextMenu)'
+    yield f'{checkbox_name}.setAcceptDrops(False)'
+    yield from f"""def __{checkbox_name}_check_changed(self):
+    try : 
+        # hide the checked element
+        {checked_name}.setVisible(not {checked_name}.isVisible())        
+        GuiHandler.{checkbox_name}_check_changed({checked_name}.isVisible())
+    except :
+        print("No function {checkbox_name}_check_changed defined. Checked = " + str({checked_name}.isVisible()))""".splitlines()
+    yield f'{checkbox_name}.clicked.connect(__{checkbox_name}_check_changed)'
