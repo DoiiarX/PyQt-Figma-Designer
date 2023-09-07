@@ -177,7 +177,7 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 color = color['r'], color['g'], color['b']
                 color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
                 yield (f'<path '
-                       f'fill="{color}" stroke-width="{stroke_width}" ' 
+                       f'fill="{color}" stroke-width="{stroke_width}" '
                        f'fill-opacity="{opacity}" stroke-opacity="{opacity}" '
                        f'd="{path_data}"/>')
             case 'IMAGE':
@@ -186,7 +186,34 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 width, height = child['absoluteBoundingBox']['width'], child['absoluteBoundingBox']['height']
                 img_ref = f'img{image_counter}'
                 yield f'<image x="0" y="0" width="{width}" height="{height}" xlink:href="{image}" id="{img_ref}" opacity="{opacity}"/>'
+            case 'GRADIENT_LINEAR':
+                gradient = graphic['gradientHandlePositions']
+                gradient = f'x1="{gradient[0]["x"]}" y1="{gradient[0]["y"]}" x2="{gradient[1]["x"]}" y2="{gradient[1]["y"]}"'
+                stops = graphic['gradientStops']
+                yield f'<linearGradient id="gradient{image_counter}" {gradient}>'
+                for stop in stops:
+                    color = stop['color']
+                    opacity = color.get('a', 1)
+                    color = color['r'], color['g'], color['b']
+                    color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
+                    yield f'\t<stop offset="{stop["position"]}" stop-color="{color}" stop-opacity="{opacity}"/>'
+                yield f'</linearGradient>'
+                yield f'<path fill="url(#gradient{image_counter})" stroke-width="{stroke_width}" fill-opacity="{opacity}" stroke-opacity="{opacity}" d="{path_data}"/>'
+            case 'GRADIENT_RADIAL':
+                gradient = graphic['gradientHandlePositions']
+                gradient = f'cx="{gradient[0]["x"]}" cy="{gradient[0]["y"]}"'
+                stops = graphic['gradientStops']
+                yield f'<radialGradient id="gradient{image_counter}" {gradient}>'
+                for stop in stops:
+                    color = stop['color']
+                    opacity = color.get('a', 1)
+                    color = color['r'], color['g'], color['b']
+                    color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
+                    yield f'\t<stop offset="{stop["position"]}" stop-color="{color}" stop-opacity="{opacity}"/>'
+                yield f'</radialGradient>'
+                yield f'<path fill="url(#gradient{image_counter})" stroke-width="{stroke_width}" fill-opacity="{opacity}" stroke-opacity="{opacity}" d="{path_data}"/>'
             case _:
+                print(f'Unknown graphic type: {graphic["type"]}')
                 return []
 
     def create_svg_file():
