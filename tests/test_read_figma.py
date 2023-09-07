@@ -6,19 +6,15 @@ from config import token, file_key
 from figma import endpoints
 
 
-def run():
-    figma_file = endpoints.Files(token, file_key)
-    f = figma_file.get_file()
 
-    with open('../resources/f.fig', 'wb') as file:
-        pickle.dump(f, file)
+figma_file = endpoints.Files(token, file_key)
+f = figma_file.get_file()
 
-    for image_id, image_url in figma_file.get_images().items():
-        # download the url to resources/id.png
-        response = requests.get(image_url)
-        with open(f'../resources/images/{image_id}.png', 'wb') as file:
-            file.write(response.content)
+with open('../resources/f.fig', 'wb') as file:
+    pickle.dump(f, file)
 
-
-if __name__ == '__main__':
-    run()
+for image_id, image_url in figma_file.get_images().items():
+    # download the url to resources/id.png
+    response = requests.get(image_url)
+    with open(f'../resources/images/{image_id}.png', 'wb') as file:
+        file.write(response.content)

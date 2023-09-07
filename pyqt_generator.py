@@ -6,6 +6,7 @@ TEXT_SCALE = 0.7
 svg_counter = 0
 environment = {}
 used_names = set()
+handler_functions = set()
 
 
 def indent(s: str): return '    ' + s
@@ -70,6 +71,10 @@ if __name__ == '__main__':
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec())""".splitlines()
+
+
+def generate_handler(figma_file: dict) -> Iterator[str]:
+    yield from handler_functions
 
 
 def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
@@ -270,12 +275,15 @@ def generate_button(child, start_coordinates):
     yield f'{button_name}.setMouseTracking(True)'
     yield f'{button_name}.setContextMenuPolicy(Qt.NoContextMenu)'
     yield f'{button_name}.setAcceptDrops(False)'
-    yield from f"""def __{button_name}_clicked(self):
+    handler_function_name = f'{button_name}_clicked'
+    handler_functions.add(f"""def {handler_function_name}() : 
+    print("Button {button_name} clicked")""")
+    yield from f"""def __{handler_function_name}(self):
     try : 
-        GuiHandler.{button_name}_clicked()
+        GuiHandler.{handler_function_name}()
     except :
-        print("No function {button_name}_clicked defined")""".splitlines()
-    yield f'{button_name}.clicked.connect(__{button_name}_clicked)'
+        print("No function {handler_function_name} defined")""".splitlines()
+    yield f'{button_name}.clicked.connect(__{handler_function_name})'
     yield f'{button_name}.setFocusPolicy(Qt.NoFocus)'
     yield f'{button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")'
 
@@ -289,9 +297,12 @@ def generate_text_field(child, start_coordinates):
     yield f'{text_field_name}.setMouseTracking(True)'
     yield f'{text_field_name}.setContextMenuPolicy(Qt.NoContextMenu)'
     yield f'{text_field_name}.setAcceptDrops(False)'
+    handler_function_name = f'{text_field_name}_text_changed'
+    handler_functions.add(f"""def {handler_function_name}() :
+    print("Text field {text_field_name} text changed")""")
     yield from f"""def __{text_field_name}_text_changed(self):
     try : 
-        GuiHandler.{text_field_name}_text_changed()
+        GuiHandler.{handler_function_name}()
     except :
         print("No function {text_field_name}_clicked defined")""".splitlines()
     yield f'{text_field_name}.textChanged.connect(__{text_field_name}_text_changed)'
@@ -324,8 +335,11 @@ def generate_checkbox(child, checked_textbox, start_coordinates):
     yield from f"""def __{checkbox_name}_check_changed(self):
     try :""".splitlines()
     yield from map(indent, map(indent, generate_recursive_hide_show(checked_textbox)))
+    handler_function_name = f'{checkbox_name}_check_changed'
+    handler_functions.add(f"""def {handler_function_name}(checked:bool) :
+    print("Checkbox {checkbox_name} checked = " + str(checked))""")
     yield from f"""
-        GuiHandler.{checkbox_name}_check_changed({checked_name}.isVisible())
+        GuiHandler.{handler_function_name}({checked_name}.isVisible())
     except :
-        print("No function {checkbox_name}_check_changed defined. Checked = " + str({checked_name}.isVisible()))""".splitlines()
-    yield f'{checkbox_name}.clicked.connect(__{checkbox_name}_check_changed)'
+        print("No function {handler_function_name} defined. Checked = " + str({checked_name}.isVisible()))""".splitlines()
+    yield f'{checkbox_name}.clicked.connect(__{handler_function_name})'
