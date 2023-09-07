@@ -79,72 +79,22 @@ def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
     yield indent(indent('MainWindow.setCentralWidget(central_widget)'))
 
 
-def generate_fills(element: dict, start_coordinates=(0, 0)) -> Iterator[str]:
-    for i, fill in enumerate(element['fills']):
-        frame_name = 'frame_' + get_legal_name(element) + f'_fill{i}'
-        match fill['type']:
-            case 'IMAGE':
-                image_ref = fill['imageRef']
-                image = f'url("../resources/images/{image_ref}.png")'
-                scale_mode = fill['scaleMode'].lower()
-                stylesheet = f'border-image: {image} 0 0 0 0 stretch {scale_mode}; border: 0px solid black ;'
-                yield f'{frame_name} = QFrame(central_widget)'
-                yield f'{frame_name}.setStyleSheet(\'{stylesheet}\')'
-                yield f'{frame_name}.setGeometry({get_bounds(element, start_coordinates)})'
-                yield f'{frame_name}.setFrameShape(QFrame.StyledPanel)'
-                yield f'{frame_name}.setFrameShadow(QFrame.Raised)'
-            case 'SOLID':
-                color = fill['color']
-                opacity = fill.get('opacity', 1)
-                yield f'{frame_name} = QFrame(central_widget)'
-                color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255 * opacity})'
-                yield f'{frame_name}.setStyleSheet(\'background-color: {color}; color: {color}\')'
-                yield f'{frame_name}.setGeometry({get_bounds(element, start_coordinates)})'
-                yield f'{frame_name}.setFrameShape(QFrame.StyledPanel)'
-                yield f'{frame_name}.setFrameShadow(QFrame.Raised)'
-            case _:
-                print(f'Unknown fill type: {fill["type"]} for element {element["name"]}')
-
-
-def generate_strokes(element: dict, start_coordinates=(0, 0)) -> Iterator[str]:
-    for i, stroke in enumerate(element['strokes']):
-        frame_name = 'frame_' + get_legal_name(element) + f'_stroke{i}'
-        match stroke['type']:
-            case 'SOLID':
-                color = stroke['color']
-                opacity = stroke.get('opacity', 1)
-                yield f'{frame_name} = QFrame(central_widget)'
-                yield f'{frame_name}.setStyleSheet(\'border: {element["strokeWeight"] * scale}px solid rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {opacity * 255});\')'
-                yield f'{frame_name}.setGeometry({get_bounds(element, start_coordinates)})'
-                yield f'{frame_name}.setFrameShape(QFrame.StyledPanel)'
-                yield f'{frame_name}.setFrameShadow(QFrame.Raised)'
-            case _:
-                print(f'Unknown stroke type: {stroke["type"]} for element {element["name"]}')
-
-
 def generate_ui_element(child, start_coordinates=(0, 0)) -> Iterator[str]:
-    match child['type']:
-        case 'TEXT':
-            yield from generate_text(child, start_coordinates)
-        case 'GROUP':
-            yield from generate_group(child, start_coordinates)
-        case 'VECTOR' | 'COMPONENT_SET' | 'COMPONENT' | 'FRAME' | 'INSTANCE' | 'RECTANGLE' | 'STAR' | 'LINE' | 'ELLIPSE' | 'REGULAR_POLYGON' | 'SLICE' | 'BOOLEAN_OPERATION' | 'STICKY_GUIDES':
-            # TODO handle these cases properly
-            if ('fillGeometry' in child and len(child['fillGeometry']) > 0) \
-                    or ('strokeGeometry' in child and len(child['strokeGeometry']) > 0):
-                yield from generate_vector(child, start_coordinates)
-            else:
-                yield from generate_fills(child, start_coordinates)
-                yield from generate_strokes(child, start_coordinates)
+    # generate visuals
+    if ('fillGeometry' in child and len(child['fillGeometry']) > 0) \
+            or ('strokeGeometry' in child and len(child['strokeGeometry']) > 0):
+        yield from generate_vector(child, start_coordinates)
 
-            yield from generate_group(child, start_coordinates)
+    if child['type'] == 'TEXT':
+        yield from generate_text(child, start_coordinates)
 
-        case _:
-            print(f'Unknown type: {child["type"]}')
-
-        # generate inputs and touchzones for buttons
+    # generate inputs
     if child['name'].lower().strip().startswith('button'):
         yield from generate_button(child, start_coordinates)
+
+    # generate children
+    if 'children' in child and len(child['children']) > 0:
+        yield from generate_group(child, start_coordinates)
 
 
 def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
@@ -180,32 +130,33 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
 
     svg_filename = '../resources/svg/' + f'file{svg_counter}.svg'
 
-    def create_fill_svg_file():
-        svg_file_data = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg >"""
+    def create_svg_file():
+        bounds = f'0 0 {int(child["absoluteBoundingBox"]["width"])} {int(child["absoluteBoundingBox"]["height"])}'
+        svg_file_data = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg version="1.1" viewBox="{bounds}" xmlns="http://www.w3.org/2000/svg">"""
         for i, (geometry, fill) in enumerate(zip(child.get('fillGeometry', []), child.get('fills', []))):
             svg_data = geometry['path']
-            color = 0, 0, 0, 1
+            color = 1, 1, 1, 0
             if 'color' in fill:
                 color = fill['color']
                 color = color['r'], color['g'], color['b'], color.get('a', 1)
             color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-            svg_file_data += f'\n\t<path d="{svg_data}" fill="{color}" />'
+            svg_file_data += f'\n\t<path d="{svg_data}" fill="{color}" stroke="{color}" />'
 
         for i, (geometry, stroke) in enumerate(zip(child.get('strokeGeometry', []), child.get('strokes', []))):
             svg_data = geometry['path']
-            color = 0, 0, 0, 1
+            color = 1, 1, 1
             if 'color' in stroke:
                 color = stroke['color']
-                color = color['r'], color['g'], color['b'], color.get('a', 1)
+                color = color['r'], color['g'], color['b']
             color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-            svg_file_data += f'\n\t<path d="{svg_data}" stroke-width="{child["strokeWeight"] / 10}" stroke="{color}" />'
+            svg_file_data += f'\n\t<path d="{svg_data}" stroke-width="{child["strokeWeight"]}" stroke="{color}" fill="{color}" />'
 
         svg_file_data += '\n</svg>'
         with open(svg_filename, 'w') as file:
             file.write(svg_file_data)
 
-    create_fill_svg_file()
+    create_svg_file()
     label_name = 'label_' + get_legal_name(child)
     svg_widget_name = 'svg_' + get_legal_name(child)
     yield f'{label_name} = QLabel(central_widget)'
