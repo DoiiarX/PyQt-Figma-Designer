@@ -73,7 +73,10 @@ def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize({width * scale}, {height * scale})
-        central_widget = QWidget(MainWindow)""".splitlines()
+        central_widget = QWidget(MainWindow)
+        MainWindow.setFixedSize({width * scale}, {height * scale})
+        MainWindow.setWindowTitle("{frame['name']}")
+        """.splitlines()
     for child in frame['children']:
         yield from map(indent, map(indent, generate_ui_element(child, (start_x, start_y))))
     yield indent(indent('MainWindow.setCentralWidget(central_widget)'))
@@ -105,7 +108,7 @@ def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
 
 
 def generate_text(child, start_coordinates=(0, 0)) -> Iterator[str]:
-    text = child['characters']
+    text = child['characters'].replace('"', '\\"')
     font = child['style']['fontFamily']
     font_size = child['style']['fontSize'] * TEXT_SCALE * scale
     label_name = 'label_' + get_legal_name(child)
@@ -132,8 +135,8 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
 
     image_counter = 0
 
-    def generate_path(path_data: str, graphic: dict) -> Iterator[str]:
-        stroke_width = child['strokeWeight'] if 'strokeWeight' in child else 0
+    def generate_path(path_data: str, graphic: dict, stroke=True) -> Iterator[str]:
+        stroke_width = child.get('strokeWeight', 0)
         opacity = graphic.get('opacity', 1)
 
         match graphic['type']:
@@ -142,8 +145,8 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 opacity *= color.get('a', 1)
                 color = color['r'], color['g'], color['b']
                 color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-                yield (f'<path ' 
-                       f'fill="{color}" stroke="{color}" stroke-width="{stroke_width}" '
+                yield (f'<path '
+                       f'fill="{color}" stroke-width="{stroke_width}" ' + (f'stroke="{color}" ' if stroke else "") +
                        f'fill-opacity="{opacity}" stroke-opacity="{opacity}" '
                        f'd="{path_data}"/>')
             case 'IMAGE':
@@ -151,22 +154,16 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 image = f'../images/{image_ref}.png'
                 width, height = child['absoluteBoundingBox']['width'], child['absoluteBoundingBox']['height']
                 img_ref = f'img{image_counter}'
-                yield from f"""<defs>
-    <pattern id="{img_ref}" patternUnits="userSpaceOnUse" width="{width}" height="{height}">
-        <image href="{image}" x="0" y="0" width="{width}" height="{height}"/>
-    </pattern>
-</defs>""".splitlines()
-                yield (f'<path fill="url(#{img_ref})" stroke="none" d="{path_data}" '
-                       f'fill-opacity="{opacity}" stroke-opacity="{opacity}"/>')
+                yield f'<image x="0" y="0" width="{width}" height="{height}" xlink:href="{image}" id="{img_ref}" opacity="{opacity}"/>'
             case _:
                 return []
 
     def create_svg_file():
         bounds = f'0 0 {int(child["absoluteBoundingBox"]["width"])} {int(child["absoluteBoundingBox"]["height"])}'
         svg_file_data = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg version="1.1" viewBox="{bounds}" xmlns="http://www.w3.org/2000/svg">"""
+<svg version="1.2" baseProfile="tiny" viewBox="{bounds}" xmlns="http://www.w3.org/2000/svg">"""
         for i, (geometry, fill) in enumerate(zip(child.get('fillGeometry', []), child.get('fills', []))):
-            for line in generate_path(geometry['path'], fill):
+            for line in generate_path(geometry['path'], fill, stroke=False):
                 svg_file_data += '\n\t' + line
 
         for i, (geometry, stroke) in enumerate(zip(child.get('strokeGeometry', []), child.get('strokes', []))):
