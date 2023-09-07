@@ -1,22 +1,31 @@
 from typing import Iterator
 from config import scale
 
-TEXT_SCALE = 1 / 1.5
+TEXT_SCALE = 0.7
 
 svg_counter = 0
+environment = {}
+used_names = set()
 
 
 def indent(s: str): return '    ' + s
 
 
-def get_legal_name(element: dict) -> str:
+def fresh_name(element: dict) -> str:
+    global environment, used_names
+    object_id = element['id']
     object_name = element.get('name', '').strip()
     if object_name == '':
         object_name = element['id']
     object_name = ''.join(c for c in object_name if c.isalnum() or c == ' ').strip().replace(' ', '_')
     while '__' in object_name:
         object_name = object_name.replace('__', '_')
-    return object_name.lower()
+    object_name = 'q_' + object_name
+    while object_name in used_names:
+        object_name += '_'
+    used_names.add(object_name)
+    environment[object_id] = environment.get(object_id, []) + [object_name]
+    return object_name
 
 
 def get_bounds(element: dict, start_coordinates: (float, float)) -> str:
@@ -48,7 +57,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
     frames = canvas['children']
     classes = []
     for frame in frames:
-        class_name = 'UI_' + get_legal_name(frame).replace('_', ' ').title().replace(' ', '')
+        class_name = 'Window' + fresh_name(frame)
         yield from generate_frame(frame, class_name)
         classes.append(class_name)
     yield from f"""
@@ -74,9 +83,7 @@ def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
         MainWindow.resize({width * scale}, {height * scale})
         central_widget = QWidget(MainWindow)
         MainWindow.setFixedSize({width * scale}, {height * scale})
-        MainWindow.setWindowTitle("{frame['name']}")
-        
-        """.splitlines()
+        MainWindow.setWindowTitle("{frame['name']}")""".splitlines()
     yield from map(indent, map(indent, generate_vector(frame, (start_x, start_y))))
     for child in frame['children']:
         yield from map(indent, map(indent, generate_ui_element(child, (start_x, start_y))))
@@ -123,7 +130,7 @@ def generate_text(child, start_coordinates=(0, 0)) -> Iterator[str]:
     text = child['characters'].replace('"', '\\"')
     font = child['style']['fontFamily']
     font_size = child['style']['fontSize'] * TEXT_SCALE * scale
-    label_name = 'label_' + get_legal_name(child)
+    label_name = fresh_name(child)
     yield f'{label_name} = QLabel(central_widget)'
     yield f'{label_name}.setText("{text}")'
     yield from f"""font = QFont()
@@ -243,8 +250,8 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
             file.write(svg_file_data)
 
     create_svg_file()
-    label_name = 'label_' + get_legal_name(child)
-    svg_widget_name = 'svg_' + get_legal_name(child)
+    label_name = fresh_name(child)
+    svg_widget_name = 'q_svg_widget_' + fresh_name(child)
     yield f'{label_name} = QLabel(central_widget)'
     yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
     yield f'{svg_widget_name} = QSvgWidget({label_name})'
@@ -254,7 +261,7 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
 
 
 def generate_button(child, start_coordinates):
-    button_name = get_legal_name(child)
+    button_name = fresh_name(child)
     yield f'{button_name} = QPushButton(central_widget)'
     yield f'{button_name}.setGeometry({get_bounds(child, start_coordinates)})'
     yield f'{button_name}.setFlat(True)'
@@ -274,7 +281,7 @@ def generate_button(child, start_coordinates):
 
 
 def generate_text_field(child, start_coordinates):
-    text_field_name = get_legal_name(child)
+    text_field_name = fresh_name(child)
     yield f'{text_field_name} = QLineEdit(central_widget)'
     yield f'{text_field_name}.setGeometry({get_bounds(child, start_coordinates)})'
     yield f'{text_field_name}.setAutoFillBackground(False)'
@@ -295,9 +302,16 @@ def generate_text_field(child, start_coordinates):
     yield f'{text_field_name}.setPlaceholderText("{child["name"]}")'
 
 
-def generate_checkbox(child, checked, start_coordinates):
-    checkbox_name = get_legal_name(child)
-    checked_name = 'label_' + get_legal_name(checked)
+def generate_recursive_hide_show(child):
+    if 'children' in child:
+        for c in child['children']:
+            yield from generate_recursive_hide_show(c)
+    for name in environment[child['id']]:
+        yield f'{name}.setVisible(not {name}.isVisible())'
+
+
+def generate_checkbox(child, checked_textbox, start_coordinates):
+    checkbox_name = fresh_name(child)
     yield f'{checkbox_name} = QPushButton(central_widget)'
     yield f'{checkbox_name}.setGeometry({get_bounds(child, start_coordinates)})'
     yield f'{checkbox_name}.setFlat(True)'
@@ -306,10 +320,11 @@ def generate_checkbox(child, checked, start_coordinates):
     yield f'{checkbox_name}.setMouseTracking(True)'
     yield f'{checkbox_name}.setContextMenuPolicy(Qt.NoContextMenu)'
     yield f'{checkbox_name}.setAcceptDrops(False)'
+    checked_name = environment[checked_textbox['id']][0]
     yield from f"""def __{checkbox_name}_check_changed(self):
-    try : 
-        # hide the checked element
-        {checked_name}.setVisible(not {checked_name}.isVisible())        
+    try :""".splitlines()
+    yield from map(indent, map(indent, generate_recursive_hide_show(checked_textbox)))
+    yield from f"""
         GuiHandler.{checkbox_name}_check_changed({checked_name}.isVisible())
     except :
         print("No function {checkbox_name}_check_changed defined. Checked = " + str({checked_name}.isVisible()))""".splitlines()
