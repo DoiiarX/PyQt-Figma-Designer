@@ -1,7 +1,5 @@
 from typing import Iterator
-from config import scale
-
-TEXT_SCALE = 0.7
+from config import scale, gui_handler_file_name, text_scale, svg_directory
 
 svg_counter = 0
 environment = {}
@@ -38,8 +36,8 @@ def get_bounds(element: dict, start_coordinates: (float, float)) -> str:
 
 
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
-    yield from """try:
-    import GuiHandler
+    yield from f"""try:
+    import {gui_handler_file_name.split('.')[0]} as GuiHandler
 except:
     print("No GuiHandler found, events will not be handled.")
 from PySide6.QtSvgWidgets import QSvgWidget
@@ -134,7 +132,7 @@ def generate_group(group: dict, start_coordinates=(0, 0)) -> Iterator[str]:
 def generate_text(child, start_coordinates=(0, 0)) -> Iterator[str]:
     text = child['characters'].replace('"', '\\"')
     font = child['style']['fontFamily']
-    font_size = child['style']['fontSize'] * TEXT_SCALE * scale
+    font_size = child['style']['fontSize'] * text_scale * scale
     label_name = fresh_name(child)
     yield f'{label_name} = QLabel(central_widget)'
     yield f'{label_name}.setText("{text}")'
@@ -182,7 +180,8 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
     global svg_counter
     svg_counter += 1
 
-    svg_filename = '../resources/svg/' + f'file{svg_counter}.svg'
+    svg_filename = f'file{svg_counter}.svg'
+    svg_path = f'svg/' + svg_filename
 
     image_counter = 0
 
@@ -251,7 +250,7 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
                 svg_file_data += '\n\t' + line
 
         svg_file_data += '\n</svg>'
-        with open(svg_filename, 'w') as file:
+        with open(f'{svg_directory}/{svg_filename}', 'w') as file:
             file.write(svg_file_data)
 
     create_svg_file()
@@ -262,7 +261,7 @@ def generate_vector(child, start_coordinates=(0, 0)) -> Iterator[str]:
     yield f'{svg_widget_name} = QSvgWidget({label_name})'
     width, height = child['absoluteBoundingBox']['width'], child['absoluteBoundingBox']['height']
     yield f'{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * scale)}, {int(height * scale)}))'
-    yield f'{svg_widget_name}.load("{svg_filename}")'
+    yield f'{svg_widget_name}.load("{svg_path}")'
 
 
 def generate_button(child, start_coordinates):
