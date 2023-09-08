@@ -27,22 +27,23 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
     QLineEdit, QMainWindow, QPushButton, QSizePolicy,
     QStatusBar, QTableView, QWidget)""".splitlines()
-        frames = self.fig_node['children']
-        for frame in frames:
+        figma_frames = self.fig_node['children']
+        frames = []
+        for frame in figma_frames:
             frame = FrameGenerator(frame, self.start_coordinates, self)
+            frames.append(frame)
             yield from frame.generate_design()
-        if len(frames) > 0:
-            yield from f"""if __name__ == '__main__':
-    import sys
+        yield from """import sys
 
-    app = QApplication(sys.argv)
-    MainWindow = QMainWindow()
-    ui = {frame.class_name}()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    exit_code = app.exec()
-    sys.exit(exit_code)
-""".splitlines()
+app = QApplication(sys.argv)""".splitlines()
+        for frame in frames:
+            yield from f"""MainWindow = QMainWindow()
+ui = QWindow_{frame.name}()
+ui.setupUi(MainWindow)
+MainWindow.show()
+app.exec()""".splitlines()
+
+
 
     def generate_handler(self):
         yield from f"""\"\"\"
