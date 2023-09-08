@@ -1,6 +1,7 @@
 from overrides import override
 
 from generator.python_generator.base_generator import BaseGenerator
+from generator.python_generator.frame_generator import FrameGenerator
 
 
 class ButtonGenerator(BaseGenerator):
@@ -20,13 +21,15 @@ class ButtonGenerator(BaseGenerator):
         yield f'{self.name}.setContextMenuPolicy(Qt.NoContextMenu)'
         yield f'{self.name}.setAcceptDrops(False)'
         handler_function_name = f'{self.name}_clicked'
+        frame_name = FrameGenerator.get_current_frame(self).name
+        handler_class_name = f'{frame_name}Handler'
         self.handler_functions.append(f"""
 @classmethod
 def {handler_function_name}(cls) : 
     print("Button {self.name} clicked")""")
         yield from f"""def __{handler_function_name}(self):
     try : 
-        GuiHandler.{handler_function_name}()
+        GuiHandler.{handler_class_name}.{handler_function_name}()
     except :
         print("No function {handler_function_name} defined")""".splitlines()
         yield f'{self.name}.clicked.connect(__{handler_function_name})'

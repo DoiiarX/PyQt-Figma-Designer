@@ -56,3 +56,10 @@ class {self.name}Controller:
 """.splitlines()
         for child in self.children:
             yield from indent(child.generate_controller(), n=1)
+
+    @classmethod
+    def get_current_frame(cls, generator: 'BaseGenerator'):
+        while generator.parent is not None:
+            if isinstance(generator, FrameGenerator):
+                return generator
+            generator = generator.parent
