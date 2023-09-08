@@ -20,7 +20,9 @@ class ButtonGenerator(BaseGenerator):
         yield f'{self.name}.setContextMenuPolicy(Qt.NoContextMenu)'
         yield f'{self.name}.setAcceptDrops(False)'
         handler_function_name = f'{self.name}_clicked'
-        self.handler_functions.append(f"""def {handler_function_name}() : 
+        self.handler_functions.append(f"""
+@classmethod
+def {handler_function_name}(cls) : 
     print("Button {self.name} clicked")""")
         yield from f"""def __{handler_function_name}(self):
     try : 

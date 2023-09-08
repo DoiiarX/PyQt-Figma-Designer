@@ -41,6 +41,7 @@ class {self.class_name}(object):
 
     def generate_handler(self):
         yield from f"""
+
 class {self.name}Handler:
     pass
 """.splitlines()
@@ -49,6 +50,7 @@ class {self.name}Handler:
 
     def generate_controller(self):
         yield from f"""
+
 class {self.name}Controller:
     pass
 """.splitlines()

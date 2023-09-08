@@ -25,9 +25,13 @@ class TextFieldGenerator(BaseGenerator):
         controller_function_name = f'{self.name}_set_text'
         yield f'{controller_function_name} = {self.name}.setText'
         yield f'GuiController.{controller_function_name} = {controller_function_name}'
-        self.controller_functions.append(f"""def {controller_function_name}(text:str) :
-            print("The function {controller_function_name} is unfortunately not linked. text : " + text)""")
-        self.handler_functions.append(f"""def {handler_function_name}(current_text:str) :
+        self.controller_functions.append(f"""
+@classmethod
+def {controller_function_name}(cls, text:str) :
+    print("The function {controller_function_name} is unfortunately not linked. text : " + text)""")
+        self.handler_functions.append(f"""
+@classmethod
+def {handler_function_name}(cls, current_text:str) :
             print("Text field {self.name} text changed to " + current_text)""")
         yield from f"""def __{self.name}_text_changed(self):
     try : 

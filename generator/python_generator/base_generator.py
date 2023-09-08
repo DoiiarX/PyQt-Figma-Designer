@@ -42,9 +42,11 @@ class BaseGenerator:
         view_type = figma_node['type'].lower() + '_' + cls.__name__.lower()
         view_name = f'{view_type}_{view_name}'
         i = 0
-        while view_name in cls.used_names:
-            view_name = f'{view_name}_{i}'
+        new_name = view_name
+        while new_name in cls.used_names:
+            new_name = f'{view_name}_{i}'
             i += 1
+        view_name = new_name
         cls.used_names.add(view_name)
         return view_name
 
