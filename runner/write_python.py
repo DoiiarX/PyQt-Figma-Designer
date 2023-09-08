@@ -2,7 +2,6 @@ import pickle
 import subprocess
 
 import generator.python_generator.script_generator
-import pyqt_generator
 from config import figma_file_path, gui_path, gui_handler_path, project_directory, overwrite_handler_controller, \
     gui_controller_path
 

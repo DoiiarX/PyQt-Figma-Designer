@@ -33,5 +33,5 @@ class FactoryGenerator(BaseGenerator):
 
         if self.fig_node['name'].lower().replace(' ', '').replace('-', '').startswith('checkbox'):
             yield from CheckboxGenerator(self.fig_node, self.start_coordinates, self,
-                                         self.children[0]).generate_design()
+                                         self.children[0].children[-1]).generate_design()
         yield f'{self.name} = QLabel(central_widget)'

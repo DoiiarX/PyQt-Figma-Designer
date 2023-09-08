@@ -31,7 +31,9 @@ class CheckboxGenerator(BaseGenerator):
     try :""".splitlines()
         yield from indent(self.generate_recursive_hide_show(self.checked_generator), n=2)
         handler_function_name = f'{self.name}_check_changed'
-        self.handler_functions.append(f"""def {handler_function_name}(checked:bool) :
+        self.handler_functions.append(f"""
+@classmethod
+def {handler_function_name}(cls, checked:bool) :
     print("Checkbox {self.name} checked = " + str(checked))""")
         frame_name = FrameGenerator.get_current_frame(self).name
         yield from f"""
