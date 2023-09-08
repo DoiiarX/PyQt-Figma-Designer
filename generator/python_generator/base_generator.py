@@ -52,10 +52,10 @@ class BaseGenerator:
     def generate_design(self) -> Iterator[str]:
         pass
 
-    @abstractmethod
-    def generate_handler(self) -> Iterator[str]:
-        pass
+    def generate_handler(self):
+        for child in self.children:
+            yield from child.generate_handler()
 
-    @abstractmethod
-    def generate_controller(self) -> [str]:
-        pass
+    def generate_controller(self):
+        for child in self.children:
+            yield from child.generate_controller()

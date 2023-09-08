@@ -32,7 +32,7 @@ def q_ButtonCreateProject___clicked():
     import runner.write_python
     print('Running GUI...')
     import subprocess
-    subprocess.Popen(f'python {config.project_directory}/gui.py')
+    subprocess.Popen(f'python_generator {config.project_directory}/gui.py')
 
 
 def q_ButtonBrowse___clicked():
