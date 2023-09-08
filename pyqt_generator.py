@@ -1,10 +1,11 @@
 from typing import Iterator
-from config import scale, gui_handler_file_name, text_scale, svg_directory
+from config import scale, gui_handler_file_name, text_scale, svg_directory, gui_controller_file_name
 
 svg_counter = 0
 environment = {}
 used_names = set()
 handler_functions = set()
+controller_functions = set()
 
 
 def indent(s: str): return '    ' + s
@@ -38,8 +39,10 @@ def get_bounds(element: dict, start_coordinates: (float, float)) -> str:
 def generate_pyqt_design(figma_file: dict) -> Iterator[str]:
     yield from f"""try:
     import {gui_handler_file_name.split('.')[0]} as GuiHandler
-except:
-    print("No GuiHandler found, events will not be handled.")
+    import {gui_controller_file_name.split('.')[0]} as GuiController    
+except Exception as e:
+    print("Exception while importing gui_handler.py or controller.py")
+    print(e)
 from PySide6.QtSvgWidgets import QSvgWidget
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -74,6 +77,10 @@ app.exec()""".splitlines()
 
 def generate_handler(figma_file: dict) -> Iterator[str]:
     yield from handler_functions
+
+
+def generate_controller(figma_file: dict) -> Iterator[str]:
+    yield from controller_functions
 
 
 def generate_frame(frame: dict, class_name: str) -> Iterator[str]:
@@ -296,6 +303,11 @@ def generate_text_field(child, start_coordinates):
     yield f'{text_field_name}.setContextMenuPolicy(Qt.NoContextMenu)'
     yield f'{text_field_name}.setAcceptDrops(False)'
     handler_function_name = f'{text_field_name}_text_changed'
+    controller_function_name = f'{text_field_name}_set_text'
+    yield f'{controller_function_name} = {text_field_name}.setText'
+    yield f'GuiController.{controller_function_name} = {controller_function_name}'
+    controller_functions.add(f"""def {controller_function_name}(text:str) :
+    print("The function {controller_function_name} is unfortunately not linked. text : " + text)""")
     handler_functions.add(f"""def {handler_function_name}(current_text:str) :
     print("Text field {text_field_name} text changed to " + current_text)""")
     yield from f"""def __{text_field_name}_text_changed(self):

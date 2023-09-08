@@ -6,8 +6,10 @@ import re
  svg_directory,
  figma_file_path,
  gui_path,
- gui_handler_path) = '', '', '', '', '', ''
+ gui_handler_path,
+ gui_controller_path) = '', '', '', '', '', '', ''
 gui_handler_file_name = 'gui_handler.py'
+gui_controller_file_name = 'gui_controller.py'
 scale = .7
 text_scale = 0.7
 
@@ -21,13 +23,14 @@ def set_url(url: str):
 
 
 def set_project_directory(directory: str):
-    global project_directory, image_directory, svg_directory, gui_path, gui_handler_path, figma_file_path
+    global project_directory, image_directory, svg_directory, gui_path, gui_handler_path, figma_file_path, gui_controller_path
     project_directory = directory.strip()
     image_directory = f'{project_directory}/images'
     svg_directory = f'{project_directory}/svg'
     figma_file_path = f'{project_directory}/figma_file.pickle'
     gui_path = f'{project_directory}/gui.py'
     gui_handler_path = f'{project_directory}/{gui_handler_file_name}'
+    gui_controller_path = f'{project_directory}/{gui_controller_file_name}'
     if not os.path.exists(project_directory):
         os.makedirs(project_directory)
     if not os.path.exists(image_directory):
@@ -41,4 +44,4 @@ set_url('https://www.figma.com/file/DEtNOgq9OGnkGPfPpiQeEK/'
         '/Untitled?type=design&node-id=0-1&mode=design&t=B70gaOSJqsvTK38j-0')
 set_project_directory('../outputs/default_project')
 token = 'figd_-QMtU_8nZoTs48qAzWTqQecktPRyh3gCI9rR0Jx5'
-overwrite_handler = True
+overwrite_handler_controller = True

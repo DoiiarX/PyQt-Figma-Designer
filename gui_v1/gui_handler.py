@@ -25,7 +25,7 @@ def q_ButtonCreateProject___clicked():
     config.set_url(url)
     config.set_project_directory(output_directory)
     config.token = api_token
-    config.overwrite_handler = checkbox_overwrite_handler
+    config.overwrite_handler_controller = checkbox_overwrite_handler
     print('Reading Figma file (+png)...')
     import runner.read_figma
     print('Writing Python code (+svg)...')
