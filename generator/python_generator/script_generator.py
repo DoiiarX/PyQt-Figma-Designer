@@ -41,7 +41,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
     ui.setupUi(MainWindow)
     MainWindow.show()
     exit_code = app.exec()
-    sys.exit(exit)
+    sys.exit(exit_code)
 """.splitlines()
 
     def generate_handler(self):
@@ -55,6 +55,7 @@ Each function is connected to a specific event of a specific widget in the GUI.
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
+from gui_controller import *
 """.splitlines()
         yield from super().generate_handler()
 

@@ -11,3 +11,4 @@ class GroupGenerator(BaseGenerator):
             return []
         for child in self.fig_node['children']:
             yield from FactoryGenerator(child, self.start_coordinates, self).generate_design()
+        yield f'{self.name} = QLabel(central_widget)'

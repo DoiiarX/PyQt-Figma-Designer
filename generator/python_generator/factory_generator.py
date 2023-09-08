@@ -32,7 +32,6 @@ class FactoryGenerator(BaseGenerator):
             yield from TextFieldGenerator(self.fig_node, self.start_coordinates, self).generate_design()
 
         if self.fig_node['name'].lower().replace(' ', '').replace('-', '').startswith('checkbox'):
-            children = {c['name']: c for c in self.fig_node['children']}
-            checked = children.get('Checked', None)
-            if checked is not None:
-                yield from CheckboxGenerator(self.fig_node, self.start_coordinates, self).generate_design()
+            yield from CheckboxGenerator(self.fig_node, self.start_coordinates, self,
+                                         self.children[0]).generate_design()
+        yield f'{self.name} = QLabel(central_widget)'

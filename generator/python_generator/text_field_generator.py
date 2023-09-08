@@ -2,6 +2,7 @@ from overrides import override
 
 from config import text_scale, scale
 from generator.python_generator.base_generator import BaseGenerator
+from generator.python_generator.frame_generator import FrameGenerator
 
 
 class TextFieldGenerator(BaseGenerator):
@@ -23,8 +24,9 @@ class TextFieldGenerator(BaseGenerator):
         yield f'{self.name}.setAcceptDrops(False)'
         handler_function_name = f'{self.name}_text_changed'
         controller_function_name = f'{self.name}_set_text'
+        frame_name = FrameGenerator.get_current_frame(self).name
         yield f'{controller_function_name} = {self.name}.setText'
-        yield f'GuiController.{controller_function_name} = {controller_function_name}'
+        yield f'GuiController.{frame_name}Controller.{controller_function_name} = {controller_function_name}'
         self.controller_functions.append(f"""
 @classmethod
 def {controller_function_name}(cls, text:str) :
@@ -36,7 +38,7 @@ def {handler_function_name}(cls, current_text:str) :
         yield from f"""def __{self.name}_text_changed(self):
     try : 
         current_text = {self.name}.text()
-        GuiHandler.{handler_function_name}(current_text)
+        GuiHandler.{frame_name}Handler.{handler_function_name}(current_text)
     except :
         print("No function {self.name}_clicked defined. Current text : " + current_text)""".splitlines()
         yield f'{self.name}.textChanged.connect(__{self.name}_text_changed)'
