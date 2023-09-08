@@ -258,7 +258,7 @@ class Windowq_Gradients(object):
         MainWindow.setCentralWidget(central_widget)
 
 
-if __name__ == '__main__':
+def open_window():
     import sys
 
     app = QApplication(sys.argv)
@@ -267,3 +267,6 @@ if __name__ == '__main__':
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec())
+
+if __name__ == '__main__':
+    open_window()

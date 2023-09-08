@@ -63,12 +63,13 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
 if __name__ == '__main__':
     import sys
 
-    app = QApplication(sys.argv)    
-    MainWindow = QMainWindow()
-    ui = {classes[0]}()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec())""".splitlines()
+    app = QApplication(sys.argv)""".splitlines()
+    for cls in classes:
+        yield from f"""MainWindow = QMainWindow()
+ui = {cls}()
+ui.setupUi(MainWindow)
+MainWindow.show()
+app.exec()""".splitlines()
 
 
 def generate_handler(figma_file: dict) -> Iterator[str]:
@@ -149,8 +150,6 @@ font.setPointSize({int(font_size)})
     yield f'{label_name}.setGeometry({get_bounds(child, start_coordinates)})'
     vertical_alignment_figma = child['style']['textAlignVertical']
     horizontal_alignment_figma = child['style']['textAlignHorizontal']
-    vertical_alignment = 'Qt.AlignVCenter'
-    horizontal_alignment = 'Qt.AlignHCenter'
     match vertical_alignment_figma:
         case 'TOP':
             vertical_alignment = 'Qt.AlignTop'

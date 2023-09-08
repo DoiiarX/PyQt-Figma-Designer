@@ -1,5 +1,3 @@
-import sys
-
 import config
 
 url = ''
@@ -28,8 +26,13 @@ def q_ButtonCreateProject___clicked():
     config.set_project_directory(output_directory)
     config.token = api_token
     config.overwrite_handler = checkbox_overwrite_handler
+    print('Reading Figma file (+png)...')
     import runner.read_figma
+    print('Writing Python code (+svg)...')
     import runner.write_python
+    print('Running GUI...')
+    import subprocess
+    subprocess.Popen(f'python {config.project_directory}/gui.py')
 
 
 def q_ButtonBrowse___clicked():

@@ -36,9 +36,9 @@ def set_project_directory(directory: str):
         os.makedirs(svg_directory)
 
 
-# 'https://www.figma.com/file/DEtNOgq9OGnkGPfPpiQeEK/'
-set_url('https://www.figma.com/file/PExygXiMSTBEpXXEq0ZPyE'
+# 'https://www.figma.com/file/PExygXiMSTBEpXXEq0ZPyE'
+set_url('https://www.figma.com/file/DEtNOgq9OGnkGPfPpiQeEK/'
         '/Untitled?type=design&node-id=0-1&mode=design&t=B70gaOSJqsvTK38j-0')
 set_project_directory('../outputs/default_project')
 token = 'figd_-QMtU_8nZoTs48qAzWTqQecktPRyh3gCI9rR0Jx5'
-overwrite_handler = False
+overwrite_handler = True
