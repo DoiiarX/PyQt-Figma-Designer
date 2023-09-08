@@ -42,6 +42,7 @@ class {self.class_name}(object):
     def generate_handler(self):
         yield from f"""
 class {self.name}Handler:
+    pass
 """.splitlines()
         for child in self.children:
             yield from indent(child.generate_handler(), n=1)
@@ -49,6 +50,7 @@ class {self.name}Handler:
     def generate_controller(self):
         yield from f"""
 class {self.name}Controller:
+    pass
 """.splitlines()
         for child in self.children:
             yield from indent(child.generate_controller(), n=1)

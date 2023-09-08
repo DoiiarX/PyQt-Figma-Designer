@@ -89,12 +89,11 @@ class VectorGenerator(BaseGenerator):
 
     def __init__(self, fig_node: dict, start_coordinates: (float, float), parent: BaseGenerator):
         super().__init__(fig_node, start_coordinates, parent)
-        self.svg_counter = 0
 
     def generate_design(self):
-        self.svg_counter += 1
+        VectorGenerator.svg_counter += 1
 
-        svg_filename = f'file{self.svg_counter}.svg'
+        svg_filename = f'file{VectorGenerator.svg_counter}.svg'
         pyqt_svg_path = f'svg/' + svg_filename
 
         SvgGenerator.create_svg_file(self.fig_node, svg_filename)

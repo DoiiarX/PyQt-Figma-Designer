@@ -21,7 +21,7 @@ class ButtonGenerator(BaseGenerator):
         yield f'{self.name}.setAcceptDrops(False)'
         handler_function_name = f'{self.name}_clicked'
         self.handler_functions.append(f"""def {handler_function_name}() : 
-print("Button {self.name} clicked")""")
+    print("Button {self.name} clicked")""")
         yield from f"""def __{handler_function_name}(self):
     try : 
         GuiHandler.{handler_function_name}()
