@@ -26,7 +26,10 @@ class TextFieldGenerator(BaseGenerator):
 {self.name}.setContextMenuPolicy(Qt.NoContextMenu)
 {self.name}.setAcceptDrops(False)
 {controller_function_name} = {self.name}.setText
-GuiController.{frame_name}Controller.{controller_function_name} = {controller_function_name}
+try :
+    GuiController.{frame_name}Controller.{controller_function_name} = {controller_function_name}
+except :
+    print("No function {controller_function_name} defined. Current text : " + {self.name}.text())
 
 def __{self.name}_text_changed(self):
     try : 

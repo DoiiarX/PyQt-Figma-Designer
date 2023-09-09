@@ -13,6 +13,10 @@ class CheckboxGenerator(BaseGenerator):
         self.hide_show_checked_generator = VisibilityGenerator(group_generator)
 
     def generate_design(self):
+        handler_function_name = f'{self.name}_check_changed'
+        frame_name = FrameGenerator.get_current_frame(self).name
+        visible_get = self.hide_show_checked_generator.generate_get()
+
         yield from f"""
 {self.name} = QPushButton(central_widget)
 {self.name}.setGeometry({self.pyqt_bounds})
@@ -26,22 +30,18 @@ class CheckboxGenerator(BaseGenerator):
 {self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")
         
 def __{self.name}_check_changed():
-    try :""".splitlines()
-        visible_get = self.hide_show_checked_generator.generate_get()
+    try :
+        GuiHandler.{frame_name}Handler.{handler_function_name}({visible_get})""".splitlines()
         yield from indent(self.hide_show_checked_generator.generate_set(f'not {visible_get}'), n=2)
+        yield from f"""
+    except :
+        print("No function {handler_function_name} defined. Checked = " + str({visible_get}))
+{self.name}.clicked.connect(__{handler_function_name})""".splitlines()
 
-        handler_function_name = f'{self.name}_check_changed'
         self.handler_functions.append(f"""
 @classmethod
 def {handler_function_name}(cls, checked:bool) :
     print("Checkbox {self.name} checked = " + str(checked))""")
-
-        frame_name = FrameGenerator.get_current_frame(self).name
-        yield from f"""
-        GuiHandler.{frame_name}Handler.{handler_function_name}({visible_get})
-    except :
-        print("No function {handler_function_name} defined. Checked = " + str({visible_get}))
-{self.name}.clicked.connect(__{handler_function_name})""".splitlines()
 
     def generate_handler(self):
         for fun in self.handler_functions:
