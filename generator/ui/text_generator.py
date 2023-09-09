@@ -8,20 +8,10 @@ class TextGenerator(BaseGenerator):
         text = self.fig_node['characters'].replace('"', '\\"')
         font = self.fig_node['style']['fontFamily']
         font_size = self.fig_node['style']['fontSize'] * text_scale * scale
-        yield from f"""{self.name} = QLabel(central_widget)
-{self.name}.setText("{text}")
-font = QFont()
-font.setFamilies([u"{font}"])
-font.setPointSize({int(font_size)})
-{self.name}.setFont(font)""".splitlines()
-
         color = 'rgba(0, 0, 0, 0)'
         if len(self.fig_node['fills']) > 0 and 'color' in self.fig_node['fills'][0]:
             color = self.fig_node['fills'][0]['color']
             color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
-
-        yield f'{self.name}.setStyleSheet("color: {color}")'
-        yield f'{self.name}.setGeometry({self.pyqt_bounds})'
 
         vertical_alignment_figma = self.fig_node['style']['textAlignVertical']
         horizontal_alignment_figma = self.fig_node['style']['textAlignHorizontal']
@@ -46,6 +36,14 @@ font.setPointSize({int(font_size)})
             case _:
                 horizontal_alignment = 'Qt.AlignHCenter'
 
-        yield f'{self.name}.setAlignment({vertical_alignment} | {horizontal_alignment})'
-        yield f'{self.name}.setMouseTracking(False)'
-        yield f'{self.name}.setContextMenuPolicy(Qt.NoContextMenu)'
+        yield from f"""{self.name} = QLabel(central_widget)
+{self.name}.setText("{text}")
+font = QFont()
+font.setFamilies([u"{font}"])
+font.setPointSize({int(font_size)})
+{self.name}.setFont(font)
+{self.name}.setStyleSheet("color: {color}")
+{self.name}.setGeometry({self.pyqt_bounds})
+{self.name}.setAlignment({vertical_alignment} | {horizontal_alignment})
+{self.name}.setMouseTracking(False)
+{self.name}.setContextMenuPolicy(Qt.NoContextMenu)""".splitlines()

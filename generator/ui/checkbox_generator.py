@@ -17,28 +17,34 @@ class CheckboxGenerator(BaseGenerator):
         yield f'{generator.name}.setVisible(not {generator.name}.isVisible())'
 
     def generate_design(self):
-        yield f'{self.name} = QPushButton(central_widget)'
-        yield f'{self.name}.setGeometry({self.pyqt_bounds})'
-        yield f'{self.name}.setFlat(True)'
-        yield f'{self.name}.setAutoFillBackground(False)'
-        yield f'{self.name}.setObjectName("{self.name}")'
-        yield f'{self.name}.setMouseTracking(True)'
-        yield f'{self.name}.setContextMenuPolicy(Qt.NoContextMenu)'
-        yield f'{self.name}.setAcceptDrops(False)'
-        yield from f"""def __{self.name}_check_changed():
+        yield from f"""
+{self.name} = QPushButton(central_widget)
+{self.name}.setGeometry({self.pyqt_bounds})
+{self.name}.setFlat(True)
+{self.name}.setAutoFillBackground(False)
+{self.name}.setObjectName("{self.name}")
+{self.name}.setMouseTracking(True)
+{self.name}.setContextMenuPolicy(Qt.NoContextMenu)
+{self.name}.setAcceptDrops(False)
+{self.name}.setFocusPolicy(Qt.NoFocus)
+{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")
+        
+def __{self.name}_check_changed():
     try :""".splitlines()
         yield from indent(self.generate_recursive_hide_show(self.checked_generator), n=2)
+
         handler_function_name = f'{self.name}_check_changed'
         self.handler_functions.append(f"""
 @classmethod
 def {handler_function_name}(cls, checked:bool) :
     print("Checkbox {self.name} checked = " + str(checked))""")
+
         frame_name = FrameGenerator.get_current_frame(self).name
         yield from f"""
         GuiHandler.{frame_name}Handler.{handler_function_name}({self.checked_generator.name}.isVisible())
     except :
-        print("No function {handler_function_name} defined. Checked = " + str({self.checked_generator.name}.isVisible()))""".splitlines()
-        yield f'{self.name}.clicked.connect(__{handler_function_name})'
+        print("No function {handler_function_name} defined. Checked = " + str({self.checked_generator.name}.isVisible()))
+        {self.name}.clicked.connect(__{handler_function_name})""".splitlines()
 
     def generate_handler(self):
         for fun in self.handler_functions:

@@ -96,9 +96,10 @@ class VectorGenerator(BaseGenerator):
 
         SvgGenerator.create_svg_file(self.fig_node, svg_filename)
         svg_widget_name = 'q_svg_widget_' + self.name
-        yield f'{self.name} = QLabel(central_widget)'
-        yield f'{self.name}.setGeometry({self.pyqt_bounds})'
-        yield f'{svg_widget_name} = QSvgWidget({self.name})'
         width, height = self.fig_node['absoluteBoundingBox']['width'], self.fig_node['absoluteBoundingBox']['height']
-        yield f'{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * scale)}, {int(height * scale)}))'
-        yield f'{svg_widget_name}.load("{pyqt_svg_path}")'
+        yield from f"""
+{self.name} = QLabel(central_widget)
+{self.name}.setGeometry({self.pyqt_bounds})
+{svg_widget_name} = QSvgWidget({self.name})
+{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * scale)}, {int(height * scale)}))
+{svg_widget_name}.load("{pyqt_svg_path}")""".splitlines()

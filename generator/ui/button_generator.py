@@ -10,29 +10,34 @@ class ButtonGenerator(BaseGenerator):
         self.handler_functions = []
 
     def generate_design(self):
-        yield f'{self.name} = QPushButton(central_widget)'
-        yield f'{self.name}.setGeometry({self.pyqt_bounds})'
-        yield f'{self.name}.setFlat(True)'
-        yield f'{self.name}.setAutoFillBackground(False)'
-        yield f'{self.name}.setObjectName("{self.name}")'
-        yield f'{self.name}.setMouseTracking(True)'
-        yield f'{self.name}.setContextMenuPolicy(Qt.NoContextMenu)'
-        yield f'{self.name}.setAcceptDrops(False)'
-        handler_function_name = f'{self.name}_clicked'
         frame_name = FrameGenerator.get_current_frame(self).name
+        handler_function_name = f'{self.name}_clicked'
         handler_class_name = f'{frame_name}Handler'
+        yield from f"""
+{self.name} = QPushButton(central_widget)
+{self.name}.setGeometry({self.pyqt_bounds})
+{self.name}.setFlat(True)
+{self.name}.setAutoFillBackground(False)
+{self.name}.setObjectName("{self.name}")
+{self.name}.setMouseTracking(True)
+{self.name}.setContextMenuPolicy(Qt.NoContextMenu)
+{self.name}.setAcceptDrops(False)
+def __{handler_function_name}(self):
+    try : 
+        GuiHandler.{handler_class_name}.{handler_function_name}()
+    except :
+        print("No function {handler_function_name} defined")
+{self.name}.clicked.connect(__{handler_function_name})
+{self.name}.setFocusPolicy(Qt.NoFocus)
+{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")""".splitlines()
+
         self.handler_functions.append(f"""
 @classmethod
 def {handler_function_name}(cls) : 
     print("Button {self.name} clicked")""")
-        yield from f"""def __{handler_function_name}(self):
-    try : 
-        GuiHandler.{handler_class_name}.{handler_function_name}()
-    except :
-        print("No function {handler_function_name} defined")""".splitlines()
-        yield f'{self.name}.clicked.connect(__{handler_function_name})'
-        yield f'{self.name}.setFocusPolicy(Qt.NoFocus)'
-        yield f'{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")'
+        yield from f"""""".splitlines()
+        yield from f"""
+""".splitlines()
 
     def generate_handler(self):
         for fun in self.handler_functions:
