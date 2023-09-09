@@ -1,25 +1,25 @@
-from overrides import override
 from config import scale
 
-from generator.python_generator.vector_generator import VectorGenerator
+from generator.ui.vector_generator import VectorGenerator
 from utils import indent
 
-from generator.python_generator.base_generator import BaseGenerator
+from generator.core.base_generator import BaseGenerator
 
 
 class FrameGenerator(BaseGenerator):
     class_name: str
 
-    def __int__(self, fig_node, start_coordinates, parent):
-        super().__init__(fig_node, start_coordinates, parent)
+    def __int__(self, fig_node, parent):
+        super().__init__(fig_node, parent)
         self.class_name = 'QWindow'
 
     def generate_design(self):
         # import it here to avoid circular import
-        from generator.python_generator.factory_generator import FactoryGenerator
+        from generator.core.factory_generator import FactoryGenerator
         bounds = self.fig_node['absoluteBoundingBox']
         width, height = bounds['width'], bounds['height']
         start_x, start_y = bounds['x'], bounds['y']
+        self.start_coordinates = (start_x, start_y)
         self.class_name = f'QWindow_{self.name}'
         yield from f"""
 
@@ -32,10 +32,10 @@ class {self.class_name}(object):
         central_widget = QWidget(MainWindow)
         MainWindow.setFixedSize({width * scale}, {height * scale})
         MainWindow.setWindowTitle("{self.fig_node['name']}")""".splitlines()
-        vector_generator = VectorGenerator(self.fig_node, (start_x, start_y), self)
+        vector_generator = VectorGenerator(self.fig_node, self)
         yield from indent(vector_generator.generate_design(), n=2)
         for child in self.fig_node['children']:
-            child_generator = FactoryGenerator(child, (start_x, start_y), self)
+            child_generator = FactoryGenerator(child, self)
             yield from indent(child_generator.generate_design(), n=2)
         yield from indent('MainWindow.setCentralWidget(central_widget)', n=2)
 

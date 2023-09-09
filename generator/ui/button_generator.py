@@ -1,14 +1,12 @@
-from overrides import override
-
-from generator.python_generator.base_generator import BaseGenerator
-from generator.python_generator.frame_generator import FrameGenerator
+from generator.core.base_generator import BaseGenerator
+from generator.ui.frame_generator import FrameGenerator
 
 
 class ButtonGenerator(BaseGenerator):
     handler_functions: list
 
-    def __init__(self, name, bounds, parent):
-        super().__init__(name, bounds, parent)
+    def __init__(self, figma_node, parent):
+        super().__init__(figma_node, parent)
         self.handler_functions = []
 
     def generate_design(self):

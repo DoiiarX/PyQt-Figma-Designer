@@ -1,7 +1,5 @@
-from overrides import override
-
 from config import text_scale, scale
-from generator.python_generator.base_generator import BaseGenerator
+from generator.core.base_generator import BaseGenerator
 
 
 class TextGenerator(BaseGenerator):

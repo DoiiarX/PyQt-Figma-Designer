@@ -1,16 +1,13 @@
-from overrides import override
-
-from config import text_scale, scale
-from generator.python_generator.base_generator import BaseGenerator
-from generator.python_generator.frame_generator import FrameGenerator
+from generator.core.base_generator import BaseGenerator
+from generator.ui.frame_generator import FrameGenerator
 
 
 class TextFieldGenerator(BaseGenerator):
     handler_functions: list
     controller_functions: list
 
-    def __init__(self, figma_node, start_coordinates, parent):
-        super().__init__(figma_node, start_coordinates, parent)
+    def __init__(self, figma_node, parent):
+        super().__init__(figma_node, parent)
         self.handler_functions = []
         self.controller_functions = []
 

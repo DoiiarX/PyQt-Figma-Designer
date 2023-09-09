@@ -9,22 +9,22 @@ class BaseGenerator:
 
     parent: 'BaseGenerator|None' = None
     fig_node: dict
-    start_coordinates: (float, float)
+    start_coordinates: (float, float) = (0, 0)
     children: List['BaseGenerator']
     name: str
     pyqt_bounds: str
 
-    def __init__(self, figma_node: dict, start_coordinates: (float, float), parent: 'BaseGenerator|None'):
+    def __init__(self, figma_node: dict, parent: 'BaseGenerator|None'):
         if parent is not None:
             self.parent = parent
             self.parent.children.append(self)
+            self.start_coordinates = parent.start_coordinates
         self.fig_node = figma_node
-        self.start_coordinates = start_coordinates
         self.children = []
         self.name = self.create_name(figma_node)
 
         bounds = figma_node.get('absoluteBoundingBox', {'x': 0, 'y': 0, 'width': 0, 'height': 0})
-        x, y = bounds['x'] - start_coordinates[0], bounds['y'] - start_coordinates[1]
+        x, y = bounds['x'] - self.start_coordinates[0], bounds['y'] - self.start_coordinates[1]
         width, height = bounds['width'], bounds['height']
         x, y, width, height = x * scale, y * scale, width * scale, height * scale
         self.pyqt_bounds = f'QRect({int(x)}, {int(y)}, {int(width)}, {int(height)})'

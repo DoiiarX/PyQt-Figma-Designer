@@ -1,9 +1,7 @@
 from typing import Iterator
 
-from overrides import override
-
 from config import svg_directory, scale
-from generator.python_generator.base_generator import BaseGenerator
+from generator.core.base_generator import BaseGenerator
 
 
 class SvgGenerator:
@@ -87,8 +85,8 @@ class SvgGenerator:
 class VectorGenerator(BaseGenerator):
     svg_counter: int = 0
 
-    def __init__(self, fig_node: dict, start_coordinates: (float, float), parent: BaseGenerator):
-        super().__init__(fig_node, start_coordinates, parent)
+    def __init__(self, fig_node: dict, parent: BaseGenerator):
+        super().__init__(fig_node, parent)
 
     def generate_design(self):
         VectorGenerator.svg_counter += 1

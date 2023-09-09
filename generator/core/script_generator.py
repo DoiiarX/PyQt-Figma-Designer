@@ -1,9 +1,6 @@
-from overrides import override
-
 from config import gui_handler_file_name, gui_controller_file_name
-from generator.python_generator.base_generator import BaseGenerator
-from generator.python_generator.frame_generator import FrameGenerator
-from utils import indent
+from generator.core.base_generator import BaseGenerator
+from generator.ui.frame_generator import FrameGenerator
 
 
 class ScriptGenerator(BaseGenerator):
@@ -30,7 +27,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
         figma_frames = self.fig_node['children']
         frames = []
         for frame in figma_frames:
-            frame = FrameGenerator(frame, self.start_coordinates, self)
+            frame = FrameGenerator(frame, self)
             frames.append(frame)
             yield from frame.generate_design()
         yield from """import sys
@@ -42,8 +39,6 @@ ui = QWindow_{frame.name}()
 ui.setupUi(MainWindow)
 MainWindow.show()
 app.exec()""".splitlines()
-
-
 
     def generate_handler(self):
         yield from f"""\"\"\"

@@ -1,7 +1,7 @@
 import pickle
 import subprocess
 
-import generator.python_generator.script_generator
+import generator.core.script_generator
 from config import figma_file_path, gui_path, gui_handler_path, project_directory, overwrite_handler_controller, \
     gui_controller_path
 
@@ -9,7 +9,7 @@ with open(figma_file_path, 'rb') as file:
     figma_file = pickle.load(file)
 
 figma_node = figma_file['document']['children'][0]
-script_generator = generator.python_generator.script_generator.ScriptGenerator(figma_node, (0, 0), None)
+script_generator = generator.core.script_generator.ScriptGenerator(figma_node, None)
 python_code = '\n'.join(script_generator.generate_design())
 handler_code = '\n'.join(script_generator.generate_handler())
 controller_code = '\n'.join(script_generator.generate_controller())

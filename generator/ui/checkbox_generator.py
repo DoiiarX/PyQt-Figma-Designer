@@ -1,15 +1,13 @@
-from overrides import override
-
-from generator.python_generator.base_generator import BaseGenerator
-from generator.python_generator.frame_generator import FrameGenerator
+from generator.core.base_generator import BaseGenerator
+from generator.ui.frame_generator import FrameGenerator
 from utils import indent
 
 
 class CheckboxGenerator(BaseGenerator):
     checked_generator: 'BaseGenerator'
 
-    def __init__(self, fig_node, start_coordinates, parent, checked_generator: 'BaseGenerator'):
-        super().__init__(fig_node, start_coordinates, parent)
+    def __init__(self, fig_node, parent, checked_generator: 'BaseGenerator'):
+        super().__init__(fig_node, parent)
         self.checked_generator = checked_generator
         self.handler_functions = []
 
