@@ -21,8 +21,10 @@ class FactoryGenerator(BaseGenerator):
             yield from TextGenerator(self.fig_node, self).generate_design()
 
         # generate children
+        group_generator = None
         if 'children' in self.fig_node and len(self.fig_node['children']) > 0:
-            yield from GroupGenerator(self.fig_node, self).generate_design()
+            group_generator = GroupGenerator(self.fig_node, self)
+            yield from group_generator.generate_design()
 
         # generate inputs
         if self.fig_node['name'].lower().strip().startswith('button'):
@@ -32,6 +34,7 @@ class FactoryGenerator(BaseGenerator):
             yield from TextFieldGenerator(self.fig_node, self).generate_design()
 
         if self.fig_node['name'].lower().replace(' ', '').replace('-', '').startswith('checkbox'):
-            yield from CheckboxGenerator(self.fig_node, self,
-                                         self.children[0].children[-1]).generate_design()
+            if group_generator is not None:
+                yield from CheckboxGenerator(self.fig_node, self, group_generator).generate_design()
+
         yield f'{self.name} = QLabel(central_widget)'

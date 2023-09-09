@@ -1,23 +1,17 @@
-from generator.core.factory_generator import FactoryGenerator
+from typing import Iterator
+
 from generator.properties.property_generator import PropertyGenerator
-from generator.ui.vector_generator import VectorGenerator
 
 
 class VisibilityGenerator(PropertyGenerator):
 
-    def generate_design(self):
-        yield from VectorGenerator(self.fig_node, self.start_coordinates, self)
-        for child in self.fig_node.get('children', []):
-            yield from FactoryGenerator(child, self.start_coordinates, self).generate_design()
+    def generate_get(self) -> str:
+        return f'{self.target_generator.name}.isVisible()'
 
-    def generate_get(self):
-        yield f'{self.name}.isVisible()'
-
-    def generate_set(self, value: bool | str):
-
-        def generate_show(generator):
+    def generate_set(self, value: bool | str) -> Iterator[str]:
+        def generate_set_visible(generator):
             yield f'{generator.name}.setVisible({value})'
             for child in generator.children:
-                yield from generate_show(child.fig_node)
+                yield from generate_set_visible(child)
 
-        return generate_show(self)
+        return generate_set_visible(self.target_generator)
