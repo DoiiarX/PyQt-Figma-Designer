@@ -20,7 +20,8 @@ class FrameGenerator(BaseGenerator):
         width, height = bounds['width'], bounds['height']
         start_x, start_y = bounds['x'], bounds['y']
         self.start_coordinates = (start_x, start_y)
-        self.class_name = f'QWindow_{self.name}'
+        class_name_short = self.name.replace('_', ' ').title().replace(' ', '')
+        self.class_name = f'QWindow{class_name_short}'
         yield from f"""
 
 
@@ -32,11 +33,9 @@ class {self.class_name}(object):
         central_widget = QWidget(MainWindow)
         MainWindow.setFixedSize({width * scale}, {height * scale})
         MainWindow.setWindowTitle("{self.fig_node['name']}")""".splitlines()
-        vector_generator = VectorGenerator(self.fig_node, self)
-        yield from indent(vector_generator.generate_design(), n=2)
+        yield from indent(VectorGenerator(self.fig_node, self).generate_design(), n=2)
         for child in self.fig_node['children']:
-            child_generator = FactoryGenerator(child, self)
-            yield from indent(child_generator.generate_design(), n=2)
+            yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
         yield from indent('MainWindow.setCentralWidget(central_widget)', n=2)
 
     def generate_handler(self):

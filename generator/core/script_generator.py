@@ -35,7 +35,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
 app = QApplication(sys.argv)""".splitlines()
         for frame in frames:
             yield from f"""MainWindow = QMainWindow()
-ui = QWindow_{frame.name}()
+ui = {frame.class_name}()
 ui.setupUi(MainWindow)
 MainWindow.show()
 app.exec()""".splitlines()

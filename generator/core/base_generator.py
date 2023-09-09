@@ -38,9 +38,7 @@ class BaseGenerator:
             view_name = view_name[1:]
         while view_name.endswith('_'):
             view_name = view_name[:-1]
-        view_name = ''.join(c for c in view_name if c.isalnum() or c == '_')
-        view_type = figma_node['type'].lower() + '_' + cls.__name__.lower()
-        view_name = f'{view_type}_{view_name}'
+        view_name = 'view_' + ''.join(c for c in view_name if c.isalnum() or c == '_')
         i = 0
         new_name = view_name
         while new_name in cls.used_names:
