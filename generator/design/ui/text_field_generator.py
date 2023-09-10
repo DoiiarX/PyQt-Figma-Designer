@@ -25,24 +25,25 @@ try :
 except :
     print("No function {self.controller_function_name} defined. Current text : " + {self.name}.text())
 
-def __{self.name}_text_changed(self):
+def __{self.handler_function_name}(self):
     try : 
         current_text = {self.name}.text()
-        GuiHandler.{frame.handler_class_name}Handler.{self.handler_function_name}(current_text)
+        GuiHandler.{frame.handler_class_name}.{self.handler_function_name}(current_text)
     except :
-        print("No function {self.name}_clicked defined. Current text : " + current_text)
+        print("No function {self.handler_function_name} defined. Current text : " + current_text)
 
-{self.name}.textChanged.connect(__{self.name}_text_changed)
+{self.name}.textChanged.connect(__{self.handler_function_name})
 {self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 255); color: rgba(255, 255, 255, 255); ")""".splitlines()
 
     def generate_handler(self):
         yield from f"""
 @classmethod
-def {self.controller_function_name}(cls, text:str) :
-    print("The function {self.controller_function_name} is unfortunately not linked. text : " + text)""".splitlines()
+def {self.handler_function_name}(cls, text:str) :
+    print("Text field {self.handler_function_name} text changed to text : " + text)""".splitlines()
 
     def generate_controller(self):
         yield from f"""
 @classmethod
-def {self.handler_function_name}(cls, text:str) :
-    print("Text field {self.name} text changed to text : " + text)""".splitlines()
+def {self.controller_function_name}(cls, text:str):
+    print("The function {self.controller_function_name} is unfortunately not linked to the controller")
+    return ''""".splitlines()
