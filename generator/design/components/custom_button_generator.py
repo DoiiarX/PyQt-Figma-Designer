@@ -23,6 +23,7 @@ class CustomButtonGenerator(DesignGenerator):
         self.controller_enable_function_name = f'{self.name}_enable'
         self.controller_disable_function_name = f'{self.name}_disable'
         frame = FrameGenerator.get_current_frame(self)
+        enabled_name = f'self.{self.name}_enabled'
 
         yield from f"""
 {self.name} = QPushButton(central_widget)
@@ -34,43 +35,41 @@ class CustomButtonGenerator(DesignGenerator):
 {self.name}.setContextMenuPolicy(Qt.NoContextMenu)
 {self.name}.setAcceptDrops(False)
 {self.name}.setFocusPolicy(Qt.NoFocus)
-{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")""".splitlines()
+{enabled_name} = True""".splitlines()
 
         # Mouse over
-        yield f'def __{self.name}_mouse_over(*args, **kwargs):'
-        yield from indent(self.hide_show_mouse_over_generator.generate_set('True'))
-        yield from indent(self.hide_show_pressed_generator.generate_set('False'))
-        yield from indent(self.hide_show_disabled_generator.generate_set('False'))
+        yield from f"""def __{self.name}_mouse_over(*args, **kwargs):
+    if {enabled_name} :""".splitlines()
+        yield from indent(self.hide_show_mouse_over_generator.generate_set('True'), n=2)
+        yield from indent(self.hide_show_pressed_generator.generate_set('False'), n=2)
+        yield from indent(self.hide_show_disabled_generator.generate_set('False'), n=2)
 
         # Mouse leave
-        yield f'def __{self.name}_mouse_leave(*args, **kwargs):'
-        yield from indent(self.hide_show_mouse_over_generator.generate_set('False'))
-        yield from indent(self.hide_show_pressed_generator.generate_set('False'))
-        yield from indent(self.hide_show_disabled_generator.generate_set('False'))
+        yield from f"""def __{self.name}_mouse_leave(*args, **kwargs):
+    if {enabled_name} :""".splitlines()
+        yield from indent(self.hide_show_mouse_over_generator.generate_set('False'), n=2)
+        yield from indent(self.hide_show_pressed_generator.generate_set('False'), n=2)
+        yield from indent(self.hide_show_disabled_generator.generate_set('False'), n=2)
 
         # Mouse press
-        yield f'def __{self.name}_mouse_press(*args, **kwargs):'
-        yield from indent(self.hide_show_mouse_over_generator.generate_set('False'))
-        yield from indent(self.hide_show_pressed_generator.generate_set('True'))
-        yield from indent(self.hide_show_disabled_generator.generate_set('False'))
+        yield from f"""def __{self.name}_mouse_press(*args, **kwargs):
+    if {enabled_name} :""".splitlines()
+        yield from indent(self.hide_show_mouse_over_generator.generate_set('False'), n=2)
+        yield from indent(self.hide_show_pressed_generator.generate_set('True'), n=2)
+        yield from indent(self.hide_show_disabled_generator.generate_set('False'), n=2)
 
         # Mouse release
-        yield f'def __{self.name}_mouse_release(*args, **kwargs):'
-        yield from indent(self.hide_show_mouse_over_generator.generate_set('True'))
-        yield from indent(self.hide_show_pressed_generator.generate_set('False'))
-        yield from indent(self.hide_show_disabled_generator.generate_set('False'))
+        yield from f"""def __{self.name}_mouse_release(*args, **kwargs):
+    if {enabled_name} :""".splitlines()
+        yield from indent(self.hide_show_mouse_over_generator.generate_set('True'), n=2)
+        yield from indent(self.hide_show_pressed_generator.generate_set('False'), n=2)
+        yield from indent(self.hide_show_disabled_generator.generate_set('False'), n=2)
+        yield from indent(f'{self.name}.clicked.emit()', n=2)
 
         # Disable
-        # create rectangle to cover the button to avoid mouse events
-        disable_rectangle_name = f'{self.name}_disabled_rectangle'
-        yield from f"""{disable_rectangle_name}= QLabel(central_widget)
-{disable_rectangle_name}.setGeometry({self.pyqt_bounds})
-{disable_rectangle_name}.setObjectName("{disable_rectangle_name}")
-{disable_rectangle_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
-{disable_rectangle_name}.setVisible(False)""".splitlines()
 
         yield from f"""def __{self.name}_disable(*args, **kwargs):
-    {disable_rectangle_name}.setVisible(True)""".splitlines()
+    {enabled_name} = False""".splitlines()
         yield from indent(self.hide_show_mouse_over_generator.generate_set('False'))
         yield from indent(self.hide_show_pressed_generator.generate_set('False'))
         yield from indent(self.hide_show_disabled_generator.generate_set('True'))
@@ -81,7 +80,7 @@ class CustomButtonGenerator(DesignGenerator):
 
         # Enable
         yield from f"""def __{self.name}_enable(*args, **kwargs):
-    {disable_rectangle_name}.setVisible(False)""".splitlines()
+    {enabled_name} = True""".splitlines()
         yield from indent(self.hide_show_mouse_over_generator.generate_set('False'))
         yield from indent(self.hide_show_pressed_generator.generate_set('False'))
         yield from indent(self.hide_show_disabled_generator.generate_set('False'))
@@ -90,7 +89,7 @@ class CustomButtonGenerator(DesignGenerator):
 
         # Click handler
         yield from f"""
-def __{self.handler_click_function_name}():
+def __{self.handler_click_function_name}(*args, **kwargs):
     try :
         GuiHandler.{frame.handler_class_name}.{self.handler_click_function_name}()
     except :

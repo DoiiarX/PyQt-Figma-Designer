@@ -17,7 +17,7 @@ class ButtonGenerator(DesignGenerator):
 {self.name}.setMouseTracking(True)
 {self.name}.setContextMenuPolicy(Qt.NoContextMenu)
 {self.name}.setAcceptDrops(False)
-def __{self.handler_click_function_name}(self):
+def __{self.handler_click_function_name}(*args, **kwargs):
     try : 
         GuiHandler.{frame.handler_class_name}.{self.handler_click_function_name}()
     except :
