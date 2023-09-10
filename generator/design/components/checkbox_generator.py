@@ -30,7 +30,7 @@ class CheckboxGenerator(DesignGenerator):
 {self.name}.setFocusPolicy(Qt.NoFocus)
 {self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
         
-def __{self.name}_check_changed():
+def __{self.handler_check_changed_function_name}():
     try :""".splitlines()
         yield from indent(self.hide_show_checked_generator.generate_set(f'not {visible_get}'), n=2)
         yield from f"""
@@ -38,6 +38,8 @@ def __{self.name}_check_changed():
     except :
         print("No function {self.handler_check_changed_function_name} defined. Checked = " + str({visible_get}))
 {self.name}.clicked.connect(__{self.handler_check_changed_function_name})""".splitlines()
+        # hide the checked image
+        yield from self.hide_show_checked_generator.generate_set('False')
 
     def generate_handler(self):
         yield from f"""

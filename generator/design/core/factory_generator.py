@@ -1,3 +1,4 @@
+from generator.design.components.custom_button_generator import CustomButtonGenerator
 from generator.design.components.progress_bar_generator import ProgressBarGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
@@ -43,5 +44,8 @@ class FactoryGenerator(DesignGenerator):
 
             elif name.startswith('progressbar'):
                 yield from ProgressBarGenerator(self.fig_node, self, group_generator).generate_design()
+
+            elif name.startswith('custombutton'):
+                yield from CustomButtonGenerator(self.fig_node, self, group_generator).generate_design()
 
         yield f'{self.name} = QLabel(central_widget)'
