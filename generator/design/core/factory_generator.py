@@ -1,16 +1,18 @@
 from generator.design.components.custom_button_generator import CustomButtonGenerator
 from generator.design.components.progress_bar_generator import ProgressBarGenerator
+from generator.design.components.button_generator import ButtonGenerator
+from generator.design.components.checkbox_generator import CheckboxGenerator
+from generator.design.components.text_field_generator import TextFieldGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.design.core.text_generator import TextGenerator
 from generator.design.core.vector_generator import VectorGenerator
-from generator.design.components.button_generator import ButtonGenerator
-from generator.design.components.checkbox_generator import CheckboxGenerator
-from generator.design.components.text_field_generator import TextFieldGenerator
 
 
 class FactoryGenerator(DesignGenerator):
     def generate_design(self):
+        yield f'{self.name} = QLabel(central_widget)'
+
         if not self.fig_node.get('visible', True):
             return []
 
@@ -47,5 +49,3 @@ class FactoryGenerator(DesignGenerator):
 
             elif name.startswith('custombutton'):
                 yield from CustomButtonGenerator(self.fig_node, self, group_generator).generate_design()
-
-        yield f'{self.name} = QLabel(central_widget)'
