@@ -61,15 +61,27 @@ class CustomButtonGenerator(DesignGenerator):
         yield from indent(self.hide_show_disabled_generator.generate_set('False'))
 
         # Disable
-        yield f'def __{self.name}_disable(*args, **kwargs):'
+        # create rectangle to cover the button to avoid mouse events
+        disable_rectangle_name = f'{self.name}_disabled_rectangle'
+        yield from f"""{disable_rectangle_name}= QLabel(central_widget)
+{disable_rectangle_name}.setGeometry({self.pyqt_bounds})
+{disable_rectangle_name}.setObjectName("{disable_rectangle_name}")
+{disable_rectangle_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+{disable_rectangle_name}.setVisible(False)""".splitlines()
+
+        yield from f"""def __{self.name}_disable(*args, **kwargs):
+    {disable_rectangle_name}.setVisible(True)""".splitlines()
         yield from indent(self.hide_show_mouse_over_generator.generate_set('False'))
         yield from indent(self.hide_show_pressed_generator.generate_set('False'))
         yield from indent(self.hide_show_disabled_generator.generate_set('True'))
         # disable capture mouse events
         yield from indent(f'{self.name}.setMouseTracking(False)')
+        yield from indent(f'{self.name}.setFocusPolicy(Qt.NoFocus)')
+        yield from indent(f'{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")')
 
         # Enable
-        yield f'def __{self.name}_enable(*args, **kwargs):'
+        yield from f"""def __{self.name}_enable(*args, **kwargs):
+    {disable_rectangle_name}.setVisible(False)""".splitlines()
         yield from indent(self.hide_show_mouse_over_generator.generate_set('False'))
         yield from indent(self.hide_show_pressed_generator.generate_set('False'))
         yield from indent(self.hide_show_disabled_generator.generate_set('False'))
@@ -107,8 +119,6 @@ except :
         yield from self.hide_show_mouse_over_generator.generate_set('False')
         yield from self.hide_show_pressed_generator.generate_set('False')
         yield from self.hide_show_disabled_generator.generate_set('False')
-
-
 
     def generate_handler(self):
         yield from f"""
