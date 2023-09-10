@@ -40,11 +40,16 @@ class {self.window_class_name}(object):
             yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
 
         yield from indent('MainWindow.setCentralWidget(central_widget)', n=2)
+        yield from indent(f'GuiHandler.{self.handler_class_name}.window_started()', n=2)
 
     def generate_handler(self):
         yield from f"""
 
-class {self.handler_class_name}:""".splitlines()
+class {self.handler_class_name}:
+
+    @classmethod
+    def window_started(cls):
+        pass""".splitlines()
         has_handler = False
         for child in self.children:
             for handler in child.generate_handler():
