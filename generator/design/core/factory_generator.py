@@ -2,6 +2,7 @@ from generator.design.components.custom_button_generator import CustomButtonGene
 from generator.design.components.progress_bar_generator import ProgressBarGenerator
 from generator.design.components.button_generator import ButtonGenerator
 from generator.design.components.checkbox_generator import CheckboxGenerator
+from generator.design.components.slider_generator import SliderGenerator
 from generator.design.components.text_field_generator import TextFieldGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
@@ -49,3 +50,6 @@ class FactoryGenerator(DesignGenerator):
 
             elif name.startswith('custombutton'):
                 yield from CustomButtonGenerator(self.fig_node, self, group_generator).generate_design()
+
+            elif name.startswith('slider'):
+                yield from SliderGenerator(self.fig_node, self, group_generator).generate_design()
