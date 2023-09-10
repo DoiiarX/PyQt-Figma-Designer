@@ -1,3 +1,4 @@
+from generator.design.components.progress_bar_generator import ProgressBarGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.design.core.text_generator import TextGenerator
@@ -27,14 +28,20 @@ class FactoryGenerator(DesignGenerator):
             yield from group_generator.generate_design()
 
         # generate inputs
-        if self.fig_node['name'].lower().strip().startswith('button'):
+        name = self.fig_node['name'].lower().replace(' ', '').replace('-', '').replace('_', '')
+
+        if name.startswith('button'):
             yield from ButtonGenerator(self.fig_node, self).generate_design()
 
-        if self.fig_node['name'].lower().replace(' ', '').replace('-', '').startswith('textfield'):
+        elif name.startswith('textfield'):
             yield from TextFieldGenerator(self.fig_node, self).generate_design()
 
-        if self.fig_node['name'].lower().replace(' ', '').replace('-', '').startswith('checkbox'):
-            if group_generator is not None:
+        # those components need a group generator
+        elif group_generator is not None:
+            if name.startswith('checkbox'):
                 yield from CheckboxGenerator(self.fig_node, self, group_generator).generate_design()
+
+            elif name.startswith('progressbar'):
+                yield from ProgressBarGenerator(self.fig_node, self, group_generator).generate_design()
 
         yield f'{self.name} = QLabel(central_widget)'

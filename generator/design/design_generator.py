@@ -27,7 +27,12 @@ class DesignGenerator:
         x, y = bounds['x'] - self.start_coordinates[0], bounds['y'] - self.start_coordinates[1]
         width, height = bounds['width'], bounds['height']
         x, y, width, height = x * scale, y * scale, width * scale, height * scale
-        self.pyqt_bounds = f'QRect({int(x)}, {int(y)}, {int(width)}, {int(height)})'
+        self.bounds = x, y, width, height
+
+    @property
+    def pyqt_bounds(self):
+        x, y, width, height = self.bounds
+        return f'QRect({int(x)}, {int(y)}, {int(width)}, {int(height)})'
 
     @classmethod
     def create_name(cls, figma_node: dict) -> str:
