@@ -1,8 +1,8 @@
 from config import text_scale, scale
-from generator.core.base_generator import BaseGenerator
+from generator.design.design_generator import DesignGenerator
 
 
-class TextGenerator(BaseGenerator):
+class TextGenerator(DesignGenerator):
     def generate_design(self):
 
         text = self.fig_node['characters'].replace('"', '\\"')

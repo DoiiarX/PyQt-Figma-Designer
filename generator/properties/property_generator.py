@@ -1,14 +1,13 @@
 from abc import abstractmethod
-from typing import List, Iterator, Any
+from typing import Iterator
 
-from config import scale
-from generator.core.base_generator import BaseGenerator
+from generator.design.design_generator import DesignGenerator
 
 
 class PropertyGenerator:
-    target_generator: BaseGenerator
+    target_generator: DesignGenerator
 
-    def __init__(self, target_generator: BaseGenerator):
+    def __init__(self, target_generator: DesignGenerator):
         self.target_generator = target_generator
 
     @abstractmethod

@@ -4,17 +4,17 @@ from typing import List, Iterator
 from config import scale
 
 
-class BaseGenerator:
+class DesignGenerator:
     used_names: set = set()
 
-    parent: 'BaseGenerator|None' = None
+    parent: 'DesignGenerator|None' = None
     fig_node: dict
     start_coordinates: (float, float) = (0, 0)
-    children: List['BaseGenerator']
+    children: List['DesignGenerator']
     name: str
     pyqt_bounds: str
 
-    def __init__(self, figma_node: dict, parent: 'BaseGenerator|None'):
+    def __init__(self, figma_node: dict, parent: 'DesignGenerator|None'):
         if parent is not None:
             self.parent = parent
             self.parent.children.append(self)

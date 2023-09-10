@@ -1,7 +1,7 @@
 from typing import Iterator
 
 from config import svg_directory, scale
-from generator.core.base_generator import BaseGenerator
+from generator.design.design_generator import DesignGenerator
 
 
 class SvgGenerator:
@@ -82,10 +82,10 @@ class SvgGenerator:
                 return []
 
 
-class VectorGenerator(BaseGenerator):
+class VectorGenerator(DesignGenerator):
     svg_counter: int = 0
 
-    def __init__(self, fig_node: dict, parent: BaseGenerator):
+    def __init__(self, fig_node: dict, parent: DesignGenerator):
         super().__init__(fig_node, parent)
 
     def generate_design(self):

@@ -1,10 +1,10 @@
-from generator.core.base_generator import BaseGenerator
+from generator.design.design_generator import DesignGenerator
 
 
-class GroupGenerator(BaseGenerator):
+class GroupGenerator(DesignGenerator):
     def generate_design(self):
         # import here to avoid circular import
-        from generator.core.factory_generator import FactoryGenerator
+        from generator.design.core.factory_generator import FactoryGenerator
         if 'children' not in self.fig_node:
             return []
         for child in self.fig_node['children']:

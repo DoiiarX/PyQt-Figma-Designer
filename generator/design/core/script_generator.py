@@ -1,9 +1,9 @@
 from config import gui_handler_file_name, gui_controller_file_name
-from generator.core.base_generator import BaseGenerator
-from generator.ui.frame_generator import FrameGenerator
+from generator.design.design_generator import DesignGenerator
+from generator.design.core.frame_generator import FrameGenerator
 
 
-class ScriptGenerator(BaseGenerator):
+class ScriptGenerator(DesignGenerator):
 
     def generate_design(self):
         yield from f"""try:
@@ -35,7 +35,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
 app = QApplication(sys.argv)""".splitlines()
         for frame in frames:
             yield from f"""MainWindow = QMainWindow()
-ui = {frame.class_name}()
+ui = {frame.window_class_name}()
 ui.setupUi(MainWindow)
 MainWindow.show()
 app.exec()""".splitlines()

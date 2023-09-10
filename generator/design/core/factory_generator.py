@@ -1,13 +1,13 @@
-from generator.core.base_generator import BaseGenerator
-from generator.ui.button_generator import ButtonGenerator
-from generator.ui.checkbox_generator import CheckboxGenerator
-from generator.core.group_generator import GroupGenerator
-from generator.ui.text_field_generator import TextFieldGenerator
-from generator.ui.text_generator import TextGenerator
-from generator.ui.vector_generator import VectorGenerator
+from generator.design.design_generator import DesignGenerator
+from generator.design.ui.button_generator import ButtonGenerator
+from generator.design.ui.checkbox_generator import CheckboxGenerator
+from generator.design.core.group_generator import GroupGenerator
+from generator.design.ui.text_field_generator import TextFieldGenerator
+from generator.design.ui.text_generator import TextGenerator
+from generator.design.ui.vector_generator import VectorGenerator
 
 
-class FactoryGenerator(BaseGenerator):
+class FactoryGenerator(DesignGenerator):
     def generate_design(self):
         if not self.fig_node.get('visible', True):
             return []
