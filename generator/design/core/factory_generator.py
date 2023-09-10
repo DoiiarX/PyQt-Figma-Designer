@@ -1,10 +1,10 @@
 from generator.design.design_generator import DesignGenerator
-from generator.design.ui.button_generator import ButtonGenerator
-from generator.design.ui.checkbox_generator import CheckboxGenerator
 from generator.design.core.group_generator import GroupGenerator
-from generator.design.ui.text_field_generator import TextFieldGenerator
-from generator.design.ui.text_generator import TextGenerator
-from generator.design.ui.vector_generator import VectorGenerator
+from generator.design.core.text_generator import TextGenerator
+from generator.design.core.vector_generator import VectorGenerator
+from generator.design.components.button_generator import ButtonGenerator
+from generator.design.components.checkbox_generator import CheckboxGenerator
+from generator.design.components.text_field_generator import TextFieldGenerator
 
 
 class FactoryGenerator(DesignGenerator):

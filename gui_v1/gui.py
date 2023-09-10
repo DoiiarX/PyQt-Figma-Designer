@@ -222,7 +222,6 @@ class Windowq_PyQt_Figma_Designer(object):
                 q_.setVisible(not q_.isVisible())
                 q_Checked.setVisible(not q_Checked.isVisible())
                 q_Checked_.setVisible(not q_Checked_.isVisible())
-
                 GuiHandler.q_CheckboxOverwriteHandler_check_changed(q_Checked.isVisible())
             except:
                 print("No function q_CheckboxOverwriteHandler_check_changed defined. Checked = " + str(

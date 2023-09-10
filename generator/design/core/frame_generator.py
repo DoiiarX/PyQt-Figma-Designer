@@ -1,6 +1,6 @@
 from config import scale
 
-from generator.design.ui.vector_generator import VectorGenerator
+from generator.design.core.vector_generator import VectorGenerator
 from utils import indent
 
 from generator.design.design_generator import DesignGenerator
