@@ -17,8 +17,10 @@ class CheckboxGenerator(DesignGenerator):
         self.handler_check_changed_function_name = f'{self.name}_check_changed'
         frame = FrameGenerator.get_current_frame(self)
         visible_get = self.hide_show_checked_generator.generate_get()
+        checked_name = f'self.{self.name}_checked'
 
         yield from f"""
+{checked_name} = False
 {self.name} = QPushButton(central_widget)
 {self.name}.setGeometry({self.pyqt_bounds})
 {self.name}.setFlat(True)
@@ -31,10 +33,11 @@ class CheckboxGenerator(DesignGenerator):
 {self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
         
 def __{self.handler_check_changed_function_name}():
+    {checked_name} = not {checked_name}
     try :""".splitlines()
-        yield from indent(self.hide_show_checked_generator.generate_set(f'not {visible_get}'), n=2)
+        yield from indent(self.hide_show_checked_generator.generate_set(f'{checked_name}'), n=2)
         yield from f"""
-        GuiHandler.{frame.handler_class_name}.{self.handler_check_changed_function_name}(not {visible_get})
+        GuiHandler.{frame.handler_class_name}.{self.handler_check_changed_function_name}({checked_name})
     except :
         print("No function {self.handler_check_changed_function_name} defined. Checked = " + str({visible_get}))
 {self.name}.clicked.connect(__{self.handler_check_changed_function_name})""".splitlines()
