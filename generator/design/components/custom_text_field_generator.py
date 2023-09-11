@@ -38,7 +38,11 @@ class CustomTextFieldGenerator(DesignGenerator):
 {self.name}.setMouseTracking(True)
 {self.name}.setContextMenuPolicy(Qt.NoContextMenu)
 {self.name}.setAcceptDrops(False)
-{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0); color: rgba(255, 255, 255, 0); selection-background-color: rgba(255, 255, 255, 0); selection-color: rgba(255, 255, 255, 0); ")
+{self.name}.setFont({self.text_field_text.name}.font())
+text_color = {self.text_field_text.name}.styleSheet().split("color: ")[1].split(";")[0]
+{self.text_field_text.name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
+{self.text_field_text.name}.hide()
+{self.name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
 try :
     GuiController.{frame.controller_class_name}.{self.controller_set_text_function_name} = {self.name}.setText
 except :
@@ -47,10 +51,8 @@ except :
 def __{self.handler_text_changed_function_name}(*args, **kwargs):    
     if {self.name}.text() == "" :
         {self.text_field_hint.name}.show()
-        {self.text_field_text.name}.hide()
     else :
         {self.text_field_hint.name}.hide()
-        {self.text_field_text.name}.show()
         {self.text_field_text.controller_set_text_function_name}({self.name}.text())              
            
     try : 
@@ -60,8 +62,7 @@ def __{self.handler_text_changed_function_name}(*args, **kwargs):
         print("No function {self.handler_text_changed_function_name} defined. Current text : " + current_text)
 
 __{self.handler_text_changed_function_name}()   
-{self.name}.textChanged.connect(__{self.handler_text_changed_function_name})
-{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0); color: rgba(255, 255, 255, 0); ")""".splitlines()
+{self.name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
 
     def generate_handler(self):
         yield from f"""
