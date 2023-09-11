@@ -21,5 +21,7 @@ if overwrite_handler_controller:
     with open(gui_controller_path, 'w', encoding="utf-8") as file:
         file.write(controller_code)
 
-subprocess.Popen(f'python gui.py', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                 cwd=project_directory)
+process = subprocess.Popen(f'python gui.py', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                           cwd=project_directory)
+for line in process.stdout.readlines():
+    print(line.decode('utf-8').strip())
