@@ -1,10 +1,14 @@
 from config import text_scale, scale
+from generator.design.core.frame_generator import FrameGenerator
 from generator.design.design_generator import DesignGenerator
 
 
 class TextGenerator(DesignGenerator):
-    def generate_design(self):
+    controller_set_text_function_name: str
 
+    def generate_design(self):
+        frame = FrameGenerator.get_current_frame(self)
+        self.controller_set_text_function_name = f'{self.name}_set_text'
         text = self.fig_node['characters'].replace('"', '\\"')
         font = self.fig_node['style']['fontFamily']
         font_size = self.fig_node['style']['fontSize'] * text_scale * scale
@@ -46,4 +50,19 @@ font.setPointSize({int(font_size)})
 {self.name}.setGeometry({self.pyqt_bounds})
 {self.name}.setAlignment({vertical_alignment} | {horizontal_alignment})
 {self.name}.setMouseTracking(False)
-{self.name}.setContextMenuPolicy(Qt.NoContextMenu)""".splitlines()
+{self.name}.setContextMenuPolicy(Qt.NoContextMenu)
+def {self.controller_set_text_function_name}(text:str):
+    {self.name}.setText(text)
+
+try :
+    GuiController.{frame.controller_class_name}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
+except :
+    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.name}.text())
+""".splitlines()
+
+    def generate_controller(self):
+        yield from f"""
+@classmethod
+def {self.controller_set_text_function_name}(cls, text:str):
+    print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")
+    return ''""".splitlines()

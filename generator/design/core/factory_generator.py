@@ -1,4 +1,5 @@
 from generator.design.components.custom_button_generator import CustomButtonGenerator
+from generator.design.components.custom_text_field_generator import CustomTextFieldGenerator
 from generator.design.components.progress_bar_generator import ProgressBarGenerator
 from generator.design.components.button_generator import ButtonGenerator
 from generator.design.components.checkbox_generator import CheckboxGenerator
@@ -8,14 +9,12 @@ from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.design.core.text_generator import TextGenerator
 from generator.design.core.vector_generator import VectorGenerator
+from generator.properties.visibility_generator import VisibilityGenerator
 
 
 class FactoryGenerator(DesignGenerator):
     def generate_design(self):
         yield f'{self.name} = QLabel(central_widget)'
-
-        if not self.fig_node.get('visible', True):
-            return []
 
         # generate visuals
         if ('fillGeometry' in self.fig_node and len(self.fig_node['fillGeometry']) > 0) \
@@ -45,6 +44,9 @@ class FactoryGenerator(DesignGenerator):
             if name.startswith('checkbox'):
                 yield from CheckboxGenerator(self.fig_node, self, group_generator).generate_design()
 
+            elif name.startswith('customtextfield'):
+                yield from CustomTextFieldGenerator(self.fig_node, self, group_generator).generate_design()
+
             elif name.startswith('progressbar'):
                 yield from ProgressBarGenerator(self.fig_node, self, group_generator).generate_design()
 
@@ -53,3 +55,7 @@ class FactoryGenerator(DesignGenerator):
 
             elif name.startswith('slider'):
                 yield from SliderGenerator(self.fig_node, self, group_generator).generate_design()
+
+        # hide the component if it is not visible
+        if not self.fig_node.get('visible', True):
+            yield from VisibilityGenerator(self).generate_set('False')
