@@ -56,10 +56,10 @@ class SvgGenerator:
                 yield f'<linearGradient id="gradient{cls.graphic_counter}" {gradient}>'
                 for stop in stops:
                     color = stop['color']
-                    opacity = color.get('a', 1)
+                    stop_opacity = opacity * color.get('a', 1)
                     color = color['r'], color['g'], color['b']
                     color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-                    yield f'\t<stop offset="{stop["position"]}" stop-color="{color}" stop-opacity="{opacity}"/>'
+                    yield f'\t<stop offset="{stop["position"]}" stop-color="{color}" stop-opacity="{stop_opacity}"/>'
                 yield f'</linearGradient>'
                 yield f'<path fill="url(#gradient{cls.graphic_counter})" stroke-width="{stroke_width}" fill-opacity="{opacity}" stroke-opacity="{opacity}" d="{path_data}"/>'
             case 'GRADIENT_RADIAL':
@@ -71,10 +71,10 @@ class SvgGenerator:
                 yield f'<radialGradient id="gradient{cls.graphic_counter}" {gradient}>'
                 for stop in stops:
                     color = stop['color']
-                    opacity = color.get('a', 1)
+                    stop_opacity = opacity * color.get('a', 1)
                     color = color['r'], color['g'], color['b']
                     color = '#{:02x}{:02x}{:02x}'.format(*map(lambda x: int(x * 255), color))
-                    yield f'\t<stop offset="{stop["position"]}" stop-color="{color}" stop-opacity="{opacity}"/>'
+                    yield f'\t<stop offset="{stop["position"]}" stop-color="{color}" stop-opacity="{stop_opacity}"/>'
                 yield f'</radialGradient>'
                 yield f'<path fill="url(#gradient{cls.graphic_counter})" stroke-width="{stroke_width}" fill-opacity="{opacity}" stroke-opacity="{opacity}" d="{path_data}"/>'
             case _:
