@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg version="1.2" baseProfile="tiny" viewBox="0 0 504 164" xmlns="http://www.w3.org/2000/svg">
+	<path fill="#444444" stroke-width="1.0" fill-opacity="1.0" stroke-opacity="1.0" d="M0 0L504 0L504 164L0 164L0 0Z"/>
+	<path fill="#757575" stroke-width="1.0" fill-opacity="1.0" stroke-opacity="1.0" d="M0 0L0 -1L-1 -1L-1 0L0 0ZM504 0L505 0L505 -1L504 -1L504 0ZM504 164L504 165L505 165L505 164L504 164ZM0 164L-1 164L-1 165L0 165L0 164ZM0 1L504 1L504 -1L0 -1L0 1ZM503 0L503 164L505 164L505 0L503 0ZM504 163L0 163L0 165L504 165L504 163ZM1 164L1 0L-1 0L-1 164L1 164Z"/>
+</svg>
