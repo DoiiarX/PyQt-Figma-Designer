@@ -11,7 +11,7 @@ class SvgGenerator:
     def create_svg_file(cls, figma_node: dict, filename: str):
         bounds = f'0 0 {int(figma_node["absoluteBoundingBox"]["width"])} {int(figma_node["absoluteBoundingBox"]["height"])}'
         svg_file_data = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg version="1.2" baseProfile="tiny" viewBox="{bounds}" xmlns="http://www.w3.org/2000/svg">"""
+<svg version="1.2" baseProfile="tiny"  xmlns="http://www.w3.org/2000/svg">"""
         for i, (geometry, fill) in enumerate(
                 zip(figma_node.get('fillGeometry', []), figma_node.get('fills', []))):
             for line in cls.generate_path(figma_node, geometry['path'], fill):
