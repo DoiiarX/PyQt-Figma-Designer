@@ -9,6 +9,7 @@ class CustomTextFieldGenerator(DesignGenerator):
     controller_set_text_function_name: str
     text_field_text: TextGenerator | None
     text_field_hint: TextGenerator | None
+    text_field_bounds: str
 
     def __init__(self, fig_node, parent, group_generator: GroupGenerator):
         super().__init__(fig_node, parent)
@@ -22,6 +23,8 @@ class CustomTextFieldGenerator(DesignGenerator):
             text_field_hint = text_field_hint.children[-1]
         self.text_field_hint = text_field_hint
 
+        self.text_field_bounds = group_generator.children[-3].pyqt_bounds
+
     def generate_design(self):
         frame = FrameGenerator.get_current_frame(self)
         self.handler_text_changed_function_name = f'{self.name}_text_changed'
@@ -29,7 +32,7 @@ class CustomTextFieldGenerator(DesignGenerator):
 
         yield from f"""
 {self.name} = QLineEdit(central_widget)
-{self.name}.setGeometry({self.pyqt_bounds})
+{self.name}.setGeometry({self.text_field_bounds})
 {self.name}.setAutoFillBackground(False)
 {self.name}.setObjectName("{self.name}")
 {self.name}.setMouseTracking(True)
