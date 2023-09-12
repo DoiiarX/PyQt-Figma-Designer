@@ -24,7 +24,7 @@ parser.add_argument('-oh', '--overwrite-handler',
                     help='Overwrite handler',
                     action='store',
                     required=False,
-                    default=True,
+                    default=False,
                     type=bool,
                     dest='overwrite_handler')
 

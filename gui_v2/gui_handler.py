@@ -23,7 +23,7 @@ class ViewPyqtFigmaDesignerHandler:
     scale_min = 0.25
     scale_max = 4
 
-    overwrite_handlers = True
+    overwrite_handlers = False
 
     project_directory = ""
     figma_token = ""
@@ -55,7 +55,7 @@ class ViewPyqtFigmaDesignerHandler:
     def view_custom_button_create_project_1_clicked(cls):
         ViewPyqtFigmaDesignerController.view_progressbar_progress_1_set_progress(0.2)
         download_command = f'python pyqtfd-download.py -p "{ViewPyqtFigmaDesignerHandler.project_directory}" -t {ViewPyqtFigmaDesignerHandler.figma_token} -url "{ViewPyqtFigmaDesignerHandler.figma_file_url}"'
-        compile_command = f'python pyqtfd-compile.py -p "{ViewPyqtFigmaDesignerHandler.project_directory}" -s {ViewPyqtFigmaDesignerHandler.scale} -oh {ViewPyqtFigmaDesignerHandler.overwrite_handlers}'
+        compile_command = f'python pyqtfd-compile.py -p "{ViewPyqtFigmaDesignerHandler.project_directory}" -s {ViewPyqtFigmaDesignerHandler.scale}' + ('-oh' if cls.overwrite_handlers else '')
         print(download_command)
         process = subprocess.Popen(download_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                    cwd=runner_directory)

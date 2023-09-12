@@ -39,7 +39,12 @@ class {self.window_class_name}(object):
             yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
 
         yield from indent('MainWindow.setCentralWidget(central_widget)', n=2)
-        yield from indent(f'GuiHandler.{self.handler_class_name}.window_started()', n=2)
+        yield from """
+    try : 
+        GuiHandler.window_started()
+    except Exception as e:
+        print("No function window_started defined.")
+""".splitlines()
 
     def generate_handler(self):
         yield from f"""

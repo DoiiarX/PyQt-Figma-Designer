@@ -7,11 +7,15 @@ class ScriptGenerator(DesignGenerator):
 
     def generate_design(self):
         yield from f"""try:
-    import {config.gui_handler_file_name.split('.')[0]} as GuiHandler
     import {config.gui_controller_file_name.split('.')[0]} as GuiController    
 except Exception as e:
-    print("Exception while importing gui_handler.py or controller.py")
+    print("Exception while importing gui_controller.py")
     print(e)
+try : 
+    import {config.gui_handler_file_name.split('.')[0]} as GuiHandler
+except Exception as e:
+    print("Exception while importing gui_handler.py")
+    print(e)    
 from PySide6.QtSvgWidgets import QSvgWidget
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,

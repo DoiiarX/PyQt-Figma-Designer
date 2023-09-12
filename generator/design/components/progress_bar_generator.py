@@ -26,7 +26,7 @@ class ProgressBarGenerator(DesignGenerator):
 try :
     GuiController.{frame.controller_class_name}.{self.controller_set_progress_function_name} = __{self.controller_set_progress_function_name}    
 except :
-    print("No function {self.controller_set_progress_function_name} defined. Progress = " + str(progress))""".splitlines()
+    print("No function {self.controller_set_progress_function_name} defined.")""".splitlines()
 
     def generate_controller(self):
         yield from f"""
