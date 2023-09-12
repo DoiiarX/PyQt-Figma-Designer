@@ -55,7 +55,8 @@ class ViewPyqtFigmaDesignerHandler:
     def view_custom_button_create_project_1_clicked(cls):
         ViewPyqtFigmaDesignerController.view_progressbar_progress_1_set_progress(0.2)
         download_command = f'python pyqtfd-download.py -p "{ViewPyqtFigmaDesignerHandler.project_directory}" -t {ViewPyqtFigmaDesignerHandler.figma_token} -url "{ViewPyqtFigmaDesignerHandler.figma_file_url}"'
-        compile_command = f'python pyqtfd-compile.py -p "{ViewPyqtFigmaDesignerHandler.project_directory}" -s {ViewPyqtFigmaDesignerHandler.scale}' + ('-oh' if cls.overwrite_handlers else '')
+        compile_command = f'python pyqtfd-compile.py -p "{ViewPyqtFigmaDesignerHandler.project_directory}" -s {ViewPyqtFigmaDesignerHandler.scale}' + (
+            '-oh' if cls.overwrite_handlers else '')
         print(download_command)
         process = subprocess.Popen(download_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                    cwd=runner_directory)
@@ -86,8 +87,10 @@ class ViewPyqtFigmaDesignerHandler:
         message_box = QMessageBox()
         message_box.setText("Project created successfully!")
         message_box.exec()
-        subprocess.Popen(f'python gui.py', shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT, cwd=cls.project_directory)
+        process = subprocess.Popen(f'python gui.py', shell=True, stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT, cwd=cls.project_directory)
+        for line in process.stdout.readlines():
+            print(line.decode('utf-8').strip())
 
     @classmethod
     def view_buttontext_13_clicked(cls):
