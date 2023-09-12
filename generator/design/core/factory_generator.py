@@ -4,6 +4,7 @@ from generator.design.components.progress_bar_generator import ProgressBarGenera
 from generator.design.components.button_generator import ButtonGenerator
 from generator.design.components.checkbox_generator import CheckboxGenerator
 from generator.design.components.slider_generator import SliderGenerator
+from generator.design.components.tabs_view_generator import TabsViewGenerator
 from generator.design.components.text_field_generator import TextFieldGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
@@ -57,6 +58,9 @@ class FactoryGenerator(DesignGenerator):
 
             elif name.startswith('slider'):
                 yield from SliderGenerator(self.fig_node, self, group_generator).generate_design()
+
+            elif name.startswith('tabsview'):
+                yield from TabsViewGenerator(self.fig_node, self, group_generator).generate_design()
 
         # hide the component if it is not visible
         if not self.fig_node.get('visible', True):
