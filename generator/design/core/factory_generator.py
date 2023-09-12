@@ -15,6 +15,8 @@ from generator.properties.visibility_generator import VisibilityGenerator
 class FactoryGenerator(DesignGenerator):
     def generate_design(self):
         yield f'{self.name} = QLabel(central_widget)'
+        if not self.fig_node.get('visible', True):
+            return
 
         # generate visuals
         if ('fillGeometry' in self.fig_node and len(self.fig_node['fillGeometry']) > 0) \
