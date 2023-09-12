@@ -1,19 +1,22 @@
 import os
 import re
 
-(project_directory,
- image_directory,
- svg_directory,
- figma_file_path,
- gui_path,
- gui_handler_path,
- gui_controller_path) = '', '', '', '', '', '', ''
+token: str
+overwrite_handler: bool
+project_directory: str
+scale: float
+
+image_directory: str
+svg_directory: str
+figma_file_path: str
+gui_path: str
+gui_handler_path: str
+gui_controller_path: str
+file_key: str
+
+text_scale = 0.7
 gui_handler_file_name = 'gui_handler.py'
 gui_controller_file_name = 'gui_controller.py'
-scale = .7
-text_scale = 0.7
-
-file_key = ''
 
 
 def set_url(url: str):
@@ -31,6 +34,9 @@ def set_project_directory(directory: str):
     gui_path = f'{project_directory}/gui.py'
     gui_handler_path = f'{project_directory}/{gui_handler_file_name}'
     gui_controller_path = f'{project_directory}/{gui_controller_file_name}'
+
+
+def create_project_directories():
     if not os.path.exists(project_directory):
         os.makedirs(project_directory)
     if not os.path.exists(image_directory):
@@ -39,9 +45,8 @@ def set_project_directory(directory: str):
         os.makedirs(svg_directory)
 
 
-# set_url('https://www.figma.com/file/PExygXiMSTBEpXXEq0ZPyE')
-# set_url('https://www.figma.com/file/DEtNOgq9OGnkGPfPpiQeEK/')
+"""set_url('https://www.figma.com/file/PExygXiMSTBEpXXEq0ZPyE')
+set_url('https://www.figma.com/file/DEtNOgq9OGnkGPfPpiQeEK/')
 set_url('https://www.figma.com/file/hKK2ZvSS9Xya0MBKvF9UER/')
 set_project_directory('../outputs/default_project')
-token = 'figd_-QMtU_8nZoTs48qAzWTqQecktPRyh3gCI9rR0Jx5'
-overwrite_handler_controller = True
+token = 'figd_-QMtU_8nZoTs48qAzWTqQecktPRyh3gCI9rR0Jx5'"""

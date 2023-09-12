@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from config import svg_directory, scale
+import config
 from generator.design.design_generator import DesignGenerator
 
 
@@ -23,7 +23,7 @@ class SvgGenerator:
                 svg_file_data += '\n\t' + line
 
         svg_file_data += '\n</svg>'
-        with open(f'{svg_directory}/{filename}', 'w') as file:
+        with open(f'{config.svg_directory}/{filename}', 'w') as file:
             file.write(svg_file_data)
 
     @classmethod
@@ -101,5 +101,5 @@ class VectorGenerator(DesignGenerator):
 {self.name} = QLabel(central_widget)
 {self.name}.setGeometry({self.pyqt_bounds})
 {svg_widget_name} = QSvgWidget({self.name})
-{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * scale)}, {int(height * scale)}))
+{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * config.scale)}, {int(height * config.scale)}))
 {svg_widget_name}.load("{pyqt_svg_path}")""".splitlines()

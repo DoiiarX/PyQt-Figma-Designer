@@ -2,7 +2,7 @@ from generator.design.core.frame_generator import FrameGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.properties.geometry_generator import GeometryGenerator
-from utils import indent
+from generator.utils import indent
 
 
 class SliderGenerator(DesignGenerator):

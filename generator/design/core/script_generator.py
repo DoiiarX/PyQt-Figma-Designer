@@ -1,4 +1,4 @@
-from config import gui_handler_file_name, gui_controller_file_name
+import config
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.frame_generator import FrameGenerator
 
@@ -7,8 +7,8 @@ class ScriptGenerator(DesignGenerator):
 
     def generate_design(self):
         yield from f"""try:
-    import {gui_handler_file_name.split('.')[0]} as GuiHandler
-    import {gui_controller_file_name.split('.')[0]} as GuiController    
+    import {config.gui_handler_file_name.split('.')[0]} as GuiHandler
+    import {config.gui_controller_file_name.split('.')[0]} as GuiController    
 except Exception as e:
     print("Exception while importing gui_handler.py or controller.py")
     print(e)

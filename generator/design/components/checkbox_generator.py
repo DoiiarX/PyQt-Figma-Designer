@@ -2,7 +2,7 @@ from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.design.core.frame_generator import FrameGenerator
-from utils import indent
+from generator.utils import indent
 
 
 class CheckboxGenerator(DesignGenerator):

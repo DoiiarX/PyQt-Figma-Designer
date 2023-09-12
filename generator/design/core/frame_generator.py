@@ -1,7 +1,6 @@
-from config import scale
-
+import config
 from generator.design.core.vector_generator import VectorGenerator
-from utils import indent
+from generator.utils import indent
 
 from generator.design.design_generator import DesignGenerator
 
@@ -31,9 +30,9 @@ class {self.window_class_name}(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize({width * scale}, {height * scale})
+        MainWindow.resize({width * config.scale}, {height * config.scale})
         central_widget = QWidget(MainWindow)
-        MainWindow.setFixedSize({width * scale}, {height * scale})
+        MainWindow.setFixedSize({width * config.scale}, {height * config.scale})
         MainWindow.setWindowTitle("{self.fig_node['name']}")""".splitlines()
         yield from indent(VectorGenerator(self.fig_node, self).generate_design(), n=2)
         for child in self.fig_node['children']:

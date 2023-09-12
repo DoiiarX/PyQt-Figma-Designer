@@ -1,4 +1,4 @@
-from config import text_scale, scale
+import config
 from generator.design.core.frame_generator import FrameGenerator
 from generator.design.design_generator import DesignGenerator
 
@@ -11,7 +11,7 @@ class TextGenerator(DesignGenerator):
         self.controller_set_text_function_name = f'{self.name}_set_text'
         text = self.fig_node['characters'].replace('"', '\\"')
         font = self.fig_node['style']['fontFamily']
-        font_size = self.fig_node['style']['fontSize'] * text_scale * scale
+        font_size = self.fig_node['style']['fontSize'] * config.text_scale * config.scale
         color = 'rgba(0, 0, 0, 0)'
         if len(self.fig_node['fills']) > 0 and 'color' in self.fig_node['fills'][0]:
             color = self.fig_node['fills'][0]['color']

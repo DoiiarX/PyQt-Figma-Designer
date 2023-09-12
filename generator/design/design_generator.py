@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from typing import List, Iterator
-
-from config import scale
+import config
 
 
 class DesignGenerator:
@@ -26,7 +25,7 @@ class DesignGenerator:
         bounds = figma_node.get('absoluteBoundingBox', {'x': 0, 'y': 0, 'width': 0, 'height': 0})
         x, y = bounds['x'] - self.start_coordinates[0], bounds['y'] - self.start_coordinates[1]
         width, height = bounds['width'], bounds['height']
-        x, y, width, height = x * scale, y * scale, width * scale, height * scale
+        x, y, width, height = x * config.scale, y * config.scale, width * config.scale, height * config.scale
         self.bounds = x, y, width, height
 
     @property
