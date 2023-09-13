@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg version="1.2" baseProfile="tiny" viewBox="0 0 30 34" xmlns="http://www.w3.org/2000/svg">
-	<path fill="#ff4015" stroke-width="4.0" fill-opacity="1.0" stroke-opacity="1.0" d="M0 0L30.5833 0L30.5833 34L0 34L0 0Z"/>
-	<path fill="#ffffff" stroke-width="4.0" fill-opacity="1.0" stroke-opacity="1.0" d="M0 0L0 -4C-2.20914 -4 -4 -2.20914 -4 8.88178e-16L0 0ZM30.5833 0L34.5833 0C34.5833 -2.20914 32.7925 -4 30.5833 -4L30.5833 0ZM30.5833 34L30.5833 38C32.7925 38 34.5833 36.2091 34.5833 34L30.5833 34ZM0 34L-4 34C-4 36.2091 -2.20914 38 8.88178e-16 38L0 34ZM0 4L30.5833 4L30.5833 -4L0 -4L0 4ZM26.5833 0L26.5833 34L34.5833 34L34.5833 0L26.5833 0ZM30.5833 30L0 30L0 38L30.5833 38L30.5833 30ZM4 34L4 0L-4 0L-4 34L4 34Z"/>
-</svg>
