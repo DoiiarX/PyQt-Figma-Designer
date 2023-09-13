@@ -9,9 +9,5 @@ class VisibilityGenerator(PropertyGenerator):
         return f'{self.target_generator.q_widget_name}.isVisible()'
 
     def generate_set(self, value: bool | str) -> Iterator[str]:
-        def generate_set_visible(generator):
-            yield f'{generator.q_widget_name}.setVisible({value})'
-            for child in generator.children:
-                yield from generate_set_visible(child)
 
-        return generate_set_visible(self.target_generator)
+        yield f'{self.target_generator.q_widget_name}.setVisible({value})'

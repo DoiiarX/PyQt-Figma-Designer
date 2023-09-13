@@ -23,14 +23,17 @@ class DesignGenerator:
         if parent is not None:
             self.parent = parent
             self.parent.children.append(self)
-            self.start_coordinates = parent.start_coordinates
             self.controller_class_path = parent.controller_class_path
             self.handler_class_path = parent.handler_class_path
 
     @property
     def bounds(self):
+        parent_start_x, parent_start_y = 0, 0
+        if self.parent is not None:
+            parent_bounds = self.parent.figma_node.get('absoluteBoundingBox', {'x': 0, 'y': 0, 'width': 0, 'height': 0})
+            parent_start_x, parent_start_y = parent_bounds['x'], parent_bounds['y']
         bounds = self.figma_node.get('absoluteBoundingBox', {'x': 0, 'y': 0, 'width': 0, 'height': 0})
-        x, y = bounds['x'] - self.start_coordinates[0], bounds['y'] - self.start_coordinates[1]
+        x, y = bounds['x'] - parent_start_x, bounds['y'] - parent_start_y
         width, height = bounds['width'], bounds['height']
         x, y, width, height = x * config.scale, y * config.scale, width * config.scale, height * config.scale
         return x, y, width, height
@@ -62,6 +65,11 @@ class DesignGenerator:
         view_name = new_name
         cls.used_names.add(view_name)
         return view_name
+
+    def generate_q_widget(self):
+        yield from f"""{self.q_widget_name} = QWidget({self.parent.q_widget_name})
+{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+{self.q_widget_name}.setObjectName("{self.q_widget_name}")""".splitlines()
 
     @abstractmethod
     def generate_design(self) -> Iterator[str]:

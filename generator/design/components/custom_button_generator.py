@@ -25,7 +25,7 @@ class CustomButtonGenerator(DesignGenerator):
         enabled_name = f'self.{self.q_widget_name}_enabled'
 
         yield from f"""
-{self.q_widget_name} = QPushButton(central_widget)
+{self.q_widget_name} = QPushButton({self.parent.q_widget_name})
 {self.q_widget_name}.setGeometry({self.pyqt_bounds})
 {self.q_widget_name}.setFlat(True)
 {self.q_widget_name}.setAutoFillBackground(False)

@@ -30,7 +30,7 @@ class CustomTextFieldGenerator(DesignGenerator):
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
 
         yield from f"""
-{self.q_widget_name} = QLineEdit(central_widget)
+{self.q_widget_name} = QLineEdit({self.parent.q_widget_name})
 {self.q_widget_name}.setGeometry({self.text_field_bounds})
 {self.q_widget_name}.setAutoFillBackground(False)
 {self.q_widget_name}.setObjectName("{self.q_widget_name}")

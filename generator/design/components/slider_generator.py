@@ -60,7 +60,7 @@ def __{self.controller_set_value_function_name}(value:float) :
     {value_name} = value
     __{self.q_widget_name}_update_thumb_position()
 
-{self.q_widget_name} = QPushButton(central_widget)
+{self.q_widget_name} = QPushButton({self.parent.q_widget_name})
 {self.q_widget_name}.setGeometry({self.pyqt_bounds})
 {self.q_widget_name}.setFlat(True)
 {self.q_widget_name}.setAutoFillBackground(False)

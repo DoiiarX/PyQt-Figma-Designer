@@ -33,12 +33,12 @@ class TabsViewGenerator(DesignGenerator):
         print("No function {self.handler_tab_changed_function_name} defined. Tab = {i}")""".splitlines()
 
         yield from f"""
-{self.q_widget_name} = QLabel(central_widget)
+{self.q_widget_name} = QLabel({self.parent.q_widget_name})
 """.splitlines()
         for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
             button_name = f'{tab_bar_button.q_widget_name}_button'
             yield from f"""
-{button_name} = QPushButton(central_widget)
+{button_name} = QPushButton({tab_bar_button.parent.q_widget_name})
 {button_name}.setGeometry({tab_bar_button.pyqt_bounds})
 {button_name}.setFlat(True)
 {button_name}.setObjectName("{button_name}")

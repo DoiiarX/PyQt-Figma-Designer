@@ -4,15 +4,17 @@ from generator.utils import indent
 
 class GroupGenerator(DesignGenerator):
     def generate_design(self):
+        if self.parent is None:
+            return []
+        if 'children' not in self.figma_node:
+            return []
         self.controller_class_path = f'{self.controller_class_path}.{self.short_class_name}Controller'
         self.handler_class_path = f'{self.handler_class_path}.{self.short_class_name}Handler'
         # import here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
-        if 'children' not in self.figma_node:
-            return []
+        yield from self.generate_q_widget()
         for child in self.figma_node['children']:
             yield from FactoryGenerator(child, self).generate_design()
-        yield f'{self.q_widget_name} = QLabel(central_widget)'
 
     def generate_handler(self):
         sub_handlers = []

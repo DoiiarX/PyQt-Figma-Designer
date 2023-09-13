@@ -8,7 +8,7 @@ class ButtonGenerator(DesignGenerator):
     def generate_design(self):
         self.handler_click_function_name = f'{self.q_widget_name}_clicked'
         yield from f"""
-{self.q_widget_name} = QPushButton(central_widget)
+{self.q_widget_name} = QPushButton({self.parent.q_widget_name})
 {self.q_widget_name}.setGeometry({self.pyqt_bounds})
 {self.q_widget_name}.setFlat(True)
 {self.q_widget_name}.setAutoFillBackground(False)

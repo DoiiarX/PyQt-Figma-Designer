@@ -14,8 +14,6 @@ class FrameGenerator(DesignGenerator):
         from generator.design.core.factory_generator import FactoryGenerator
         bounds = self.figma_node['absoluteBoundingBox']
         width, height = bounds['width'], bounds['height']
-        start_x, start_y = bounds['x'], bounds['y']
-        self.start_coordinates = (start_x, start_y)
         self.window_class_name = f'QWindow{self.short_class_name}'
         self.handler_class_path = f'{self.short_class_name}Handler'
         self.controller_class_path = f'{self.short_class_name}Controller'
@@ -28,14 +26,14 @@ class {self.window_class_name}(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize({width * config.scale}, {height * config.scale})
-        central_widget = QWidget(MainWindow)
+        {self.q_widget_name} = QWidget(MainWindow)
         MainWindow.setFixedSize({width * config.scale}, {height * config.scale})
         MainWindow.setWindowTitle("{self.figma_node['name']}")""".splitlines()
         yield from indent(VectorGenerator(self.figma_node, self).generate_design(), n=2)
         for child in self.figma_node['children']:
             yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
 
-        yield from indent('MainWindow.setCentralWidget(central_widget)', n=2)
+        yield from indent(f'MainWindow.setCentralWidget({self.q_widget_name})', n=2)
         yield from f"""
     try : 
         GuiHandler.{self.handler_class_path}.window_started()

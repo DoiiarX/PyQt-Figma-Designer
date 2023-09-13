@@ -39,7 +39,7 @@ class TextGenerator(DesignGenerator):
             case _:
                 horizontal_alignment = 'Qt.AlignHCenter'
 
-        yield from f"""{self.q_widget_name} = QLabel(central_widget)
+        yield from f"""{self.q_widget_name} = QLabel({self.parent.q_widget_name})
 {self.q_widget_name}.setText("{text}")
 font = QFont()
 font.setFamilies([u"{font}"])

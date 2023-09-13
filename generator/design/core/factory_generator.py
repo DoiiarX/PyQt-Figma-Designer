@@ -15,7 +15,8 @@ from generator.properties.visibility_generator import VisibilityGenerator
 
 class FactoryGenerator(DesignGenerator):
     def generate_design(self):
-        yield f'{self.q_widget_name} = QLabel(central_widget)'
+        yield from self.generate_q_widget()
+
         if not self.figma_node.get('visible', True):
             return
 
