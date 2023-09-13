@@ -146,6 +146,9 @@ The tabs view group requires the following ordering:
 
 Ensure that the tabs bar contains buttons for switching between tabs (in the selected version), and tabs content holds the respective tab content.
 
+Here is an example of a tabs view group in Figma:
+![Tabs View Group](images/screenshot_tabs_view_instructions.png)
+
 #### Slider
 
 The slider group must follow this ordering:
