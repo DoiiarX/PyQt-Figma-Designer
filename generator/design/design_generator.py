@@ -7,20 +7,19 @@ class DesignGenerator:
     used_names: set = set()
 
     parent: 'DesignGenerator|None' = None
-    fig_node: dict
+    figma_node: dict
     start_coordinates: (float, float) = (0, 0)
     children: List['DesignGenerator']
-    name: str
-    pyqt_bounds: str
+    q_widget_name: str
 
     handler_class_path: str = ''
     controller_class_path: str = ''
 
     def __init__(self, figma_node: dict, parent: 'DesignGenerator|None'):
-        self.fig_node = figma_node
+        self.figma_node = figma_node
         self.children = []
-        self.name = self.create_name(figma_node)
-        self.short_class_name = self.name.replace('_', ' ').title().replace(' ', '')
+        self.q_widget_name = self.create_name(figma_node)
+        self.short_class_name = self.q_widget_name.replace('_', ' ').title().replace(' ', '')
         if parent is not None:
             self.parent = parent
             self.parent.children.append(self)
@@ -28,11 +27,13 @@ class DesignGenerator:
             self.controller_class_path = parent.controller_class_path
             self.handler_class_path = parent.handler_class_path
 
-        bounds = figma_node.get('absoluteBoundingBox', {'x': 0, 'y': 0, 'width': 0, 'height': 0})
+    @property
+    def bounds(self):
+        bounds = self.figma_node.get('absoluteBoundingBox', {'x': 0, 'y': 0, 'width': 0, 'height': 0})
         x, y = bounds['x'] - self.start_coordinates[0], bounds['y'] - self.start_coordinates[1]
         width, height = bounds['width'], bounds['height']
         x, y, width, height = x * config.scale, y * config.scale, width * config.scale, height * config.scale
-        self.bounds = x, y, width, height
+        return x, y, width, height
 
     @property
     def pyqt_bounds(self):

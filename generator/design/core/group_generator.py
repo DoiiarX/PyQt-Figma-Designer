@@ -8,11 +8,11 @@ class GroupGenerator(DesignGenerator):
         self.handler_class_path = f'{self.handler_class_path}.{self.short_class_name}Handler'
         # import here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
-        if 'children' not in self.fig_node:
+        if 'children' not in self.figma_node:
             return []
-        for child in self.fig_node['children']:
+        for child in self.figma_node['children']:
             yield from FactoryGenerator(child, self).generate_design()
-        yield f'{self.name} = QLabel(central_widget)'
+        yield f'{self.q_widget_name} = QLabel(central_widget)'
 
     def generate_handler(self):
         sub_handlers = []

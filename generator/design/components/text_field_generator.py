@@ -7,32 +7,32 @@ class TextFieldGenerator(DesignGenerator):
     controller_set_text_function_name: str
 
     def generate_design(self):
-        self.controller_get_text_function_name = f'{self.name}_text_changed'
-        self.controller_set_text_function_name = f'{self.name}_set_text'
+        self.controller_get_text_function_name = f'{self.q_widget_name}_text_changed'
+        self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
 
         yield from f"""
-{self.name} = QLineEdit(central_widget)
-{self.name}.setGeometry({self.pyqt_bounds})
-{self.name}.setAutoFillBackground(False)
-{self.name}.setObjectName("{self.name}")
-{self.name}.setMouseTracking(True)
-{self.name}.setContextMenuPolicy(Qt.NoContextMenu)
-{self.name}.setAcceptDrops(False)
-{self.controller_set_text_function_name} = {self.name}.setText
+{self.q_widget_name} = QLineEdit(central_widget)
+{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+{self.q_widget_name}.setAutoFillBackground(False)
+{self.q_widget_name}.setObjectName("{self.q_widget_name}")
+{self.q_widget_name}.setMouseTracking(True)
+{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+{self.q_widget_name}.setAcceptDrops(False)
+{self.controller_set_text_function_name} = {self.q_widget_name}.setText
 try :
     GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
 except :
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.name}.text())
+    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.q_widget_name}.text())
 
 def __{self.controller_get_text_function_name}(self):
     try : 
-        current_text = {self.name}.text()
+        current_text = {self.q_widget_name}.text()
         GuiHandler.{self.handler_class_path}.{self.controller_get_text_function_name}(current_text)
     except :
         print("No function {self.controller_get_text_function_name} defined. Current text : " + current_text)
 
-{self.name}.textChanged.connect(__{self.controller_get_text_function_name})
-{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 255); color: rgba(255, 255, 255, 255); ")""".splitlines()
+{self.q_widget_name}.textChanged.connect(__{self.controller_get_text_function_name})
+{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 255); color: rgba(255, 255, 255, 255); ")""".splitlines()
 
     def generate_handler(self):
         yield from f"""

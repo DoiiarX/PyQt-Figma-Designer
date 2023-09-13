@@ -11,8 +11,8 @@ class CustomTextFieldGenerator(DesignGenerator):
     text_field_hint: TextGenerator | None
     text_field_bounds: str
 
-    def __init__(self, fig_node, parent, group_generator: GroupGenerator):
-        super().__init__(fig_node, parent)
+    def __init__(self, figma_node, parent, group_generator: GroupGenerator):
+        super().__init__(figma_node, parent)
         text_field_text = group_generator.children[-1]
         while not isinstance(text_field_text, TextGenerator):
             text_field_text = text_field_text.children[-1]
@@ -26,42 +26,42 @@ class CustomTextFieldGenerator(DesignGenerator):
         self.text_field_bounds = group_generator.children[-3].pyqt_bounds
 
     def generate_design(self):
-        self.handler_text_changed_function_name = f'{self.name}_text_changed'
-        self.controller_set_text_function_name = f'{self.name}_set_text'
+        self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'
+        self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
 
         yield from f"""
-{self.name} = QLineEdit(central_widget)
-{self.name}.setGeometry({self.text_field_bounds})
-{self.name}.setAutoFillBackground(False)
-{self.name}.setObjectName("{self.name}")
-{self.name}.setMouseTracking(True)
-{self.name}.setContextMenuPolicy(Qt.NoContextMenu)
-{self.name}.setAcceptDrops(False)
-{self.name}.setFont({self.text_field_text.name}.font())
-text_color = {self.text_field_text.name}.styleSheet().split("color: ")[1].split(";")[0]
-{self.text_field_text.name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
-{self.text_field_text.name}.hide()
-{self.name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
+{self.q_widget_name} = QLineEdit(central_widget)
+{self.q_widget_name}.setGeometry({self.text_field_bounds})
+{self.q_widget_name}.setAutoFillBackground(False)
+{self.q_widget_name}.setObjectName("{self.q_widget_name}")
+{self.q_widget_name}.setMouseTracking(True)
+{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+{self.q_widget_name}.setAcceptDrops(False)
+{self.q_widget_name}.setFont({self.text_field_text.q_widget_name}.font())
+text_color = {self.text_field_text.q_widget_name}.styleSheet().split("color: ")[1].split(";")[0]
+{self.text_field_text.q_widget_name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
+{self.text_field_text.q_widget_name}.hide()
+{self.q_widget_name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
 try :
-    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.name}.setText
+    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.q_widget_name}.setText
 except :
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.name}.text())
+    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.q_widget_name}.text())
 
 def __{self.handler_text_changed_function_name}(*args, **kwargs):    
-    if {self.name}.text() == "" :
-        {self.text_field_hint.name}.show()
+    if {self.q_widget_name}.text() == "" :
+        {self.text_field_hint.q_widget_name}.show()
     else :
-        {self.text_field_hint.name}.hide()
-        {self.text_field_text.controller_set_text_function_name}({self.name}.text())              
+        {self.text_field_hint.q_widget_name}.hide()
+        {self.text_field_text.controller_set_text_function_name}({self.q_widget_name}.text())              
            
     try : 
-        current_text = {self.name}.text()
+        current_text = {self.q_widget_name}.text()
         GuiHandler.{self.handler_class_path}.{self.handler_text_changed_function_name}(current_text)
     except :
         print("No function {self.handler_text_changed_function_name} defined. Current text : " + current_text)
 
 __{self.handler_text_changed_function_name}()   
-{self.name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
+{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
 
     def generate_handler(self):
         yield from f"""

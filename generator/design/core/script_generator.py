@@ -28,7 +28,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
     QLineEdit, QMainWindow, QPushButton, QSizePolicy,
     QStatusBar, QTableView, QWidget)""".splitlines()
-        figma_frames = self.fig_node['children']
+        figma_frames = self.figma_node['children']
         frames = []
         for frame in figma_frames:
             frame = FrameGenerator(frame, self)

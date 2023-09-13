@@ -7,17 +7,17 @@ class TextGenerator(DesignGenerator):
     controller_set_text_function_name: str
 
     def generate_design(self):
-        self.controller_set_text_function_name = f'{self.name}_set_text'
-        text = self.fig_node['characters'].replace('"', '\\"')
-        font = self.fig_node['style']['fontFamily']
-        font_size = self.fig_node['style']['fontSize'] * config.text_scale * config.scale
+        self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
+        text = self.figma_node['characters'].replace('"', '\\"')
+        font = self.figma_node['style']['fontFamily']
+        font_size = self.figma_node['style']['fontSize'] * config.text_scale * config.scale
         color = 'rgba(0, 0, 0, 0)'
-        if len(self.fig_node['fills']) > 0 and 'color' in self.fig_node['fills'][0]:
-            color = self.fig_node['fills'][0]['color']
+        if len(self.figma_node['fills']) > 0 and 'color' in self.figma_node['fills'][0]:
+            color = self.figma_node['fills'][0]['color']
             color = f'rgba({color["r"] * 255}, {color["g"] * 255}, {color["b"] * 255}, {color.get("a", 1) * 255})'
 
-        vertical_alignment_figma = self.fig_node['style']['textAlignVertical']
-        horizontal_alignment_figma = self.fig_node['style']['textAlignHorizontal']
+        vertical_alignment_figma = self.figma_node['style']['textAlignVertical']
+        horizontal_alignment_figma = self.figma_node['style']['textAlignHorizontal']
         match vertical_alignment_figma:
             case 'TOP':
                 vertical_alignment = 'Qt.AlignTop'
@@ -39,24 +39,24 @@ class TextGenerator(DesignGenerator):
             case _:
                 horizontal_alignment = 'Qt.AlignHCenter'
 
-        yield from f"""{self.name} = QLabel(central_widget)
-{self.name}.setText("{text}")
+        yield from f"""{self.q_widget_name} = QLabel(central_widget)
+{self.q_widget_name}.setText("{text}")
 font = QFont()
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
-{self.name}.setFont(font)
-{self.name}.setStyleSheet("color: {color}")
-{self.name}.setGeometry({self.pyqt_bounds})
-{self.name}.setAlignment({vertical_alignment} | {horizontal_alignment})
-{self.name}.setMouseTracking(False)
-{self.name}.setContextMenuPolicy(Qt.NoContextMenu)
+{self.q_widget_name}.setFont(font)
+{self.q_widget_name}.setStyleSheet("color: {color}")
+{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+{self.q_widget_name}.setAlignment({vertical_alignment} | {horizontal_alignment})
+{self.q_widget_name}.setMouseTracking(False)
+{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 def {self.controller_set_text_function_name}(text:str):
-    {self.name}.setText(text)
+    {self.q_widget_name}.setText(text)
 
 try :
     GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
 except :
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.name}.text())
+    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.q_widget_name}.text())
 """.splitlines()
 
     def generate_controller(self):

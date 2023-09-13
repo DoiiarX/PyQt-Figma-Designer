@@ -12,7 +12,7 @@ class FrameGenerator(DesignGenerator):
     def generate_design(self):
         # import it here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
-        bounds = self.fig_node['absoluteBoundingBox']
+        bounds = self.figma_node['absoluteBoundingBox']
         width, height = bounds['width'], bounds['height']
         start_x, start_y = bounds['x'], bounds['y']
         self.start_coordinates = (start_x, start_y)
@@ -30,9 +30,9 @@ class {self.window_class_name}(object):
         MainWindow.resize({width * config.scale}, {height * config.scale})
         central_widget = QWidget(MainWindow)
         MainWindow.setFixedSize({width * config.scale}, {height * config.scale})
-        MainWindow.setWindowTitle("{self.fig_node['name']}")""".splitlines()
-        yield from indent(VectorGenerator(self.fig_node, self).generate_design(), n=2)
-        for child in self.fig_node['children']:
+        MainWindow.setWindowTitle("{self.figma_node['name']}")""".splitlines()
+        yield from indent(VectorGenerator(self.figma_node, self).generate_design(), n=2)
+        for child in self.figma_node['children']:
             yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
 
         yield from indent('MainWindow.setCentralWidget(central_widget)', n=2)

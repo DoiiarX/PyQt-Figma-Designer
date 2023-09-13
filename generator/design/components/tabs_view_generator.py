@@ -9,18 +9,18 @@ class TabsViewGenerator(DesignGenerator):
     handler_tab_changed_function_name: str
     controller_set_tab_function_name: str
 
-    def __init__(self, fig_node, parent, group_generator: GroupGenerator):
-        super().__init__(fig_node, parent)
+    def __init__(self, figma_node, parent, group_generator: GroupGenerator):
+        super().__init__(figma_node, parent)
         if len(group_generator.children) < 2:
-            raise Exception(f'Tabs view {self.name} should have at least 2 children')
+            raise Exception(f'Tabs view {self.q_widget_name} should have at least 2 children')
 
         tab_bar = group_generator.children[-1].children[0].children
         tabs_content = group_generator.children[-2].children[0].children
         self.tabs = list(reversed(list(zip(tab_bar, tabs_content))))
 
     def generate_design(self):
-        self.handler_tab_changed_function_name = f'{self.name}_tab_changed'
-        self.controller_set_tab_function_name = f'{self.name}_set_tab'
+        self.handler_tab_changed_function_name = f'{self.q_widget_name}_tab_changed'
+        self.controller_set_tab_function_name = f'{self.q_widget_name}_set_tab'
         for i, (_, _) in enumerate(self.tabs):
             yield f'def __select_tab_{i}(*args, **kwargs):'
             for j, (tab_bar_button, tab_content) in enumerate(self.tabs):
@@ -33,10 +33,10 @@ class TabsViewGenerator(DesignGenerator):
         print("No function {self.handler_tab_changed_function_name} defined. Tab = {i}")""".splitlines()
 
         yield from f"""
-{self.name} = QLabel(central_widget)
+{self.q_widget_name} = QLabel(central_widget)
 """.splitlines()
         for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
-            button_name = f'{tab_bar_button.name}_button'
+            button_name = f'{tab_bar_button.q_widget_name}_button'
             yield from f"""
 {button_name} = QPushButton(central_widget)
 {button_name}.setGeometry({tab_bar_button.pyqt_bounds})

@@ -85,8 +85,8 @@ class SvgGenerator:
 class VectorGenerator(DesignGenerator):
     svg_counter: int = 0
 
-    def __init__(self, fig_node: dict, parent: DesignGenerator):
-        super().__init__(fig_node, parent)
+    def __init__(self, figma_node: dict, parent: DesignGenerator):
+        super().__init__(figma_node, parent)
 
     def generate_design(self):
         VectorGenerator.svg_counter += 1
@@ -94,12 +94,12 @@ class VectorGenerator(DesignGenerator):
         svg_filename = f'file{VectorGenerator.svg_counter}.svg'
         pyqt_svg_path = f'svg/' + svg_filename
 
-        SvgGenerator.create_svg_file(self.fig_node, svg_filename)
-        svg_widget_name = 'q_svg_widget_' + self.name
-        width, height = self.fig_node['absoluteBoundingBox']['width'], self.fig_node['absoluteBoundingBox']['height']
+        SvgGenerator.create_svg_file(self.figma_node, svg_filename)
+        svg_widget_name = 'q_svg_widget_' + self.q_widget_name
+        width, height = self.figma_node['absoluteBoundingBox']['width'], self.figma_node['absoluteBoundingBox']['height']
         yield from f"""
-{self.name} = QLabel(central_widget)
-{self.name}.setGeometry({self.pyqt_bounds})
-{svg_widget_name} = QSvgWidget({self.name})
+{self.q_widget_name} = QLabel(central_widget)
+{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+{svg_widget_name} = QSvgWidget({self.q_widget_name})
 {svg_widget_name}.setGeometry(QRect(0, 0, {int(width * config.scale)}, {int(height * config.scale)}))
 {svg_widget_name}.load("{pyqt_svg_path}")""".splitlines()

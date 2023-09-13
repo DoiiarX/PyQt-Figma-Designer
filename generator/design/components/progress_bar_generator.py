@@ -9,11 +9,11 @@ class ProgressBarGenerator(DesignGenerator):
     fill_geometry_generator: GeometryGenerator
     controller_set_progress_function_name: str
 
-    def __init__(self, fig_node, parent, group_generator: GroupGenerator):
-        super().__init__(fig_node, parent)
+    def __init__(self, figma_node, parent, group_generator: GroupGenerator):
+        super().__init__(figma_node, parent)
         fill_generator = group_generator.children[-1]
         self.geometry_generator = GeometryGenerator(fill_generator)
-        self.controller_set_progress_function_name = f'{self.name}_set_progress'
+        self.controller_set_progress_function_name = f'{self.q_widget_name}_set_progress'
 
     def generate_design(self):
 
@@ -31,4 +31,4 @@ except :
         yield from f"""
 @classmethod
 def {self.controller_set_progress_function_name}(cls, progress:float) :
-    print("Progress bar {self.name} progress = " + str(progress))""".splitlines()
+    print("Progress bar {self.q_widget_name} progress = " + str(progress))""".splitlines()
