@@ -35,12 +35,12 @@ class {self.window_class_name}(object):
 
         yield from indent(f'MainWindow.setCentralWidget(self.{self.q_widget_name})', n=2)
         yield from f"""
-    try : 
-        GuiHandler.{self.handler_class_path}.window_started()
-    except NameError:
-        print("No function {self.handler_class_path}.window_started defined.")
-    except Exception as e:
-        print("Caught exception while trying to call {self.handler_class_path}.window_started : " + str(e))
+        try : 
+            GuiHandler.{self.handler_class_path}.window_started()
+        except NameError:
+            print("No function {self.handler_class_path}.window_started defined.")
+        except Exception as e:
+            print("Caught exception while trying to call {self.handler_class_path}.window_started : " + str(e))
 """.splitlines()
 
     def generate_handler(self):

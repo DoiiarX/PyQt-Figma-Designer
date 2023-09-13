@@ -57,7 +57,7 @@ def __{self.q_widget_name}_mouse_release(*args, **kwargs):
 def __{self.q_widget_name}_mouse_move(*args, **kwargs):          
     __{self.q_widget_name}_update_thumb_position(*args, **kwargs)
 
-def __{self.controller_set_value_function_name}(cls, value:float) :
+def __{self.controller_set_value_function_name}(value:float) :
     {value_name} = value
     __{self.q_widget_name}_update_thumb_position()
 
