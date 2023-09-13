@@ -18,7 +18,6 @@ class SliderGenerator(DesignGenerator):
         self.handler_value_changed_function_name = f'{self.name}_value_changed'
 
     def generate_design(self):
-        frame = FrameGenerator.get_current_frame(self)
         value_name = f'self.{self.name}_value'
         captured_name = f'self.{self.name}_captured'
         slider_x, slider_y, slider_width, slider_height = self.bounds
@@ -44,7 +43,7 @@ def __{self.name}_update_thumb_position(*args, **kwargs):""".splitlines()
         if {value_name} > 1 :
             {value_name} = 1
         try :
-            GuiHandler.{frame.handler_class_name}.{self.handler_value_changed_function_name}({value_name})
+            GuiHandler.{self.handler_class_path}.{self.handler_value_changed_function_name}({value_name})
         except : 
             print("No function {self.handler_value_changed_function_name} defined. Value = " + str({value_name}))
 def __{self.name}_mouse_press(*args, **kwargs):
@@ -75,7 +74,7 @@ def __{self.controller_set_value_function_name}(value:float) :
 {self.name}.mouseReleaseEvent = __{self.name}_mouse_release
 {self.name}.mouseMoveEvent = __{self.name}_mouse_move
 try :
-    GuiController.{frame.controller_class_name}.{self.controller_set_value_function_name} = __{self.controller_set_value_function_name}
+    GuiController.{self.controller_class_path}.{self.controller_set_value_function_name} = __{self.controller_set_value_function_name}
 except :
     print("No function {self.controller_set_value_function_name} defined. Value = " + str({value_name}))
 

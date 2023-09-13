@@ -26,7 +26,6 @@ class CustomTextFieldGenerator(DesignGenerator):
         self.text_field_bounds = group_generator.children[-3].pyqt_bounds
 
     def generate_design(self):
-        frame = FrameGenerator.get_current_frame(self)
         self.handler_text_changed_function_name = f'{self.name}_text_changed'
         self.controller_set_text_function_name = f'{self.name}_set_text'
 
@@ -44,7 +43,7 @@ text_color = {self.text_field_text.name}.styleSheet().split("color: ")[1].split(
 {self.text_field_text.name}.hide()
 {self.name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
 try :
-    GuiController.{frame.controller_class_name}.{self.controller_set_text_function_name} = {self.name}.setText
+    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.name}.setText
 except :
     print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.name}.text())
 
@@ -57,7 +56,7 @@ def __{self.handler_text_changed_function_name}(*args, **kwargs):
            
     try : 
         current_text = {self.name}.text()
-        GuiHandler.{frame.handler_class_name}.{self.handler_text_changed_function_name}(current_text)
+        GuiHandler.{self.handler_class_path}.{self.handler_text_changed_function_name}(current_text)
     except :
         print("No function {self.handler_text_changed_function_name} defined. Current text : " + current_text)
 

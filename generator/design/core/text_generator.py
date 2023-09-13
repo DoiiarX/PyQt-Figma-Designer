@@ -7,7 +7,6 @@ class TextGenerator(DesignGenerator):
     controller_set_text_function_name: str
 
     def generate_design(self):
-        frame = FrameGenerator.get_current_frame(self)
         self.controller_set_text_function_name = f'{self.name}_set_text'
         text = self.fig_node['characters'].replace('"', '\\"')
         font = self.fig_node['style']['fontFamily']
@@ -55,7 +54,7 @@ def {self.controller_set_text_function_name}(text:str):
     {self.name}.setText(text)
 
 try :
-    GuiController.{frame.controller_class_name}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
+    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
 except :
     print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.name}.text())
 """.splitlines()
@@ -64,5 +63,4 @@ except :
         yield from f"""
 @classmethod
 def {self.controller_set_text_function_name}(cls, text:str):
-    print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")
-    return ''""".splitlines()
+    print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")""".splitlines()

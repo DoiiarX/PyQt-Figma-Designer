@@ -6,7 +6,6 @@ class ButtonGenerator(DesignGenerator):
     handler_click_function_name: str
 
     def generate_design(self):
-        frame = FrameGenerator.get_current_frame(self)
         self.handler_click_function_name = f'{self.name}_clicked'
         yield from f"""
 {self.name} = QPushButton(central_widget)
@@ -19,7 +18,7 @@ class ButtonGenerator(DesignGenerator):
 {self.name}.setAcceptDrops(False)
 def __{self.handler_click_function_name}(*args, **kwargs):
     try : 
-        GuiHandler.{frame.handler_class_name}.{self.handler_click_function_name}()
+        GuiHandler.{self.handler_class_path}.{self.handler_click_function_name}()
     except :
         print("No function {self.handler_click_function_name} defined")
 {self.name}.clicked.connect(__{self.handler_click_function_name})

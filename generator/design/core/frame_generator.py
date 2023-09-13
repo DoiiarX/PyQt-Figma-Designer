@@ -8,8 +8,6 @@ from generator.design.design_generator import DesignGenerator
 class FrameGenerator(DesignGenerator):
     short_class_name: str
     window_class_name: str
-    handler_class_name: str
-    controller_class_name: str
 
     def generate_design(self):
         # import it here to avoid circular import
@@ -18,10 +16,9 @@ class FrameGenerator(DesignGenerator):
         width, height = bounds['width'], bounds['height']
         start_x, start_y = bounds['x'], bounds['y']
         self.start_coordinates = (start_x, start_y)
-        self.short_class_name = self.name.replace('_', ' ').title().replace(' ', '')
         self.window_class_name = f'QWindow{self.short_class_name}'
-        self.handler_class_name = f'{self.short_class_name}Handler'
-        self.controller_class_name = f'{self.short_class_name}Controller'
+        self.handler_class_path = f'{self.short_class_name}Handler'
+        self.controller_class_path = f'{self.short_class_name}Controller'
 
         yield from f"""
 
@@ -39,9 +36,9 @@ class {self.window_class_name}(object):
             yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
 
         yield from indent('MainWindow.setCentralWidget(central_widget)', n=2)
-        yield from """
+        yield from f"""
     try : 
-        GuiHandler.window_started()
+        GuiHandler.{self.handler_class_path}.window_started()
     except Exception as e:
         print("No function window_started defined.")
 """.splitlines()
@@ -49,7 +46,7 @@ class {self.window_class_name}(object):
     def generate_handler(self):
         yield from f"""
 
-class {self.handler_class_name}:
+class {self.handler_class_path.split(".")[-1]}:
 
     @classmethod
     def window_started(cls):
@@ -65,7 +62,7 @@ class {self.handler_class_name}:
     def generate_controller(self):
         yield from f"""
 
-class {self.controller_class_name}:""".splitlines()
+class {self.controller_class_path.split(".")[-1]}:""".splitlines()
         has_controller = False
         for child in self.children:
             for controller in child.generate_controller():
@@ -73,10 +70,3 @@ class {self.controller_class_name}:""".splitlines()
                 has_controller = True
         if not has_controller:
             yield from indent('pass', n=1)
-
-    @classmethod
-    def get_current_frame(cls, generator: 'DesignGenerator'):
-        while generator.parent is not None:
-            if isinstance(generator, FrameGenerator):
-                return generator
-            generator = generator.parent

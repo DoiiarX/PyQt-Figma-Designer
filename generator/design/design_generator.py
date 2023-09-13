@@ -13,14 +13,20 @@ class DesignGenerator:
     name: str
     pyqt_bounds: str
 
+    handler_class_path: str = ''
+    controller_class_path: str = ''
+
     def __init__(self, figma_node: dict, parent: 'DesignGenerator|None'):
+        self.fig_node = figma_node
+        self.children = []
+        self.name = self.create_name(figma_node)
+        self.short_class_name = self.name.replace('_', ' ').title().replace(' ', '')
         if parent is not None:
             self.parent = parent
             self.parent.children.append(self)
             self.start_coordinates = parent.start_coordinates
-        self.fig_node = figma_node
-        self.children = []
-        self.name = self.create_name(figma_node)
+            self.controller_class_path = parent.controller_class_path
+            self.handler_class_path = parent.handler_class_path
 
         bounds = figma_node.get('absoluteBoundingBox', {'x': 0, 'y': 0, 'width': 0, 'height': 0})
         x, y = bounds['x'] - self.start_coordinates[0], bounds['y'] - self.start_coordinates[1]
@@ -36,13 +42,17 @@ class DesignGenerator:
     @classmethod
     def create_name(cls, figma_node: dict) -> str:
         view_name = figma_node['name'].replace(' ', '_').lower()
+        view_name = ''.join(c for c in view_name if c.isalnum() or c == '_')
         while '__' in view_name:
             view_name = view_name.replace('__', '_')
         while view_name.startswith('_'):
             view_name = view_name[1:]
         while view_name.endswith('_'):
             view_name = view_name[:-1]
-        view_name = 'view_' + ''.join(c for c in view_name if c.isalnum() or c == '_')
+        if view_name == '':
+            view_name = 'view'
+        if view_name[0].isdigit():
+            view_name = '_' + view_name
         i = 0
         new_name = view_name
         while new_name in cls.used_names:

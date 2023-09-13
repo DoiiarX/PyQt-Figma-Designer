@@ -7,7 +7,6 @@ class TextFieldGenerator(DesignGenerator):
     controller_set_text_function_name: str
 
     def generate_design(self):
-        frame = FrameGenerator.get_current_frame(self)
         self.controller_get_text_function_name = f'{self.name}_text_changed'
         self.controller_set_text_function_name = f'{self.name}_set_text'
 
@@ -21,14 +20,14 @@ class TextFieldGenerator(DesignGenerator):
 {self.name}.setAcceptDrops(False)
 {self.controller_set_text_function_name} = {self.name}.setText
 try :
-    GuiController.{frame.controller_class_name}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
+    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
 except :
     print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.name}.text())
 
 def __{self.controller_get_text_function_name}(self):
     try : 
         current_text = {self.name}.text()
-        GuiHandler.{frame.handler_class_name}.{self.controller_get_text_function_name}(current_text)
+        GuiHandler.{self.handler_class_path}.{self.controller_get_text_function_name}(current_text)
     except :
         print("No function {self.controller_get_text_function_name} defined. Current text : " + current_text)
 

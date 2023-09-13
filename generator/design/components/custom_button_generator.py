@@ -22,7 +22,6 @@ class CustomButtonGenerator(DesignGenerator):
         self.handler_click_function_name = f'{self.name}_clicked'
         self.controller_enable_function_name = f'{self.name}_enable'
         self.controller_disable_function_name = f'{self.name}_disable'
-        frame = FrameGenerator.get_current_frame(self)
         enabled_name = f'self.{self.name}_enabled'
 
         yield from f"""
@@ -91,7 +90,7 @@ class CustomButtonGenerator(DesignGenerator):
         yield from f"""
 def __{self.handler_click_function_name}(*args, **kwargs):
     try :
-        GuiHandler.{frame.handler_class_name}.{self.handler_click_function_name}()
+        GuiHandler.{self.handler_class_path}.{self.handler_click_function_name}()
     except :
         print("No function {self.handler_click_function_name} defined")""".splitlines()
 
@@ -108,8 +107,8 @@ def __{self.handler_click_function_name}(*args, **kwargs):
         # Connect controller
         yield from f"""
 try :
-    GuiController.{frame.controller_class_name}.{self.controller_enable_function_name} = {self.name}.enable
-    GuiController.{frame.controller_class_name}.{self.controller_disable_function_name} = {self.name}.disable
+    GuiController.{self.controller_class_path}.{self.controller_enable_function_name} = {self.name}.enable
+    GuiController.{self.controller_class_path}.{self.controller_disable_function_name} = {self.name}.disable
 except :
     print("No function {self.controller_enable_function_name} defined")
     print("No function {self.controller_disable_function_name} defined")""".splitlines()

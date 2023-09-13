@@ -16,7 +16,6 @@ class ProgressBarGenerator(DesignGenerator):
         self.controller_set_progress_function_name = f'{self.name}_set_progress'
 
     def generate_design(self):
-        frame = FrameGenerator.get_current_frame(self)
 
         yield f'def __{self.controller_set_progress_function_name}(progress:float) :'
         x, y, width, height = self.bounds
@@ -24,7 +23,7 @@ class ProgressBarGenerator(DesignGenerator):
         yield from indent(self.geometry_generator.generate_set(new_bounds), n=1)
         yield from f"""
 try :
-    GuiController.{frame.controller_class_name}.{self.controller_set_progress_function_name} = __{self.controller_set_progress_function_name}    
+    GuiController.{self.controller_class_path}.{self.controller_set_progress_function_name} = __{self.controller_set_progress_function_name}    
 except :
     print("No function {self.controller_set_progress_function_name} defined.")""".splitlines()
 

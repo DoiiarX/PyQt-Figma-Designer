@@ -21,7 +21,6 @@ class TabsViewGenerator(DesignGenerator):
     def generate_design(self):
         self.handler_tab_changed_function_name = f'{self.name}_tab_changed'
         self.controller_set_tab_function_name = f'{self.name}_set_tab'
-        frame = FrameGenerator.get_current_frame(self)
         for i, (_, _) in enumerate(self.tabs):
             yield f'def __select_tab_{i}(*args, **kwargs):'
             for j, (tab_bar_button, tab_content) in enumerate(self.tabs):
@@ -29,7 +28,7 @@ class TabsViewGenerator(DesignGenerator):
                 yield from indent(VisibilityGenerator(tab_bar_button).generate_set(str(i == j)), n=1)
             yield from f"""
     try :
-        GuiHandler.{frame.handler_class_name}.{self.handler_tab_changed_function_name}({i})
+        GuiHandler.{self.handler_class_path}.{self.handler_tab_changed_function_name}({i})
     except :
         print("No function {self.handler_tab_changed_function_name} defined. Tab = {i}")""".splitlines()
 
