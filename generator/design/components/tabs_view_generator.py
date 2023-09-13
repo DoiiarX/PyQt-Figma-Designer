@@ -35,12 +35,7 @@ class TabsViewGenerator(DesignGenerator):
 
         yield from f"""
 {self.name} = QLabel(central_widget)
-{self.name}.setGeometry({self.pyqt_bounds})
-{self.name}.setObjectName("{self.name}")
-{self.name}.setMouseTracking(True)
-{self.name}.setContextMenuPolicy(Qt.NoContextMenu)
-{self.name}.setAcceptDrops(False)
-{self.name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")""".splitlines()
+""".splitlines()
         for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
             button_name = f'{tab_bar_button.name}_button'
             yield from f"""
