@@ -48,7 +48,6 @@ Follow these steps to install PyQt Figma Designer on your system:
    ```
 
 ### Command Line Interface (CLI)
-### Command Line Interface (CLI)
 
 #### Downloading Figma Files
 
