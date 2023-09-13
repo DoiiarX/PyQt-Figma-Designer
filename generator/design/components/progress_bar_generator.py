@@ -13,7 +13,7 @@ class ProgressBarGenerator(DesignGenerator):
         super().__init__(figma_node, parent)
         fill_generator = group_generator.children[-1]
         self.geometry_generator = GeometryGenerator(fill_generator)
-        self.controller_set_progress_function_name = f'self.{self.q_widget_name}_set_progress'
+        self.controller_set_progress_function_name = f'{self.q_widget_name}_set_progress'
 
     def generate_design(self):
 
