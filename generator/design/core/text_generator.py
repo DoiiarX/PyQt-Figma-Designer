@@ -39,24 +39,26 @@ class TextGenerator(DesignGenerator):
             case _:
                 horizontal_alignment = 'Qt.AlignHCenter'
 
-        yield from f"""{self.q_widget_name} = QLabel({self.parent.q_widget_name})
-{self.q_widget_name}.setText("{text}")
+        yield from f"""self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
+self.{self.q_widget_name}.setText("{text}")
 font = QFont()
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
-{self.q_widget_name}.setFont(font)
-{self.q_widget_name}.setStyleSheet("color: {color}")
-{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-{self.q_widget_name}.setAlignment({vertical_alignment} | {horizontal_alignment})
-{self.q_widget_name}.setMouseTracking(False)
-{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+self.{self.q_widget_name}.setFont(font)
+self.{self.q_widget_name}.setStyleSheet("color: {color}")
+self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+self.{self.q_widget_name}.setAlignment({vertical_alignment} | {horizontal_alignment})
+self.{self.q_widget_name}.setMouseTracking(False)
+self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 def {self.controller_set_text_function_name}(text:str):
-    {self.q_widget_name}.setText(text)
+    self.{self.q_widget_name}.setText(text)
 
 try :
     GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
-except :
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.q_widget_name}.text())
+except NameError:
+    print("No function {self.controller_set_text_function_name} defined. Current text : " + self.{self.q_widget_name}.text())
+except Exception as e:
+    print("Caught exception while trying to call {self.controller_set_text_function_name} : " + str(e))
 """.splitlines()
 
     def generate_controller(self):

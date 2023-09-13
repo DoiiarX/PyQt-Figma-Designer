@@ -98,8 +98,8 @@ class VectorGenerator(DesignGenerator):
         svg_widget_name = 'q_svg_widget_' + self.q_widget_name
         width, height = self.figma_node['absoluteBoundingBox']['width'], self.figma_node['absoluteBoundingBox']['height']
         yield from f"""
-{self.q_widget_name} = QLabel({self.parent.q_widget_name})
-{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-{svg_widget_name} = QSvgWidget({self.q_widget_name})
-{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * config.scale)}, {int(height * config.scale)}))
-{svg_widget_name}.load("{pyqt_svg_path}")""".splitlines()
+self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
+self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+self.{svg_widget_name} = QSvgWidget(self.{self.q_widget_name})
+self.{svg_widget_name}.setGeometry(QRect(0, 0, {int(width * config.scale)}, {int(height * config.scale)}))
+self.{svg_widget_name}.load("{pyqt_svg_path}")""".splitlines()

@@ -13,7 +13,7 @@ class ProgressBarGenerator(DesignGenerator):
         super().__init__(figma_node, parent)
         fill_generator = group_generator.children[-1]
         self.geometry_generator = GeometryGenerator(fill_generator)
-        self.controller_set_progress_function_name = f'{self.q_widget_name}_set_progress'
+        self.controller_set_progress_function_name = f'self.{self.q_widget_name}_set_progress'
 
     def generate_design(self):
 
@@ -24,8 +24,11 @@ class ProgressBarGenerator(DesignGenerator):
         yield from f"""
 try :
     GuiController.{self.controller_class_path}.{self.controller_set_progress_function_name} = __{self.controller_set_progress_function_name}    
-except :
-    print("No function {self.controller_set_progress_function_name} defined.")""".splitlines()
+except NameError:
+    print("No function {self.controller_set_progress_function_name} defined.")
+except Exception as e:
+    print("Caught exception while trying to call {self.controller_set_progress_function_name} : " + str(e))
+""".splitlines()
 
     def generate_controller(self):
         yield from f"""

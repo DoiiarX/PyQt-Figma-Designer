@@ -67,9 +67,9 @@ class DesignGenerator:
         return view_name
 
     def generate_q_widget(self):
-        yield from f"""{self.q_widget_name} = QWidget({self.parent.q_widget_name})
-{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-{self.q_widget_name}.setObjectName("{self.q_widget_name}")""".splitlines()
+        yield from f"""self.{self.q_widget_name} = QWidget(self.{self.parent.q_widget_name})
+self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")""".splitlines()
 
     @abstractmethod
     def generate_design(self) -> Iterator[str]:

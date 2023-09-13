@@ -21,24 +21,29 @@ class TabsViewGenerator(DesignGenerator):
     def generate_design(self):
         self.handler_tab_changed_function_name = f'{self.q_widget_name}_tab_changed'
         self.controller_set_tab_function_name = f'{self.q_widget_name}_set_tab'
-        for i, (_, _) in enumerate(self.tabs):
-            yield f'def __select_tab_{i}(*args, **kwargs):'
-            for j, (tab_bar_button, tab_content) in enumerate(self.tabs):
-                yield from indent(VisibilityGenerator(tab_content).generate_set(str(i == j)), n=1)
-                yield from indent(VisibilityGenerator(tab_bar_button).generate_set(str(i == j)), n=1)
-            yield from f"""
-    try :
-        GuiHandler.{self.handler_class_path}.{self.handler_tab_changed_function_name}({i})
-    except :
-        print("No function {self.handler_tab_changed_function_name} defined. Tab = {i}")""".splitlines()
 
+        yield f'def __select_tab(i):'
+        for j, (tab_bar_button, tab_content) in enumerate(self.tabs):
+            yield from indent(VisibilityGenerator(tab_content).generate_set(f'i == {j}'), n=1)
+            yield from indent(VisibilityGenerator(tab_bar_button).generate_set(f'i == {j}'), n=1)
         yield from f"""
-{self.q_widget_name} = QLabel({self.parent.q_widget_name})
+    try :
+        GuiHandler.{self.handler_class_path}.{self.handler_tab_changed_function_name}(i)
+    except NameError:
+        print("No function {self.handler_tab_changed_function_name} defined. Tab = " + str(i))
+    except Exception as e:
+        print("Caught exception while trying to call {self.handler_tab_changed_function_name} : " + str(e))
+""".splitlines()
+
+        for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
+            yield f'__select_tab_{i} = lambda: __select_tab({i})'
+        yield from f"""
+self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
 """.splitlines()
         for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
             button_name = f'{tab_bar_button.q_widget_name}_button'
             yield from f"""
-{button_name} = QPushButton({tab_bar_button.parent.q_widget_name})
+{button_name} = QPushButton(self.{tab_bar_button.parent.q_widget_name})
 {button_name}.setGeometry({tab_bar_button.pyqt_bounds})
 {button_name}.setFlat(True)
 {button_name}.setObjectName("{button_name}")
@@ -46,6 +51,25 @@ class TabsViewGenerator(DesignGenerator):
 {button_name}.setContextMenuPolicy(Qt.NoContextMenu)
 {button_name}.setAcceptDrops(False)
 {button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 100);")
-{button_name}.clicked.connect(__select_tab_{i})""".splitlines()
+{button_name}.clicked.connect(__select_tab_{i})
+try :
+    GuiController.{self.controller_class_path}.{self.controller_set_tab_function_name} = __select_tab
+except NameError:
+    print("No function {self.controller_set_tab_function_name} defined. Current tab : {i}")
+except Exception as e:
+    print("Caught exception while trying to set the function {self.controller_set_tab_function_name} : " + str(e))
+""".splitlines()
             yield from VisibilityGenerator(tab_content).generate_set(str(i == 0))
             yield from VisibilityGenerator(tab_bar_button).generate_set(str(i == 0))
+
+    def generate_handler(self):
+        yield from f"""
+@classmethod
+def {self.handler_tab_changed_function_name}(cls, tab:int) :
+    print("Tabs view {self.q_widget_name} tab changed to tab : " + str(tab))""".splitlines()
+
+    def generate_controller(self):
+        yield from f"""
+@classmethod
+def {self.controller_set_tab_function_name}(cls, tab:int):
+    print("The function {self.controller_set_tab_function_name} is unfortunately not linked to the controller")""".splitlines()

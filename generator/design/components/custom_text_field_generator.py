@@ -30,38 +30,42 @@ class CustomTextFieldGenerator(DesignGenerator):
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
 
         yield from f"""
-{self.q_widget_name} = QLineEdit({self.parent.q_widget_name})
-{self.q_widget_name}.setGeometry({self.text_field_bounds})
-{self.q_widget_name}.setAutoFillBackground(False)
-{self.q_widget_name}.setObjectName("{self.q_widget_name}")
-{self.q_widget_name}.setMouseTracking(True)
-{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
-{self.q_widget_name}.setAcceptDrops(False)
-{self.q_widget_name}.setFont({self.text_field_text.q_widget_name}.font())
-text_color = {self.text_field_text.q_widget_name}.styleSheet().split("color: ")[1].split(";")[0]
-{self.text_field_text.q_widget_name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
-{self.text_field_text.q_widget_name}.hide()
-{self.q_widget_name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
+self.{self.q_widget_name} = QLineEdit(self.{self.parent.q_widget_name})
+self.{self.q_widget_name}.setGeometry({self.text_field_bounds})
+self.{self.q_widget_name}.setAutoFillBackground(False)
+self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
+self.{self.q_widget_name}.setMouseTracking(True)
+self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+self.{self.q_widget_name}.setAcceptDrops(False)
+self.{self.q_widget_name}.setFont(self.{self.text_field_text.q_widget_name}.font())
+text_color = self.{self.text_field_text.q_widget_name}.styleSheet().split("color: ")[1].split(";")[0]
+self.{self.text_field_text.q_widget_name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
+self.{self.text_field_text.q_widget_name}.hide()
+self.{self.q_widget_name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
 try :
-    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.q_widget_name}.setText
-except :
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + {self.q_widget_name}.text())
+    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setText
+except NameError:
+    print("No function {self.controller_set_text_function_name} defined. Current text : " + self.{self.q_widget_name}.text())
+except Exception as e:
+    print("Caught exception while trying to call {self.controller_set_text_function_name} : " + str(e))
 
 def __{self.handler_text_changed_function_name}(*args, **kwargs):    
-    if {self.q_widget_name}.text() == "" :
-        {self.text_field_hint.q_widget_name}.show()
+    if self.{self.q_widget_name}.text() == "" :
+        self.{self.text_field_hint.q_widget_name}.show()
     else :
-        {self.text_field_hint.q_widget_name}.hide()
-        {self.text_field_text.controller_set_text_function_name}({self.q_widget_name}.text())              
+        self.{self.text_field_hint.q_widget_name}.hide()
+        {self.text_field_text.controller_set_text_function_name}(self.{self.q_widget_name}.text())              
            
     try : 
-        current_text = {self.q_widget_name}.text()
+        current_text = self.{self.q_widget_name}.text()
         GuiHandler.{self.handler_class_path}.{self.handler_text_changed_function_name}(current_text)
-    except :
+    except NameError:
         print("No function {self.handler_text_changed_function_name} defined. Current text : " + current_text)
+    except Exception as e:
+        print("Caught exception while trying to call {self.handler_text_changed_function_name} : " + str(e))
 
 __{self.handler_text_changed_function_name}()   
-{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
+self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
 
     def generate_handler(self):
         yield from f"""

@@ -26,19 +26,21 @@ class {self.window_class_name}(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize({width * config.scale}, {height * config.scale})
-        {self.q_widget_name} = QWidget(MainWindow)
+        self.{self.q_widget_name} = QWidget(MainWindow)
         MainWindow.setFixedSize({width * config.scale}, {height * config.scale})
         MainWindow.setWindowTitle("{self.figma_node['name']}")""".splitlines()
         yield from indent(VectorGenerator(self.figma_node, self).generate_design(), n=2)
         for child in self.figma_node['children']:
             yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
 
-        yield from indent(f'MainWindow.setCentralWidget({self.q_widget_name})', n=2)
+        yield from indent(f'MainWindow.setCentralWidget(self.{self.q_widget_name})', n=2)
         yield from f"""
     try : 
         GuiHandler.{self.handler_class_path}.window_started()
+    except NameError:
+        print("No function {self.handler_class_path}.window_started defined.")
     except Exception as e:
-        print("No function window_started defined.")
+        print("Caught exception while trying to call {self.handler_class_path}.window_started : " + str(e))
 """.splitlines()
 
     def generate_handler(self):

@@ -57,41 +57,42 @@ def __{self.q_widget_name}_mouse_release(*args, **kwargs):
 def __{self.q_widget_name}_mouse_move(*args, **kwargs):          
     __{self.q_widget_name}_update_thumb_position(*args, **kwargs)
 
-def __{self.controller_set_value_function_name}(value:float) :
+def __{self.controller_set_value_function_name}(cls, value:float) :
     {value_name} = value
     __{self.q_widget_name}_update_thumb_position()
 
-{self.q_widget_name} = QPushButton({self.parent.q_widget_name})
-{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-{self.q_widget_name}.setFlat(True)
-{self.q_widget_name}.setAutoFillBackground(False)
-{self.q_widget_name}.setObjectName("{self.q_widget_name}")
-{self.q_widget_name}.setMouseTracking(True)
-{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
-{self.q_widget_name}.setAcceptDrops(False)
-{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
-{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
-{self.q_widget_name}.mousePressEvent = __{self.q_widget_name}_mouse_press
-{self.q_widget_name}.mouseReleaseEvent = __{self.q_widget_name}_mouse_release
-{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move
+self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
+self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
+self.{self.q_widget_name}.setFlat(True)
+self.{self.q_widget_name}.setAutoFillBackground(False)
+self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
+self.{self.q_widget_name}.setMouseTracking(True)
+self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+self.{self.q_widget_name}.setAcceptDrops(False)
+self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
+self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+self.{self.q_widget_name}.mousePressEvent = __{self.q_widget_name}_mouse_press
+self.{self.q_widget_name}.mouseReleaseEvent = __{self.q_widget_name}_mouse_release
+self.{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move
 try :
-    GuiController.{self.controller_class_path}.{self.controller_set_value_function_name} = __{self.controller_set_value_function_name}
-except :
+    GuiController.{self.controller_class_path}.{self.controller_set_value_function_name} = __{self.controller_set_value_function_name}    
+except NameError:
     print("No function {self.controller_set_value_function_name} defined. Value = " + str({value_name}))
-
+except Exception as e:
+    print("Error while linking {self.controller_set_value_function_name} to {self.controller_class_path}.{self.controller_set_value_function_name} : " + str(e))
 __{self.q_widget_name}_update_thumb_position()""".splitlines()
-        yield from self.thumb_parent_generator.generate_set(self.q_widget_name)
+        yield from self.thumb_parent_generator.generate_set(f'self.{self.q_widget_name}')
 
     def generate_controller(self):
         yield from f"""
 @classmethod
 def {self.controller_set_value_function_name}(cls, value:float) :
-    print("Progress bar {self.q_widget_name} value = " + str(value))
+    print("The function {self.controller_set_value_function_name} is unfortunately not linked to the controller")
 """.splitlines()
 
     def generate_handler(self):
         yield from f"""
 @classmethod
 def {self.handler_value_changed_function_name}(cls, value:float) :
-    print("Progress bar {self.q_widget_name} value changed = " + str(value))
+    print("Slider {self.q_widget_name} value changed = " + str(value))
 """.splitlines()
