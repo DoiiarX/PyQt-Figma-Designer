@@ -113,8 +113,10 @@ def browse_directory():
     file_dialog = QFileDialog()
     file_dialog.setFileMode(QFileDialog.Directory)
     file_dialog.setOption(QFileDialog.ShowDirsOnly, True)
+    file_dialog.setDirectory('..')
     file_dialog.exec()
     project_directory = file_dialog.selectedFiles()[0]
+    update_ui()
 
 
 def download_figma_file():
@@ -125,11 +127,12 @@ def download_figma_file():
     for line in process.stdout.readlines():
         print(line.decode('utf-8').strip())
     return_code = process.wait()
+    message_box = QMessageBox()
     if return_code != 0:
-        message_box = QMessageBox()
         message_box.setText("Download failed!")
-        message_box.exec()
-        return
+    else:
+        message_box.setText("Download done!")
+    message_box.exec()
 
 
 def compile_project():
@@ -140,16 +143,15 @@ def compile_project():
                                cwd=runner_directory)
     for line in process.stdout.readlines():
         print(line.decode('utf-8').strip())
-    return_code = process.wait()
-    if return_code != 0:
-        message_box = QMessageBox()
-        message_box.setText("Compilation failed!")
-        message_box.exec()
-        return
 
+    return_code = process.wait()
     message_box = QMessageBox()
-    message_box.setText("Project created successfully!")
+    if return_code != 0:
+        message_box.setText("Compile failed!")
+    else:
+        message_box.setText("Compile done!")
     message_box.exec()
+
     process = subprocess.Popen(f'python gui.py', shell=True, stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT, cwd=project_directory)
     for line in process.stdout.readlines():
