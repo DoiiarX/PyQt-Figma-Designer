@@ -47,6 +47,52 @@ Follow these steps to install PyQt Figma Designer on your system:
    python gui.py
    ```
 
+### Command Line Interface (CLI)
+### Command Line Interface (CLI)
+
+#### Downloading Figma Files
+
+PyQt Figma Designer provides a Command Line Interface (CLI) that enables you to conveniently download Figma files and generate PyQt-Figma-Designer projects. Here are the available CLI commands and their usage:
+
+#### Downloading Figma Files
+
+```bash
+python pyqtfd-download.py -h
+```
+
+This command allows you to generate a PyQt-Figma-Designer project from a Figma URL. It accepts the following options:
+
+- `-p PATH, --project PATH`: Specifies the project directory where the generated files will be stored.
+- `-s SCALE, --scale SCALE`: (Optional) Specifies the scale for the Figma components.
+- `-oh OVERWRITE_HANDLER, --overwrite-handler OVERWRITE_HANDLER`: (Optional) Specifies the overwrite handler.
+
+Example usage:
+
+```bash
+python pyqtfd-download.py -p <project_directory> -t <Figma_token> -url <Figma_URL>
+```
+
+#### Compiling PyQt-Figma-Designer Projects
+
+```bash
+python pyqtfd-compile.py -h
+```
+
+This command allows you to compile a PyQt-Figma-Designer project into a Python project. It accepts the following options:
+
+- `-p PATH, --project PATH`: Specifies the project directory where the PyQt-Figma-Designer project is located.
+- `-s SCALE, --scale SCALE`: (Optional) Specifies the scale for the Figma components.
+- `-oh OVERWRITE_HANDLER, --overwrite-handler OVERWRITE_HANDLER`: (Optional) When specified the `gui_handler.py` file is overwritten.
+
+Example usage:
+
+```bash
+python pyqtfd-compile.py -p <project_directory> -s <scale> -oh <overwrite_handler>
+```
+
+These CLI commands provide flexibility and automation for working with PyQt Figma Designer, allowing you to efficiently download Figma files and compile them into Python projects. For additional details on these commands, refer to the provided help information.
+
+
 ### Generated Files
 
 #### GUI
