@@ -36,11 +36,20 @@ class {self.window_class_name}(object):
         yield from indent(f'MainWindow.setCentralWidget(self.{self.q_widget_name})', n=2)
         yield from f"""
         try : 
-            GuiHandler.{self.handler_class_path}.window_started()
+            GuiHandler.{self.handler_class_path}.window_started()            
         except NameError:
             print("No function {self.handler_class_path}.window_started defined.")
         except Exception as e:
             print("Caught exception while trying to call {self.handler_class_path}.window_started : " + str(e))
+        def __window_closed(*args, **kwargs):
+            try :
+                GuiHandler.{self.handler_class_path}.window_closed()
+            except NameError:
+                print("No function {self.handler_class_path}.window_closed defined.")
+            except Exception as e:
+                print("Caught exception while trying to call {self.handler_class_path}.window_closed : " + str(e))
+        MainWindow.closeEvent = __window_closed
+        
 """.splitlines()
 
     def generate_handler(self):
@@ -50,6 +59,10 @@ class {self.handler_class_path.split(".")[-1]}:
 
     @classmethod
     def window_started(cls):
+        pass
+        
+    @classmethod
+    def window_closed(cls):
         pass""".splitlines()
         has_handler = False
         for child in self.children:
