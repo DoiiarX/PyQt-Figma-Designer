@@ -2,7 +2,7 @@ from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.design.core.frame_generator import FrameGenerator
-from generator.utils import indent
+from generator.utils import indent, generate_link_controller, generate_activate_handler
 
 
 class TabsViewGenerator(DesignGenerator):
@@ -26,14 +26,7 @@ class TabsViewGenerator(DesignGenerator):
         for j, (tab_bar_button, tab_content) in enumerate(self.tabs):
             yield from indent(VisibilityGenerator(tab_content).generate_set(f'i == {j}'), n=1)
             yield from indent(VisibilityGenerator(tab_bar_button).generate_set(f'i == {j}'), n=1)
-        yield from f"""
-    try :
-        GuiHandler.{self.handler_class_path}.{self.handler_tab_changed_function_name}(i)
-    except NameError:
-        print("No function {self.handler_tab_changed_function_name} defined. Tab = " + str(i))
-    except Exception as e:
-        print("Caught exception while trying to call {self.handler_tab_changed_function_name} : " + str(e))
-""".splitlines()
+        yield from indent(generate_activate_handler(self, self.handler_tab_changed_function_name, 'i'), n=1)
 
         for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
             yield f'__select_tab_{i} = lambda: __select_tab({i})'
@@ -51,14 +44,8 @@ self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
 {button_name}.setContextMenuPolicy(Qt.NoContextMenu)
 {button_name}.setAcceptDrops(False)
 {button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 100);")
-{button_name}.clicked.connect(__select_tab_{i})
-try :
-    GuiController.{self.controller_class_path}.{self.controller_set_tab_function_name} = __select_tab
-except NameError:
-    print("No function {self.controller_set_tab_function_name} defined. Current tab : {i}")
-except Exception as e:
-    print("Caught exception while trying to set the function {self.controller_set_tab_function_name} : " + str(e))
-""".splitlines()
+{button_name}.clicked.connect(__select_tab_{i})""".splitlines()
+            yield from generate_link_controller(self, f'__select_tab', self.controller_set_tab_function_name)
             yield from VisibilityGenerator(tab_content).generate_set(str(i == 0))
             yield from VisibilityGenerator(tab_bar_button).generate_set(str(i == 0))
 

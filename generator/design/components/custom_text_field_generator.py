@@ -2,6 +2,7 @@ from generator.design.core.group_generator import GroupGenerator
 from generator.design.core.text_generator import TextGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.frame_generator import FrameGenerator
+from generator.utils import generate_link_controller, indent, generate_activate_handler
 
 
 class CustomTextFieldGenerator(DesignGenerator):
@@ -42,12 +43,6 @@ text_color = self.{self.text_field_text.q_widget_name}.styleSheet().split("color
 self.{self.text_field_text.q_widget_name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
 self.{self.text_field_text.q_widget_name}.hide()
 self.{self.q_widget_name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
-try :
-    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setText
-except NameError:
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + self.{self.q_widget_name}.text())
-except Exception as e:
-    print("Caught exception while trying to call {self.controller_set_text_function_name} : " + str(e))
 
 def __{self.handler_text_changed_function_name}(*args, **kwargs):    
     if self.{self.q_widget_name}.text() == "" :
@@ -56,16 +51,15 @@ def __{self.handler_text_changed_function_name}(*args, **kwargs):
         self.{self.text_field_hint.q_widget_name}.hide()
         {self.text_field_text.controller_set_text_function_name}(self.{self.q_widget_name}.text())              
            
-    try : 
-        current_text = self.{self.q_widget_name}.text()
-        GuiHandler.{self.handler_class_path}.{self.handler_text_changed_function_name}(current_text)
-    except NameError:
-        print("No function {self.handler_text_changed_function_name} defined. Current text : " + current_text)
-    except Exception as e:
-        print("Caught exception while trying to call {self.handler_text_changed_function_name} : " + str(e))
+    current_text = self.{self.q_widget_name}.text()""".splitlines()
+        yield from indent(generate_activate_handler(self, self.handler_text_changed_function_name, f'current_text'),
+                          n=1)
 
+        yield from f"""
 __{self.handler_text_changed_function_name}()   
 self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
+        yield from generate_link_controller(self, f'self.{self.q_widget_name}.setText',
+                                            self.controller_set_text_function_name)
 
     def generate_handler(self):
         yield from f"""

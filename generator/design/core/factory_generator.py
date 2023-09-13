@@ -11,11 +11,12 @@ from generator.design.core.group_generator import GroupGenerator
 from generator.design.core.text_generator import TextGenerator
 from generator.design.core.vector_generator import VectorGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
+from generator.utils import generate_q_widget
 
 
 class FactoryGenerator(DesignGenerator):
     def generate_design(self):
-        yield from self.generate_q_widget()
+        yield from generate_q_widget(self)
 
         if not self.figma_node.get('visible', True):
             return

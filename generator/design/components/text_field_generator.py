@@ -1,5 +1,6 @@
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.frame_generator import FrameGenerator
+from generator.utils import generate_link_controller
 
 
 class TextFieldGenerator(DesignGenerator):
@@ -19,12 +20,6 @@ self.{self.q_widget_name}.setMouseTracking(True)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
 self.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setText
-try :
-    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
-except NameError:
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + self.{self.q_widget_name}.text())
-except Exception as e:
-    print("Caught exception while trying to call {self.controller_set_text_function_name} : " + str(e))
 
 def __{self.handler_text_changed_function_name}(text):
     current_text = self.{self.q_widget_name}.text()
@@ -37,6 +32,8 @@ def __{self.handler_text_changed_function_name}(text):
 
 self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})
 self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 255); color: rgba(255, 255, 255, 255); ")""".splitlines()
+        yield from generate_link_controller(self, f'self.{self.q_widget_name}.setText',
+                                            self.controller_set_text_function_name)
 
     def generate_handler(self):
         yield from f"""

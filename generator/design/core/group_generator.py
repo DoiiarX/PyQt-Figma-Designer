@@ -1,5 +1,5 @@
 from generator.design.design_generator import DesignGenerator
-from generator.utils import indent
+from generator.utils import indent, generate_q_widget
 
 
 class GroupGenerator(DesignGenerator):
@@ -12,7 +12,7 @@ class GroupGenerator(DesignGenerator):
         self.handler_class_path = f'{self.handler_class_path}.{self.short_class_name}Handler'
         # import here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
-        yield from self.generate_q_widget()
+        yield from generate_q_widget(self)
         for child in self.figma_node['children']:
             yield from FactoryGenerator(child, self).generate_design()
 

@@ -2,7 +2,7 @@ from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.design.core.frame_generator import FrameGenerator
-from generator.utils import indent
+from generator.utils import indent, generate_activate_handler, generate_link_controller
 
 
 class CustomButtonGenerator(DesignGenerator):
@@ -88,14 +88,8 @@ self.{enabled_name} = True""".splitlines()
 
         # Click handler
         yield from f"""
-def __{self.handler_click_function_name}(*args, **kwargs):
-    try :
-        GuiHandler.{self.handler_class_path}.{self.handler_click_function_name}()
-    except NameError:
-        print("No function {self.handler_click_function_name} defined")
-    except Exception as e:
-        print("Caught exception while trying to call {self.handler_click_function_name} : " + str(e))
-""".splitlines()
+def __{self.handler_click_function_name}(*args, **kwargs):""".splitlines()
+        yield from indent(generate_activate_handler(self, self.handler_click_function_name))
 
         # Connect signals
         yield from f"""
@@ -108,21 +102,10 @@ self.{self.q_widget_name}.disable = __{self.q_widget_name}_disable
 self.{self.q_widget_name}.enable = __{self.q_widget_name}_enable""".splitlines()
 
         # Connect controller
-        yield from f"""
-try :
-    GuiController.{self.controller_class_path}.{self.controller_enable_function_name} = self.{self.q_widget_name}.enable
-except NameError:
-    print("No function {self.controller_enable_function_name} defined")
-except Exception as e:
-    print("Error while linking {self.controller_enable_function_name} to {self.controller_class_path}.{self.controller_enable_function_name} : " + str(e))
-    
-try :
-    GuiController.{self.controller_class_path}.{self.controller_disable_function_name} = self.{self.q_widget_name}.disable
-except NameError :
-    print("No function {self.controller_disable_function_name} defined")
-except Exception as e:
-    print("Error while linking {self.controller_disable_function_name} to {self.controller_class_path}.{self.controller_disable_function_name} : " + str(e))
-""".splitlines()
+        yield from generate_link_controller(self, f'__{self.controller_enable_function_name}',
+                                            self.controller_enable_function_name)
+        yield from generate_link_controller(self, f'__{self.controller_disable_function_name}',
+                                            self.controller_disable_function_name)
 
         # hide the mouse over, pressed and disabled children
         yield from self.hide_show_mouse_over_generator.generate_set('False')

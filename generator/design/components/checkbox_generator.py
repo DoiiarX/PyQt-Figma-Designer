@@ -2,7 +2,7 @@ from generator.design.design_generator import DesignGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.design.core.frame_generator import FrameGenerator
-from generator.utils import indent
+from generator.utils import indent, generate_activate_handler, generate_link_controller
 
 
 class CheckboxGenerator(DesignGenerator):
@@ -31,31 +31,19 @@ self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
 self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
 self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
-        
+
 def __{self.handler_check_changed_function_name}():
-    self.{checked_name} = not self.{checked_name}
-    try :""".splitlines()
-        yield from indent(self.hide_show_checked_generator.generate_set(f'self.{checked_name}'), n=2)
+    self.{checked_name} = not self.{checked_name}""".splitlines()
+        yield from indent(self.hide_show_checked_generator.generate_set(f'self.{checked_name}'), n=1)
+        yield from indent(generate_activate_handler(self, self.handler_check_changed_function_name,
+                                                    f'self.{checked_name}'), n=1)
         yield from f"""
-        GuiHandler.{self.handler_class_path}.{self.handler_check_changed_function_name}(self.{checked_name})
-    except NameError:
-        print("No function {self.handler_check_changed_function_name} defined. Checked = " + str(self.{checked_name}))
-    except Exception as e:
-        print("Caught exception while trying to call {self.handler_check_changed_function_name} : " + str(e))
 def __{self.controller_set_checked_function_name}(checked:bool):
     self.{checked_name} = checked""".splitlines()
         yield from indent(self.hide_show_checked_generator.generate_set(f'self.{checked_name}'), n=1)
-        yield from f"""
-    
-self.{self.q_widget_name}.clicked.connect(__{self.handler_check_changed_function_name})
-
-try :
-    GuiController.{self.controller_class_path}.{self.controller_set_checked_function_name} = __{self.controller_set_checked_function_name}
-except NameError:
-    print("No function {self.controller_set_checked_function_name} defined. Checked = " + str(self.{checked_name}))
-except Exception as e:
-    print("Caught exception while trying to set the function {self.controller_set_checked_function_name} : " + str(e))
-""".splitlines()
+        yield f'self.{self.q_widget_name}.clicked.connect(__{self.handler_check_changed_function_name})'
+        yield from generate_link_controller(self, f'__{self.controller_set_checked_function_name}',
+                                       self.controller_set_checked_function_name)
         # hide the checked image
         yield from self.hide_show_checked_generator.generate_set('False')
 

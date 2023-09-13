@@ -3,7 +3,7 @@ from generator.design.core.group_generator import GroupGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
-from generator.utils import indent
+from generator.utils import indent, generate_link_controller, generate_activate_handler
 
 
 class SliderGenerator(DesignGenerator):
@@ -39,12 +39,9 @@ def __{self.q_widget_name}_update_thumb_position(*args, **kwargs):
         if {value_name} < 0 :
             {value_name} = 0
         if {value_name} > 1 :
-            {value_name} = 1
-        try :
-            GuiHandler.{self.handler_class_path}.{self.handler_value_changed_function_name}({value_name})
-        except : 
-            print("No function {self.handler_value_changed_function_name} defined. Value = " + str({value_name}))
-""".splitlines()
+            {value_name} = 1""".splitlines()
+        yield from indent(generate_activate_handler(self, self.handler_value_changed_function_name, f'{value_name}'),
+                          n=2)
         yield from indent(self.thumb_geometry_generator.generate_set(new_thumb_bounds), n=1)
         yield from f"""
 def __{self.q_widget_name}_mouse_press(*args, **kwargs):
@@ -73,14 +70,10 @@ self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
 self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
 self.{self.q_widget_name}.mousePressEvent = __{self.q_widget_name}_mouse_press
 self.{self.q_widget_name}.mouseReleaseEvent = __{self.q_widget_name}_mouse_release
-self.{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move
-try :
-    GuiController.{self.controller_class_path}.{self.controller_set_value_function_name} = __{self.controller_set_value_function_name}    
-except NameError:
-    print("No function {self.controller_set_value_function_name} defined. Value = " + str({value_name}))
-except Exception as e:
-    print("Error while linking {self.controller_set_value_function_name} to {self.controller_class_path}.{self.controller_set_value_function_name} : " + str(e))
-__{self.q_widget_name}_update_thumb_position()""".splitlines()
+self.{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move""".splitlines()
+        yield from generate_link_controller(self, f'__{self.controller_set_value_function_name}',
+                                            self.controller_set_value_function_name)
+        yield f'__{self.q_widget_name}_update_thumb_position()'
         yield from self.thumb_parent_generator.generate_set(f'self.{self.q_widget_name}')
 
     def generate_controller(self):
