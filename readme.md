@@ -73,6 +73,11 @@ SVG files are generated during compilation and can be found in the `svg` subdire
 
 PyQt Figma Designer supports various components, each with specific naming conventions and hierarchies. To ensure proper functionality, follow these guidelines:
 
+### Components pack
+
+For a quick components overview, you can access the Component Pack [here](https://www.figma.com/file/AZD7bWnCwce9uAuTqa6aY5/Untitled?type=design&node-id=0%3A1&mode=design&t=0jee9KtQMinbOkMd-1)
+![Component Pack](images/screenshot_component_test_frame.png)
+
 ### Window
 
 To create a window, place a frame at the root level of the Figma file. The frame will be automatically converted into a window.
@@ -169,7 +174,4 @@ For progress bars, maintain the following order:
 
 By adhering to these naming conventions and hierarchies, you can make the most of PyQt Figma Designer's capabilities to create rich and functional PyQt6 GUIs.
 
-### Components pack
 
-For additional resources, you can access the Component Pack [here](https://www.figma.com/file/AZD7bWnCwce9uAuTqa6aY5/Untitled?type=design&node-id=0%3A1&mode=design&t=0jee9KtQMinbOkMd-1)
-![Component Pack](images/screenshot_component_test_frame.png)
