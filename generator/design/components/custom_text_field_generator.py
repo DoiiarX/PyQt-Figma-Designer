@@ -1,55 +1,50 @@
-from generator.design.core.group_generator import GroupGenerator
+from generator.design.component_generator import ComponentGenerator
 from generator.design.core.text_generator import TextGenerator
-from generator.design.design_generator import DesignGenerator
-from generator.design.core.frame_generator import FrameGenerator
 from generator.utils import generate_link_controller, indent, generate_activate_handler
 
 
-class CustomTextFieldGenerator(DesignGenerator):
+class CustomTextFieldGenerator(ComponentGenerator):
     handler_text_changed_function_name: str
     controller_set_text_function_name: str
-    text_field_text: TextGenerator | None
-    text_field_hint: TextGenerator | None
-    text_field_bounds: str
 
-    def __init__(self, figma_node, parent, group_generator: GroupGenerator):
-        super().__init__(figma_node, parent)
-        text_field_text = group_generator.children[-1]
-        while not isinstance(text_field_text, TextGenerator):
-            text_field_text = text_field_text.children[-1]
-        self.text_field_text = text_field_text
-
-        text_field_hint = group_generator.children[-2]
-        while not isinstance(text_field_hint, TextGenerator):
-            text_field_hint = text_field_hint.children[-1]
-        self.text_field_hint = text_field_hint
-
-        self.text_field_bounds = group_generator.children[-3].pyqt_bounds
+    prefix_rule = 'custom_text_field'
 
     def generate_design(self):
+        text_field_text = self.group_generator.children[-1]
+        while not isinstance(text_field_text, TextGenerator):
+            text_field_text = text_field_text.children[-1]
+        text_field_text = text_field_text
+
+        text_field_hint = self.group_generator.children[-2]
+        while not isinstance(text_field_hint, TextGenerator):
+            text_field_hint = text_field_hint.children[-1]
+        text_field_hint = text_field_hint
+
+        text_field_bounds = self.group_generator.children[-3].pyqt_bounds
+
         self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
 
         yield from f"""
 self.{self.q_widget_name} = QLineEdit(self.{self.parent.q_widget_name})
-self.{self.q_widget_name}.setGeometry({self.text_field_bounds})
+self.{self.q_widget_name}.setGeometry({text_field_bounds})
 self.{self.q_widget_name}.setAutoFillBackground(False)
 self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
 self.{self.q_widget_name}.setMouseTracking(True)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
-self.{self.q_widget_name}.setFont(self.{self.text_field_text.q_widget_name}.font())
-text_color = self.{self.text_field_text.q_widget_name}.styleSheet().split("color: ")[1].split(";")[0]
-self.{self.text_field_text.q_widget_name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
-self.{self.text_field_text.q_widget_name}.hide()
+self.{self.q_widget_name}.setFont(self.{text_field_text.q_widget_name}.font())
+text_color = self.{text_field_text.q_widget_name}.styleSheet().split("color: ")[1].split(";")[0]
+self.{text_field_text.q_widget_name}.setStyleSheet("color: rgba(255, 255, 255, 0);")
+self.{text_field_text.q_widget_name}.hide()
 self.{self.q_widget_name}.setStyleSheet("color: " + text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
 
 def __{self.handler_text_changed_function_name}(*args, **kwargs):    
     if self.{self.q_widget_name}.text() == "" :
-        self.{self.text_field_hint.q_widget_name}.show()
+        self.{text_field_hint.q_widget_name}.show()
     else :
-        self.{self.text_field_hint.q_widget_name}.hide()
-        {self.text_field_text.controller_set_text_function_name}(self.{self.q_widget_name}.text())              
+        self.{text_field_hint.q_widget_name}.hide()
+        {text_field_text.controller_set_text_function_name}(self.{self.q_widget_name}.text())              
            
     current_text = self.{self.q_widget_name}.text()""".splitlines()
         yield from indent(generate_activate_handler(self, self.handler_text_changed_function_name, f'current_text'),

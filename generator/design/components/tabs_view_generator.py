@@ -1,39 +1,38 @@
-from generator.design.design_generator import DesignGenerator
+from generator.design.component_generator import ComponentGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.design.core.frame_generator import FrameGenerator
 from generator.utils import indent, generate_link_controller, generate_activate_handler
 
 
-class TabsViewGenerator(DesignGenerator):
+class TabsViewGenerator(ComponentGenerator):
     handler_tab_changed_function_name: str
     controller_set_tab_function_name: str
 
-    def __init__(self, figma_node, parent, group_generator: GroupGenerator):
-        super().__init__(figma_node, parent)
-        if len(group_generator.children) < 2:
-            raise Exception(f'Tabs view {self.q_widget_name} should have at least 2 children')
-
-        tab_bar = group_generator.children[-1].children[0].children
-        tabs_content = group_generator.children[-2].children[0].children
-        self.tabs = list(reversed(list(zip(tab_bar, tabs_content))))
+    prefix_rule = 'tabs_view'
 
     def generate_design(self):
         self.handler_tab_changed_function_name = f'{self.q_widget_name}_tab_changed'
         self.controller_set_tab_function_name = f'{self.q_widget_name}_set_tab'
 
+        if len(self.group_generator.children) < 2:
+            raise Exception(f'Tabs view {self.q_widget_name} should have at least 2 children')
+
+        tab_bar = self.group_generator.children[-1].children[0].children
+        tabs_content = self.group_generator.children[-2].children[0].children
+        tabs = list(reversed(list(zip(tab_bar, tabs_content))))
+
         yield f'def __select_tab(i):'
-        for j, (tab_bar_button, tab_content) in enumerate(self.tabs):
+        for j, (tab_bar_button, tab_content) in enumerate(tabs):
             yield from indent(VisibilityGenerator(tab_content).generate_set(f'i == {j}'), n=1)
             yield from indent(VisibilityGenerator(tab_bar_button).generate_set(f'i == {j}'), n=1)
         yield from indent(generate_activate_handler(self, self.handler_tab_changed_function_name, 'i'), n=1)
 
-        for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
+        for i, (tab_bar_button, tab_content) in enumerate(tabs):
             yield f'__select_tab_{i} = lambda: __select_tab({i})'
         yield from f"""
 self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
 """.splitlines()
-        for i, (tab_bar_button, tab_content) in enumerate(self.tabs):
+        for i, (tab_bar_button, tab_content) in enumerate(tabs):
             button_name = f'{tab_bar_button.q_widget_name}_button'
             yield from f"""
 {button_name} = QPushButton(self.{tab_bar_button.parent.q_widget_name})

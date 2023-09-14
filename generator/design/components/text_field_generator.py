@@ -1,11 +1,14 @@
+from generator.design.component_generator import ComponentGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.design.core.frame_generator import FrameGenerator
 from generator.utils import generate_link_controller
 
 
-class TextFieldGenerator(DesignGenerator):
+class TextFieldGenerator(ComponentGenerator):
     handler_text_changed_function_name: str
     controller_set_text_function_name: str
+
+    prefix_rule = 'text_field'
 
     def generate_design(self):
         self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'

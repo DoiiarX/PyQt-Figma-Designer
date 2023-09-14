@@ -1,10 +1,11 @@
-from generator.design.design_generator import DesignGenerator
-from generator.design.core.frame_generator import FrameGenerator
+from generator.design.component_generator import ComponentGenerator
 from generator.utils import generate_activate_handler, indent
 
 
-class ButtonGenerator(DesignGenerator):
+class ButtonGenerator(ComponentGenerator):
     handler_click_function_name: str
+
+    prefix_rule = 'button'
 
     def generate_design(self):
         self.handler_click_function_name = f'{self.q_widget_name}_clicked'

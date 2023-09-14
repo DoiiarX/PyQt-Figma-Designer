@@ -1,3 +1,6 @@
+import inspect
+
+from generator.design.component_generator import ComponentGenerator
 from generator.design.components.custom_button_generator import CustomButtonGenerator
 from generator.design.components.custom_text_field_generator import CustomTextFieldGenerator
 from generator.design.components.progress_bar_generator import ProgressBarGenerator
@@ -12,6 +15,7 @@ from generator.design.core.text_generator import TextGenerator
 from generator.design.core.vector_generator import VectorGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.utils import generate_q_widget
+import generator.design.components as components
 
 
 class FactoryGenerator(DesignGenerator):
@@ -38,31 +42,15 @@ class FactoryGenerator(DesignGenerator):
         # generate inputs
         name = self.figma_node['name'].lower().replace(' ', '').replace('-', '').replace('_', '')
 
-        if name.startswith('button'):
-            yield from ButtonGenerator(self.figma_node, self).generate_design()
-
-        elif name.startswith('textfield'):
-            yield from TextFieldGenerator(self.figma_node, self).generate_design()
-
-        # those components need a group generator
-        elif group_generator is not None:
-            if name.startswith('checkbox'):
-                yield from CheckboxGenerator(self.figma_node, self, group_generator).generate_design()
-
-            elif name.startswith('customtextfield'):
-                yield from CustomTextFieldGenerator(self.figma_node, self, group_generator).generate_design()
-
-            elif name.startswith('progressbar'):
-                yield from ProgressBarGenerator(self.figma_node, self, group_generator).generate_design()
-
-            elif name.startswith('custombutton'):
-                yield from CustomButtonGenerator(self.figma_node, self, group_generator).generate_design()
-
-            elif name.startswith('slider'):
-                yield from SliderGenerator(self.figma_node, self, group_generator).generate_design()
-
-            elif name.startswith('tabsview'):
-                yield from TabsViewGenerator(self.figma_node, self, group_generator).generate_design()
+        if group_generator is not None:
+            # enumerate classes in module design.components
+            for _, obj in inspect.getmembers(components, inspect.ismodule):
+                for _, cls in inspect.getmembers(obj, inspect.isclass):
+                    # if cls inherits ComponentGenerator
+                    if issubclass(cls, ComponentGenerator) and cls != ComponentGenerator:
+                        prefix_rule = cls.prefix_rule.lower().replace(' ', '').replace('-', '').replace('_', '')
+                        if name.startswith(prefix_rule):
+                            yield from cls(self.figma_node, self, group_generator).generate_design()
 
         # hide the component if it is not visible
         if not self.figma_node.get('visible', True):
