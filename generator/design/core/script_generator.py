@@ -16,6 +16,11 @@ try :
 except Exception as e:
     print("Exception while importing gui_handler.py")
     print(e)    
+try : 
+    import {config.strings_file_name.split('.')[0]} as Strings
+except Exception as e:
+    print("Exception while importing strings.py")
+    print(e)    
 from PySide6.QtSvgWidgets import QSvgWidget
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,

@@ -1,6 +1,4 @@
 from generator.design.component_generator import ComponentGenerator
-from generator.design.design_generator import DesignGenerator
-from generator.design.core.frame_generator import FrameGenerator
 from generator.utils import generate_link_controller
 
 

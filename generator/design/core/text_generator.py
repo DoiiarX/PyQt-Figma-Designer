@@ -1,14 +1,18 @@
+from typing import Dict, Iterator
+
 import config
-from generator.design.core.frame_generator import FrameGenerator
 from generator.design.design_generator import DesignGenerator
 
 
 class TextGenerator(DesignGenerator):
     controller_set_text_function_name: str
+    strings: Dict[str, str] = {}
 
     def generate_design(self):
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
-        text = self.figma_node['characters'].replace('"', '\\"')
+        string_name = f'{self.q_widget_name}_text'.upper()
+        string = self.figma_node['characters'].replace('"', '\\"')
+        TextGenerator.strings[string_name] = string
         font = self.figma_node['style']['fontFamily']
         font_size = self.figma_node['style']['fontSize'] * config.text_scale * config.scale
         color = 'rgba(0, 0, 0, 0)'
@@ -40,7 +44,7 @@ class TextGenerator(DesignGenerator):
                 horizontal_alignment = 'Qt.AlignHCenter'
 
         yield from f"""self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
-self.{self.q_widget_name}.setText("{text}")
+self.{self.q_widget_name}.setText(Strings.{string_name})
 font = QFont()
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
@@ -66,3 +70,12 @@ except Exception as e:
 @classmethod
 def {self.controller_set_text_function_name}(cls, text:str):
     print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")""".splitlines()
+
+    @classmethod
+    def generate_strings(cls) -> Iterator[str]:
+        strings = {cls.strings[s]:[] for s in cls.strings}
+        for s in cls.strings:
+            strings[cls.strings[s]].append(s)
+        for string, names in strings.items():
+            names = ' = '.join(names)
+            yield f'{names} = "{string}"'
