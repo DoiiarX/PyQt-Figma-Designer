@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg version="1.2" baseProfile="tiny"  xmlns="http://www.w3.org/2000/svg">
-	<path fill="#f1f1f1" stroke-width="1.0" fill-opacity="1.0" stroke-opacity="1.0" d="M0 0L667 0L667 83L0 83L0 0Z"/>
-	<path fill="#d2d2d2" stroke-width="1.0" fill-opacity="1.0" stroke-opacity="1.0" d="M0 0L0 -1L-1 -1L-1 0L0 0ZM667 0L668 0L668 -1L667 -1L667 0ZM667 83L667 84L668 84L668 83L667 83ZM0 83L-1 83L-1 84L0 84L0 83ZM0 1L667 1L667 -1L0 -1L0 1ZM666 0L666 83L668 83L668 0L666 0ZM667 82L0 82L0 84L667 84L667 82ZM1 83L1 0L-1 0L-1 83L1 83Z"/>
-</svg>

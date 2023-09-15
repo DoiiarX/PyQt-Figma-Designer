@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg version="1.2" baseProfile="tiny"  xmlns="http://www.w3.org/2000/svg">
+	<linearGradient id="gradient8" x1="0.5007496163072941" y1="0.9999999970319922" x2="0.5007496161716761" y2="-2.9680078394989096e-09">
+		<stop offset="0.0" stop-color="#e4e1f1" stop-opacity="1.0"/>
+		<stop offset="1.0" stop-color="#d9d9d9" stop-opacity="0.0"/>
+	</linearGradient>
+	<path fill="url(#gradient8)" stroke-width="1.0" fill-opacity="1" stroke-opacity="1" d="M0 0L696.346 0L696.346 326L0 326L0 0Z"/>
+</svg>
