@@ -31,6 +31,8 @@ figma_file_url = ""
 
 config_file_name = "pyqtfd-config.json"
 
+python = 'python' if os.name == 'nt' else 'python3'
+
 
 def slider_to_scale(value: float, v_min: float, v_max: float):
     return value * (v_max - v_min) + v_min
@@ -201,7 +203,7 @@ def browse_directory():
 
 def create_project():
     global tab
-    create_project_command = f'python pyqtfd-create.py -p "{project_directory}"'
+    create_project_command = f'{python} pyqtfd-create.py -p "{project_directory}"'
     if clear_project:
         create_project_command += ' -c'
     print(create_project_command)
@@ -222,7 +224,7 @@ def create_project():
 
 def download_figma_file():
     global tab
-    download_command = f'python pyqtfd-download.py -p "{project_directory}" -t {figma_token} -url "{figma_file_url}"'
+    download_command = f'{python} pyqtfd-download.py -p "{project_directory}" -t {figma_token} -url "{figma_file_url}"'
     if skip_images:
         download_command += ' -ni'
     print(download_command)
@@ -250,7 +252,7 @@ def compile_project():
         flags += ' -ows'
     if overwrite_handlers:
         flags += ' -owh'
-    compile_command = f'python pyqtfd-compile.py  {flags}'
+    compile_command = f'{python} pyqtfd-compile.py  {flags}'
 
     print(compile_command)
     process = subprocess.Popen(compile_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -270,7 +272,7 @@ def compile_project():
 
 
 def run_project():
-    process = subprocess.Popen(f'python gui.py', shell=True, stdout=subprocess.PIPE,
+    process = subprocess.Popen(f'{python} gui.py', shell=True, stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT, cwd=project_directory)
     for line in process.stdout.readlines():
         print(line.decode('utf-8').strip())
