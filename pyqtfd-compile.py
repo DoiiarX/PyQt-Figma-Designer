@@ -22,6 +22,13 @@ parser.add_argument('-s', '--scale',
                     default=1.0,
                     type=float,
                     dest='scale')
+parser.add_argument('-ts', '--text-scale',
+                    help='Text scale',
+                    action='store',
+                    required=False,
+                    default=1.0,
+                    type=float,
+                    dest='text_scale')
 parser.add_argument('-owh', '--overwrite-handler',
                     help='Overwrite handlers file.',
                     action='store_true',
@@ -44,6 +51,7 @@ parser.add_argument('-owc', '--overwrite-config',
 if __name__ == '__main__':
     args = parser.parse_args()
     config.scale = args.scale
+    config.text_scale = args.text_scale
     config.overwrite_handler = args.overwrite_handler
     config.set_project_directory(args.path)
     config.check_project_directory()

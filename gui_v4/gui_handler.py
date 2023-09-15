@@ -69,13 +69,13 @@ class PyqtFigmaDesignerGuiV4Handler:
 
                         @classmethod
                         def custom_text_field_figma_token_1_text_changed(cls, text: str):
-                            model.figma_file_url = text
+                            model.figma_token = text
 
                     class GroupTextFieldFigmaToken2Handler:
 
                         @classmethod
                         def custom_text_field_figma_token_4_text_changed(cls, text: str):
-                            model.figma_token = text
+                            model.figma_file_url = text
 
                     @classmethod
                     def checkbox_skip_images_1_check_changed(cls, checked: bool):

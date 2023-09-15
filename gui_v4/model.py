@@ -42,7 +42,7 @@ def scale_to_slider(value: float, v_min: float, v_max: float):
 
 def load_config():
     global scale, scale_min, scale_max, overwrite_handlers, project_directory, figma_token, figma_file_url, \
-        overwrite_config, overwrite_strings, text_scale, text_scale_min, text_scale_max, tab
+        overwrite_config, overwrite_strings, text_scale, text_scale_min, text_scale_max, tab, skip_images, clear_project
     if os.path.exists(config_file_name):
         with (open(config_file_name, 'r') as file):
             config = json.load(file)
@@ -59,6 +59,8 @@ def load_config():
             text_scale = config['text_scale']
             text_scale_min = config['text_scale_min']
             text_scale_max = config['text_scale_max']
+            skip_images = config['skip_images']
+            clear_project = config['clear_project']
             update_ui()
 
 
@@ -76,7 +78,9 @@ def save_config():
         'overwrite_strings': overwrite_strings,
         'text_scale': text_scale,
         'text_scale_min': text_scale_min,
-        'text_scale_max': text_scale_max
+        'text_scale_max': text_scale_max,
+        'skip_images': skip_images,
+        'clear_project': clear_project
     }
     with open(config_file_name, 'w') as file:
         json.dump(config, file)
@@ -129,7 +133,7 @@ def update_ui():
         TabsView0Controller. \
         TabsContent0Controller. \
         Compile0Controller. \
-        checkbox_overwrite_handlers_1_set_checked(overwrite_config)
+        checkbox_overwrite_config_1_set_checked(overwrite_config)
 
     # set overwrite strings checkbox
     PyqtFigmaDesignerGuiV4Controller. \
@@ -137,7 +141,7 @@ def update_ui():
         TabsView0Controller. \
         TabsContent0Controller. \
         Compile0Controller. \
-        checkbox_overwrite_handlers_1_set_checked(overwrite_config)
+        checkbox_overwrite_strings_1_set_checked(overwrite_strings)
 
     # set project directory text
     PyqtFigmaDesignerGuiV4Controller. \
@@ -151,8 +155,8 @@ def update_ui():
         TabsView0Controller. \
         TabsContent0Controller. \
         Download0Controller. \
-        GroupTextFieldFigmaToken2Controller. \
-        custom_text_field_figma_token_4_set_text(figma_token)
+        GroupTextFieldFigmaToken0Controller. \
+        custom_text_field_figma_token_1_set_text(figma_token)
 
     # set figma file url text
     PyqtFigmaDesignerGuiV4Controller. \
@@ -160,8 +164,8 @@ def update_ui():
         TabsView0Controller. \
         TabsContent0Controller. \
         Download0Controller. \
-        GroupTextFieldFigmaToken0Controller. \
-        custom_text_field_figma_token_1_set_text(figma_file_url)
+        GroupTextFieldFigmaToken2Controller. \
+        custom_text_field_figma_token_4_set_text(figma_file_url)
 
     # set clear project checkbox
     PyqtFigmaDesignerGuiV4Controller. \
@@ -234,11 +238,12 @@ def download_figma_file():
         message_box.setText("Download done!")
         tab += 1
     message_box.exec()
+    update_ui()
 
 
 def compile_project():
     global tab
-    flags = f'-p "{project_directory}" -s {scale}'
+    flags = f'-p "{project_directory}" -s {scale} -ts {text_scale}'
     if overwrite_config:
         flags += ' -owc'
     if overwrite_strings:
@@ -261,6 +266,7 @@ def compile_project():
         message_box.setText("Compile done!")
         tab += 1
     message_box.exec()
+    update_ui()
 
 
 def run_project():
