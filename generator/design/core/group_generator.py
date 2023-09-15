@@ -13,6 +13,7 @@ class GroupGenerator(DesignGenerator):
         self.controller_class_path = f'{self.controller_class_path}.{self.short_class_name}Controller'
         self.handler_class_path = f'{self.handler_class_path}.{self.short_class_name}Handler'
         self.strings_class_path = f'{self.strings_class_path}.{self.short_class_name}Strings'
+        self.config_class_path = f'{self.config_class_path}.{self.short_class_name}Config'
         # import here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
         yield from generate_q_widget(self)
@@ -48,3 +49,13 @@ class GroupGenerator(DesignGenerator):
 
         yield f'class {self.strings_class_path.split(".")[-1]}:'
         yield from indent(sub_strings.__iter__(), n=1)
+
+    def generate_config(self) -> Iterator[Tuple[str, str]]:
+        sub_config = []
+        for child in self.children:
+            sub_config.extend(child.generate_config())
+        if len(sub_config) == 0:
+            return []
+
+        yield f'class {self.config_class_path.split(".")[-1]}:'
+        yield from indent(sub_config.__iter__(), n=1)

@@ -2,7 +2,6 @@ import os
 import re
 
 token: str
-overwrite_handler: bool
 project_directory: str
 scale: float
 
@@ -22,7 +21,7 @@ figma_file_name = 'figma_file.json'
 gui_handler_file_name = 'gui_handler.py'
 gui_controller_file_name = 'gui_controller.py'
 strings_file_name = 'strings.py'
-components_config_file_name = 'components_config.json'
+components_config_file_name = 'components_config.py'
 
 generic_components_directory = 'generator/design/components'
 

@@ -6,10 +6,11 @@ class ButtonGenerator(ComponentGenerator):
     handler_click_function_name: str
 
     component_name = 'button'
-    component_config = {'pressed_color': 'rgba(255, 255, 255, 30)'}
+    component_config = {'pressed_color': "'rgba(255, 255, 255, 30)'"}
 
     def generate_design(self):
         self.handler_click_function_name = f'{self.q_widget_name}_clicked'
+        background_color = f'ComponentsConfig.{self.config_class_path}.pressed_color'
         yield from f"""
 self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
 self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
@@ -24,7 +25,7 @@ def __{self.handler_click_function_name}(*args, **kwargs):""".splitlines()
         yield from f"""
 self.{self.q_widget_name}.clicked.connect(__{self.handler_click_function_name})
 self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
-self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 30);")""".splitlines()
+self.{self.q_widget_name}.setStyleSheet(f"background-color:" + {background_color})""".splitlines()
 
     def generate_handler(self):
         yield from f"""

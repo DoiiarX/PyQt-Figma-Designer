@@ -1,7 +1,6 @@
 from typing import Iterator
 
 import config
-from generator.design.core.vector_generator import VectorGenerator
 from generator.utils import indent, generate_activate_handler
 
 from generator.design.design_generator import DesignGenerator
@@ -20,6 +19,7 @@ class FrameGenerator(DesignGenerator):
         self.handler_class_path = f'{self.short_class_name}Handler'
         self.controller_class_path = f'{self.short_class_name}Controller'
         self.strings_class_path = f'{self.short_class_name}Strings'
+        self.config_class_path = f'{self.short_class_name}Config'
         yield from f"""
 
 
@@ -65,3 +65,10 @@ class {self.handler_class_path.split(".")[-1]}:
             return [].__iter__()
         yield f'class {self.strings_class_path.split(".")[-1]}:'
         yield from sub_strings
+
+    def generate_config(self) -> Iterator[str]:
+        sub_config = list(indent(super().generate_config()))
+        if len(sub_config) == 0:
+            return [].__iter__()
+        yield f'class {self.config_class_path.split(".")[-1]}:'
+        yield from sub_config

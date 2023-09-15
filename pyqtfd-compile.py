@@ -1,5 +1,7 @@
 import argparse
 import json
+import os
+
 import config
 import generator.design.core.script_generator
 
@@ -20,13 +22,24 @@ parser.add_argument('-s', '--scale',
                     default=1.0,
                     type=float,
                     dest='scale')
-parser.add_argument('-oh', '--overwrite-handler',
-                    help='Overwrite handler',
-                    action='store',
+parser.add_argument('-owh', '--overwrite-handler',
+                    help='Overwrite handlers file.',
+                    action='store_true',
                     required=False,
                     default=False,
-                    type=bool,
                     dest='overwrite_handler')
+parser.add_argument('-ows', '--overwrite-strings',
+                    help='Overwrite strings file.',
+                    action='store_true',
+                    required=False,
+                    default=False,
+                    dest='overwrite_strings')
+parser.add_argument('-owc', '--overwrite-config',
+                    help='Overwrite config file.',
+                    action='store_true',
+                    required=False,
+                    default=False,
+                    dest='overwrite_config')
 
 if __name__ == '__main__':
     args = parser.parse_args()
@@ -43,12 +56,19 @@ if __name__ == '__main__':
     handler_code = '\n'.join(script_generator.generate_handler())
     controller_code = '\n'.join(script_generator.generate_controller())
     strings_code = '\n'.join(script_generator.generate_strings())
+    config_code = '\n'.join(script_generator.generate_config())
     with open(config.gui_path, 'w', encoding="utf-8") as file:
         file.write(python_code)
     with open(config.gui_controller_path, 'w', encoding="utf-8") as file:
         file.write(controller_code)
-    with open(config.strings_path, 'w', encoding="utf-8") as file:
-        file.writelines(strings_code)
-    if config.overwrite_handler:
+
+    if args.overwrite_handler or not os.path.exists(config.gui_handler_path):
         with open(config.gui_handler_path, 'w', encoding="utf-8") as file:
             file.write(handler_code)
+    if args.overwrite_strings or not os.path.exists(config.strings_path):
+        with open(config.strings_path, 'w', encoding="utf-8") as file:
+            file.write(strings_code)
+    if args.overwrite_config or not os.path.exists(config.components_config_path):
+        with open(config.components_config_path, 'w', encoding="utf-8") as file:
+            file.write(config_code)
+

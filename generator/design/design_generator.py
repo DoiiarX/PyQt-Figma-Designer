@@ -16,6 +16,7 @@ class DesignGenerator:
     handler_class_path: str = ''
     controller_class_path: str = ''
     strings_class_path: str = ''
+    config_class_path: str = ''
 
     def __init__(self, figma_node: dict, parent: 'DesignGenerator|None'):
         self.figma_node = figma_node
@@ -28,6 +29,7 @@ class DesignGenerator:
             self.controller_class_path = parent.controller_class_path
             self.handler_class_path = parent.handler_class_path
             self.strings_class_path = parent.strings_class_path
+            self.config_class_path = parent.config_class_path
 
     @property
     def bounds(self):
@@ -84,3 +86,7 @@ class DesignGenerator:
     def generate_strings(self) -> Iterator[str]:
         for child in self.children:
             yield from child.generate_strings()
+
+    def generate_config(self) -> Iterator[str]:
+        for child in self.children:
+            yield from child.generate_config()

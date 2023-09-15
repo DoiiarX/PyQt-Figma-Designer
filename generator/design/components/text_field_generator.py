@@ -7,7 +7,7 @@ class TextFieldGenerator(ComponentGenerator):
     controller_set_text_function_name: str
 
     component_name = 'text_field'
-    component_config = {'text_color': 'rgba(255, 255, 255, 255)', 'hint_color': 'rgba(255, 255, 255, 255)', 'hint': ''}
+    component_config = {'text_color': "'rgba(255, 255, 255, 255)'", 'hint_color': "'rgba(255, 255, 255, 255)'", 'hint': "''"}
 
     def generate_design(self):
         self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'
