@@ -52,11 +52,6 @@ Follow these steps to install PyQt Figma Designer on your system:
 
 ### Command Line Interface (CLI)
 
-#### Downloading Figma Files
-
-PyQt Figma Designer provides a Command Line Interface (CLI) that enables you to conveniently download Figma files and
-generate PyQt-Figma-Designer projects. Here are the available CLI commands and their usage:
-
 #### Creating new project
 
 ```bash
@@ -85,6 +80,7 @@ This command allows you to download a Figma file as well as its images. It accep
 - `-p PATH, --project PATH`: Specifies the project directory where the generated files will be stored.
 - `url URL, --url URL`: Specifies the Figma file URL.
 - `-t TOKEN, --token TOKEN`: Specifies the Figma personal access token.
+- `-ni, --no-images`: (Optional) When specified, images are not downloaded.
 
 Example usage:
 
