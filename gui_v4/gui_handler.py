@@ -5,6 +5,10 @@ Each function is connected to a specific event of a specific widget in the GUI.
 """
 
 # imports
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+from gui_controller import *
 import model
 
 

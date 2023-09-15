@@ -24,11 +24,17 @@ except Exception as e:
     print(e)
     
 from PySide6.QtSvgWidgets import QSvgWidget
-from PySide6.QtCore import (QRect,
-                            Qt)
-from PySide6.QtGui import (QFont)
-from PySide6.QtWidgets import (QApplication, QLabel,
-                               QLineEdit, QMainWindow, QPushButton, QWidget)
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
+    QCursor, QFont, QFontDatabase, QGradient,
+    QIcon, QImage, QKeySequence, QLinearGradient,
+    QPainter, QPalette, QPixmap, QRadialGradient,
+    QTransform, QPen, QPainterPath)
+from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
+    QLineEdit, QMainWindow, QPushButton, QSizePolicy,
+    QStatusBar, QTableView, QWidget)
 
 
 
@@ -71,8 +77,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text.setGeometry(QRect(75, 14, 268, 33))
         self.text.setObjectName("text")
         self.text_0 = QLabel(self.text)
-        self.text_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTitle0Strings.TEXT_TEXT_0)
+        self.text_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTitle0Strings.TEXT_TEXT_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(19)
@@ -125,8 +130,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label.setGeometry(QRect(18, 4, 98, 18))
         self.label.setObjectName("label")
         self.label_0 = QLabel(self.label)
-        self.label_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabDownload0Strings.TabUnchecked1Strings.TEXT_LABEL_0)
+        self.label_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabDownload0Strings.TabUnchecked1Strings.TEXT_LABEL_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -182,8 +186,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label_1.setGeometry(QRect(18, 4, 98, 18))
         self.label_1.setObjectName("label_1")
         self.label_2 = QLabel(self.label_1)
-        self.label_2.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabRun0Strings.TabUnchecked4Strings.TEXT_LABEL_2)
+        self.label_2.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabRun0Strings.TabUnchecked4Strings.TEXT_LABEL_2)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -239,8 +242,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label_3.setGeometry(QRect(18, 4, 98, 18))
         self.label_3.setObjectName("label_3")
         self.label_4 = QLabel(self.label_3)
-        self.label_4.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabCompile0Strings.TabUnchecked7Strings.TEXT_LABEL_4)
+        self.label_4.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabCompile0Strings.TabUnchecked7Strings.TEXT_LABEL_4)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -296,8 +298,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label_5.setGeometry(QRect(18, 4, 98, 18))
         self.label_5.setObjectName("label_5")
         self.label_6 = QLabel(self.label_5)
-        self.label_6.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabCreateProject0Strings.TabUnchecked10Strings.TEXT_LABEL_6)
+        self.label_6.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.Background2Strings.TabCreateProject0Strings.TabUnchecked10Strings.TEXT_LABEL_6)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -374,8 +375,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_1.setGeometry(QRect(78, 11, 21, 13))
         self.text_1.setObjectName("text_1")
         self.text_2 = QLabel(self.text_1)
-        self.text_2.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.Normal1Strings.TEXT_TEXT_2)
+        self.text_2.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.Normal1Strings.TEXT_TEXT_2)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -410,8 +410,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_3.setGeometry(QRect(78, 11, 21, 13))
         self.text_3.setObjectName("text_3")
         self.text_4 = QLabel(self.text_3)
-        self.text_4.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.Disabled1Strings.TEXT_TEXT_4)
+        self.text_4.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.Disabled1Strings.TEXT_TEXT_4)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -446,8 +445,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_5.setGeometry(QRect(78, 11, 21, 13))
         self.text_5.setObjectName("text_5")
         self.text_6 = QLabel(self.text_5)
-        self.text_6.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.Pressed1Strings.TEXT_TEXT_6)
+        self.text_6.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.Pressed1Strings.TEXT_TEXT_6)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -482,8 +480,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_7.setGeometry(QRect(78, 11, 21, 13))
         self.text_7.setObjectName("text_7")
         self.text_8 = QLabel(self.text_7)
-        self.text_8.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.MouseOver1Strings.TEXT_TEXT_8)
+        self.text_8.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Run0Strings.CustomButtonRun0Strings.MouseOver1Strings.TEXT_TEXT_8)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -595,8 +592,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.overwrite_handlers.setGeometry(QRect(30, 3, 140, 13))
         self.overwrite_handlers.setObjectName("overwrite_handlers")
         self.overwrite_handlers_0 = QLabel(self.overwrite_handlers)
-        self.overwrite_handlers_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CheckboxOverwriteHandlers0Strings.TEXT_OVERWRITE_HANDLERS_0)
+        self.overwrite_handlers_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CheckboxOverwriteHandlers0Strings.TEXT_OVERWRITE_HANDLERS_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -689,8 +685,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.overwrite_styles.setGeometry(QRect(30, 3, 140, 13))
         self.overwrite_styles.setObjectName("overwrite_styles")
         self.overwrite_styles_0 = QLabel(self.overwrite_styles)
-        self.overwrite_styles_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CheckboxOverwriteConfig0Strings.TEXT_OVERWRITE_STYLES_0)
+        self.overwrite_styles_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CheckboxOverwriteConfig0Strings.TEXT_OVERWRITE_STYLES_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -783,8 +778,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.overwrite_strings.setGeometry(QRect(30, 3, 140, 13))
         self.overwrite_strings.setObjectName("overwrite_strings")
         self.overwrite_strings_0 = QLabel(self.overwrite_strings)
-        self.overwrite_strings_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CheckboxOverwriteStrings0Strings.TEXT_OVERWRITE_STRINGS_0)
+        self.overwrite_strings_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CheckboxOverwriteStrings0Strings.TEXT_OVERWRITE_STRINGS_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -974,8 +968,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.scale.setGeometry(QRect(0, 16, 62, 13))
         self.scale.setObjectName("scale")
         self.scale_0 = QLabel(self.scale)
-        self.scale_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderScale0Strings.TEXT_SCALE_0)
+        self.scale_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderScale0Strings.TEXT_SCALE_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -998,8 +991,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.x1.setGeometry(QRect(139, 0, 47, 13))
         self.x1.setObjectName("x1")
         self.x1_0 = QLabel(self.x1)
-        self.x1_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderScale0Strings.TEXT_X1_0)
+        self.x1_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderScale0Strings.TEXT_X1_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1125,8 +1117,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_scale.setGeometry(QRect(0, 16, 62, 13))
         self.text_scale.setObjectName("text_scale")
         self.text_scale_0 = QLabel(self.text_scale)
-        self.text_scale_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderTextScale0Strings.TEXT_TEXT_SCALE_0)
+        self.text_scale_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderTextScale0Strings.TEXT_TEXT_SCALE_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1149,8 +1140,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.x1_1.setGeometry(QRect(139, 0, 47, 13))
         self.x1_1.setObjectName("x1_1")
         self.x1_2 = QLabel(self.x1_1)
-        self.x1_2.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderTextScale0Strings.TEXT_X1_2)
+        self.x1_2.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.GroupSliderTextScale0Strings.TEXT_X1_2)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1191,8 +1181,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_9.setGeometry(QRect(66, 11, 45, 13))
         self.text_9.setObjectName("text_9")
         self.text_10 = QLabel(self.text_9)
-        self.text_10.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.Normal4Strings.TEXT_TEXT_10)
+        self.text_10.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.Normal4Strings.TEXT_TEXT_10)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1227,8 +1216,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_11.setGeometry(QRect(66, 11, 45, 13))
         self.text_11.setObjectName("text_11")
         self.text_12 = QLabel(self.text_11)
-        self.text_12.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.Disabled4Strings.TEXT_TEXT_12)
+        self.text_12.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.Disabled4Strings.TEXT_TEXT_12)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1263,8 +1251,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_13.setGeometry(QRect(66, 11, 45, 13))
         self.text_13.setObjectName("text_13")
         self.text_14 = QLabel(self.text_13)
-        self.text_14.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.Pressed4Strings.TEXT_TEXT_14)
+        self.text_14.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.Pressed4Strings.TEXT_TEXT_14)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1299,8 +1286,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_15.setGeometry(QRect(66, 11, 45, 13))
         self.text_15.setObjectName("text_15")
         self.text_16 = QLabel(self.text_15)
-        self.text_16.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.MouseOver4Strings.TEXT_TEXT_16)
+        self.text_16.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Compile0Strings.CustomButtonCompile0Strings.MouseOver4Strings.TEXT_TEXT_16)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1427,8 +1413,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.title.setGeometry(QRect(15, 9, 200, 16))
         self.title.setObjectName("title")
         self.title_0 = QLabel(self.title)
-        self.title_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken0Strings.TEXT_TITLE_0)
+        self.title_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken0Strings.TEXT_TITLE_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1463,8 +1448,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.hint.setGeometry(QRect(5, 8, 326, 16))
         self.hint.setObjectName("hint")
         self.hint_0 = QLabel(self.hint)
-        self.hint_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken0Strings.CustomTextFieldFigmaToken0Strings.TEXT_HINT_0)
+        self.hint_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken0Strings.CustomTextFieldFigmaToken0Strings.TEXT_HINT_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1487,8 +1471,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_17.setGeometry(QRect(0, 9, 326, 16))
         self.text_17.setObjectName("text_17")
         self.text_18 = QLabel(self.text_17)
-        self.text_18.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken0Strings.CustomTextFieldFigmaToken0Strings.TEXT_TEXT_18)
+        self.text_18.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken0Strings.CustomTextFieldFigmaToken0Strings.TEXT_TEXT_18)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1569,8 +1552,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.title_1.setGeometry(QRect(15, 9, 200, 16))
         self.title_1.setObjectName("title_1")
         self.title_2 = QLabel(self.title_1)
-        self.title_2.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken2Strings.TEXT_TITLE_2)
+        self.title_2.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken2Strings.TEXT_TITLE_2)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1605,8 +1587,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.hint_1.setGeometry(QRect(5, 8, 325, 16))
         self.hint_1.setObjectName("hint_1")
         self.hint_2 = QLabel(self.hint_1)
-        self.hint_2.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken2Strings.CustomTextFieldFigmaToken3Strings.TEXT_HINT_2)
+        self.hint_2.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken2Strings.CustomTextFieldFigmaToken3Strings.TEXT_HINT_2)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1629,8 +1610,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_19.setGeometry(QRect(1, 8, 325, 16))
         self.text_19.setObjectName("text_19")
         self.text_20 = QLabel(self.text_19)
-        self.text_20.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken2Strings.CustomTextFieldFigmaToken3Strings.TEXT_TEXT_20)
+        self.text_20.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.GroupTextFieldFigmaToken2Strings.CustomTextFieldFigmaToken3Strings.TEXT_TEXT_20)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1696,8 +1676,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.skip_images.setGeometry(QRect(30, 3, 140, 13))
         self.skip_images.setObjectName("skip_images")
         self.skip_images_0 = QLabel(self.skip_images)
-        self.skip_images_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CheckboxSkipImages0Strings.TEXT_SKIP_IMAGES_0)
+        self.skip_images_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CheckboxSkipImages0Strings.TEXT_SKIP_IMAGES_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1802,8 +1781,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_21.setGeometry(QRect(61, 11, 54, 13))
         self.text_21.setObjectName("text_21")
         self.text_22 = QLabel(self.text_21)
-        self.text_22.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.Normal7Strings.TEXT_TEXT_22)
+        self.text_22.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.Normal7Strings.TEXT_TEXT_22)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1838,8 +1816,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_23.setGeometry(QRect(61, 11, 54, 13))
         self.text_23.setObjectName("text_23")
         self.text_24 = QLabel(self.text_23)
-        self.text_24.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.Disabled7Strings.TEXT_TEXT_24)
+        self.text_24.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.Disabled7Strings.TEXT_TEXT_24)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1874,8 +1851,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_25.setGeometry(QRect(61, 11, 54, 13))
         self.text_25.setObjectName("text_25")
         self.text_26 = QLabel(self.text_25)
-        self.text_26.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.Pressed7Strings.TEXT_TEXT_26)
+        self.text_26.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.Pressed7Strings.TEXT_TEXT_26)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -1910,8 +1886,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_27.setGeometry(QRect(61, 11, 54, 13))
         self.text_27.setObjectName("text_27")
         self.text_28 = QLabel(self.text_27)
-        self.text_28.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.MouseOver7Strings.TEXT_TEXT_28)
+        self.text_28.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.Download0Strings.CustomButtonDownload0Strings.MouseOver7Strings.TEXT_TEXT_28)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2035,8 +2010,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_29.setGeometry(QRect(50, 11, 75, 13))
         self.text_29.setObjectName("text_29")
         self.text_30 = QLabel(self.text_29)
-        self.text_30.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.Normal10Strings.TEXT_TEXT_30)
+        self.text_30.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.Normal10Strings.TEXT_TEXT_30)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2071,8 +2045,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_31.setGeometry(QRect(50, 11, 75, 13))
         self.text_31.setObjectName("text_31")
         self.text_32 = QLabel(self.text_31)
-        self.text_32.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.Disabled10Strings.TEXT_TEXT_32)
+        self.text_32.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.Disabled10Strings.TEXT_TEXT_32)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2107,8 +2080,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_33.setGeometry(QRect(50, 11, 75, 13))
         self.text_33.setObjectName("text_33")
         self.text_34 = QLabel(self.text_33)
-        self.text_34.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.Pressed10Strings.TEXT_TEXT_34)
+        self.text_34.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.Pressed10Strings.TEXT_TEXT_34)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2143,8 +2115,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_35.setGeometry(QRect(50, 11, 75, 13))
         self.text_35.setObjectName("text_35")
         self.text_36 = QLabel(self.text_35)
-        self.text_36.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.MouseOver10Strings.TEXT_TEXT_36)
+        self.text_36.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CustomButtonCreateProject0Strings.MouseOver10Strings.TEXT_TEXT_36)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2250,8 +2221,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.clear_project_directory.setGeometry(QRect(30, 3, 140, 13))
         self.clear_project_directory.setObjectName("clear_project_directory")
         self.clear_project_directory_0 = QLabel(self.clear_project_directory)
-        self.clear_project_directory_0.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CheckboxClearProjectDirectory0Strings.TEXT_CLEAR_PROJECT_DIRECTORY_0)
+        self.clear_project_directory_0.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsContent0Strings.CreateProject0Strings.CheckboxClearProjectDirectory0Strings.TEXT_CLEAR_PROJECT_DIRECTORY_0)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2356,8 +2326,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label_7.setGeometry(QRect(18, 4, 88, 18))
         self.label_7.setObjectName("label_7")
         self.label_8 = QLabel(self.label_7)
-        self.label_8.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.Run3Strings.TEXT_LABEL_8)
+        self.label_8.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.Run3Strings.TEXT_LABEL_8)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2407,8 +2376,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label_9.setGeometry(QRect(18, 4, 88, 18))
         self.label_9.setObjectName("label_9")
         self.label_10 = QLabel(self.label_9)
-        self.label_10.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.Compile3Strings.TEXT_LABEL_10)
+        self.label_10.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.Compile3Strings.TEXT_LABEL_10)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2458,8 +2426,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label_11.setGeometry(QRect(18, 4, 88, 18))
         self.label_11.setObjectName("label_11")
         self.label_12 = QLabel(self.label_11)
-        self.label_12.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.Download3Strings.TEXT_LABEL_12)
+        self.label_12.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.Download3Strings.TEXT_LABEL_12)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2509,8 +2476,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.label_13.setGeometry(QRect(18, 4, 88, 18))
         self.label_13.setObjectName("label_13")
         self.label_14 = QLabel(self.label_13)
-        self.label_14.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.CreateProject3Strings.TEXT_LABEL_14)
+        self.label_14.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.TabsView0Strings.TabsBar0Strings.CreateProject3Strings.TEXT_LABEL_14)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2657,8 +2623,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.title_3.setGeometry(QRect(16, 8, 140, 16))
         self.title_3.setObjectName("title_3")
         self.title_4 = QLabel(self.title_3)
-        self.title_4.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.TEXT_TITLE_4)
+        self.title_4.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.TEXT_TITLE_4)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2693,8 +2658,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.hint_3.setGeometry(QRect(5, 8, 195, 16))
         self.hint_3.setObjectName("hint_3")
         self.hint_4 = QLabel(self.hint_3)
-        self.hint_4.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomTextFieldDirectory0Strings.TEXT_HINT_4)
+        self.hint_4.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomTextFieldDirectory0Strings.TEXT_HINT_4)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2717,8 +2681,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_37.setGeometry(QRect(0, 8, 195, 16))
         self.text_37.setObjectName("text_37")
         self.text_38 = QLabel(self.text_37)
-        self.text_38.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomTextFieldDirectory0Strings.TEXT_TEXT_38)
+        self.text_38.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomTextFieldDirectory0Strings.TEXT_TEXT_38)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2796,8 +2759,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_39.setGeometry(QRect(45, 11, 40, 13))
         self.text_39.setObjectName("text_39")
         self.text_40 = QLabel(self.text_39)
-        self.text_40.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.Normal13Strings.TEXT_TEXT_40)
+        self.text_40.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.Normal13Strings.TEXT_TEXT_40)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2832,8 +2794,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_41.setGeometry(QRect(45, 11, 40, 13))
         self.text_41.setObjectName("text_41")
         self.text_42 = QLabel(self.text_41)
-        self.text_42.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.Disabled13Strings.TEXT_TEXT_42)
+        self.text_42.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.Disabled13Strings.TEXT_TEXT_42)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2868,8 +2829,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_43.setGeometry(QRect(45, 11, 40, 13))
         self.text_43.setObjectName("text_43")
         self.text_44 = QLabel(self.text_43)
-        self.text_44.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.Pressed13Strings.TEXT_TEXT_44)
+        self.text_44.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.Pressed13Strings.TEXT_TEXT_44)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
@@ -2904,8 +2864,7 @@ class QWindowPyqtFigmaDesignerGuiV4(object):
         self.text_45.setGeometry(QRect(45, 11, 40, 13))
         self.text_45.setObjectName("text_45")
         self.text_46 = QLabel(self.text_45)
-        self.text_46.setText(
-            strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.MouseOver13Strings.TEXT_TEXT_46)
+        self.text_46.setText(Strings.PyqtFigmaDesignerGuiV4Strings.PyqtFigmaDesignerGuiV42Strings.GroupTextFieldProjectDirectory0Strings.CustomButtonBrowse0Strings.MouseOver13Strings.TEXT_TEXT_46)
         font = QFont()
         font.setFamilies([u"Roboto"])
         font.setPointSize(8)
