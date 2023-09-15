@@ -11,28 +11,17 @@ from PySide6.QtWidgets import *
 from gui_controller import *
 
 
-class ComponentsTestsFrameHandler:
+class ComponentsPackHandler:
 
     @classmethod
     def window_started(cls):
-        ComponentsTestsFrameController.checkbox_1_set_checked(True)
-        ComponentsTestsFrameController.GroupTextfield0Controller.text_field_1_2_set_text("Hello world")
-        ComponentsTestsFrameController.GroupCustomTextField0Controller.custom_text_field_1_1_set_text("Hello world")
-        ComponentsTestsFrameController.GroupSlider0Controller.slider_1_1_set_value(0.2)
-        ComponentsTestsFrameController.GroupTabsView0Controller.tabs_view_1_set_tab(1)
-        ComponentsTestsFrameController.GroupProgressbar0Controller.progressbar_1_1_set_progress(0.2)
-        ComponentsTestsFrameController.custom_button_1_1_disable()
-
+        pass
+        
     @classmethod
     def window_closed(cls):
         pass
-    class Button10Handler:
-
-        @classmethod
-        def button_2_clicked(cls) :
-            print("Button button_2 clicked")
     @classmethod
-    def button_1_1_clicked(cls) :
+    def button_1_1_clicked(cls) : 
         print("Button button_1_1 clicked")
     @classmethod
     def custom_button_1_1_clicked(cls):
@@ -41,209 +30,22 @@ class ComponentsTestsFrameHandler:
     def checkbox_1_check_changed(cls, checked:bool) :
         print("Checkbox checkbox_1 checked = " + str(checked))
     class GroupSlider0Handler:
-
+        
         @classmethod
         def slider_1_1_value_changed(cls, value:float) :
             print("Slider slider_1_1 value changed = " + str(value))
     class GroupCustomTextField0Handler:
-
+        
         @classmethod
         def custom_text_field_1_1_text_changed(cls, text:str) :
             print("Text field custom_text_field_1_1_text_changed text changed to text : " + text)
     class GroupTextfield0Handler:
-
+        
         @classmethod
         def text_field_1_2_text_changed(cls, text:str) :
             print("Text field text_field_1_2_text_changed text changed to text : " + text)
     class GroupTabsView0Handler:
-
+        
         @classmethod
         def tabs_view_1_tab_changed(cls, tab:int) :
             print("Tabs view tabs_view_1 tab changed to tab : " + str(tab))
-
-
-class PyqtFigmaDesignerGuiV2Handler:
-
-    @classmethod
-    def window_started(cls):
-        pass
-
-    @classmethod
-    def window_closed(cls):
-        pass
-    @classmethod
-    def custom_button_create_project_1_clicked(cls):
-        print("CustomButton custom_button_create_project_1 clicked")
-    @classmethod
-    def custom_button_browse_1_clicked(cls):
-        print("CustomButton custom_button_browse_1 clicked")
-    @classmethod
-    def checkbox_overwrite_handlers_1_check_changed(cls, checked:bool) :
-        print("Checkbox checkbox_overwrite_handlers_1 checked = " + str(checked))
-    class GroupSliderScale0Handler:
-
-        @classmethod
-        def slider_scale_1_value_changed(cls, value:float) :
-            print("Slider slider_scale_1 value changed = " + str(value))
-    class GroupTextFieldProjectDirectory0Handler:
-
-        @classmethod
-        def custom_text_field_directory_1_text_changed(cls, text:str) :
-            print("Text field custom_text_field_directory_1_text_changed text changed to text : " + text)
-    class GroupTextFieldFigmaToken0Handler:
-
-        @classmethod
-        def custom_text_field_figma_token_1_text_changed(cls, text:str) :
-            print("Text field custom_text_field_figma_token_1_text_changed text changed to text : " + text)
-    class GroupTextFieldFigmaToken2Handler:
-
-        @classmethod
-        def custom_text_field_figma_token_4_text_changed(cls, text:str) :
-            print("Text field custom_text_field_figma_token_4_text_changed text changed to text : " + text)
-
-
-class PyqtFigmaDesignerGuiV1Handler:
-
-    @classmethod
-    def window_started(cls):
-        pass
-
-    @classmethod
-    def window_closed(cls):
-        pass
-    @classmethod
-    def buttonbrowse_2_clicked(cls) :
-        print("Button buttonbrowse_2 clicked")
-    @classmethod
-    def buttoncreateproject_2_clicked(cls) :
-        print("Button buttoncreateproject_2 clicked")
-    @classmethod
-    def text_field_inut_file_url_2_text_changed(cls, text:str) :
-        print("Text field text_field_inut_file_url_2_text_changed text changed to text : " + text)
-    @classmethod
-    def text_field_figma_api_token_2_text_changed(cls, text:str) :
-        print("Text field text_field_figma_api_token_2_text_changed text changed to text : " + text)
-    @classmethod
-    def text_field_output_directory_2_text_changed(cls, text:str) :
-        print("Text field text_field_output_directory_2_text_changed text changed to text : " + text)
-    @classmethod
-    def checkboxoverwritehandler_1_check_changed(cls, checked:bool) :
-        print("Checkbox checkboxoverwritehandler_1 checked = " + str(checked))
-
-
-class PyqtFigmaDesignerGuiV3Handler:
-
-    @classmethod
-    def window_started(cls):
-        pass
-
-    @classmethod
-    def window_closed(cls):
-        pass
-    class TabsView3Handler:
-        class Background8Handler:
-            class GroupTextFieldProjectDirectory2Handler:
-
-                @classmethod
-                def custom_text_field_directory_4_text_changed(cls, text:str) :
-                    print("Text field custom_text_field_directory_4_text_changed text changed to text : " + text)
-                class CustomButtonBrowse3Handler:
-                    class Normal10Handler:
-
-                        @classmethod
-                        def buttontext_1_clicked(cls) :
-                            print("Button buttontext_1 clicked")
-                    class Disabled10Handler:
-
-                        @classmethod
-                        def buttontext_4_clicked(cls) :
-                            print("Button buttontext_4 clicked")
-                    class Pressed10Handler:
-
-                        @classmethod
-                        def buttontext_7_clicked(cls) :
-                            print("Button buttontext_7 clicked")
-                    class MouseOver10Handler:
-
-                        @classmethod
-                        def buttontext_10_clicked(cls) :
-                            print("Button buttontext_10 clicked")
-
-                @classmethod
-                def custom_button_browse_4_clicked(cls):
-                    print("CustomButton custom_button_browse_4 clicked")
-        class TabsContent2Handler:
-            class CompileOptions0Handler:
-
-                @classmethod
-                def checkbox_overwrite_handlers_4_check_changed(cls, checked:bool) :
-                    print("Checkbox checkbox_overwrite_handlers_4 checked = " + str(checked))
-                class GroupSliderScale2Handler:
-
-                    @classmethod
-                    def slider_scale_4_value_changed(cls, value:float) :
-                        print("Slider slider_scale_4 value changed = " + str(value))
-                class CustomButtonCreateProject3Handler:
-                    class Normal13Handler:
-
-                        @classmethod
-                        def buttontext_13_clicked(cls) :
-                            print("Button buttontext_13 clicked")
-                    class Disabled13Handler:
-
-                        @classmethod
-                        def buttontext_16_clicked(cls) :
-                            print("Button buttontext_16 clicked")
-                    class Pressed13Handler:
-
-                        @classmethod
-                        def buttontext_19_clicked(cls) :
-                            print("Button buttontext_19 clicked")
-                    class MouseOver13Handler:
-
-                        @classmethod
-                        def buttontext_22_clicked(cls) :
-                            print("Button buttontext_22 clicked")
-
-                @classmethod
-                def custom_button_create_project_4_clicked(cls):
-                    print("CustomButton custom_button_create_project_4 clicked")
-            class DownloadOptions0Handler:
-                class CustomButtonCreateProject6Handler:
-                    class Normal16Handler:
-
-                        @classmethod
-                        def buttontext_25_clicked(cls) :
-                            print("Button buttontext_25 clicked")
-                    class Disabled16Handler:
-
-                        @classmethod
-                        def buttontext_28_clicked(cls) :
-                            print("Button buttontext_28 clicked")
-                    class Pressed16Handler:
-
-                        @classmethod
-                        def buttontext_31_clicked(cls) :
-                            print("Button buttontext_31 clicked")
-                    class MouseOver16Handler:
-
-                        @classmethod
-                        def buttontext_34_clicked(cls) :
-                            print("Button buttontext_34 clicked")
-
-                @classmethod
-                def custom_button_create_project_7_clicked(cls):
-                    print("CustomButton custom_button_create_project_7 clicked")
-                class GroupTextFieldFigmaToken4Handler:
-
-                    @classmethod
-                    def custom_text_field_figma_token_7_text_changed(cls, text:str) :
-                        print("Text field custom_text_field_figma_token_7_text_changed text changed to text : " + text)
-                class GroupTextFieldFigmaToken6Handler:
-
-                    @classmethod
-                    def custom_text_field_figma_token_10_text_changed(cls, text:str) :
-                        print("Text field custom_text_field_figma_token_10_text_changed text changed to text : " + text)
-    @classmethod
-    def tabs_view_4_tab_changed(cls, tab:int) :
-        print("Tabs view tabs_view_4 tab changed to tab : " + str(tab))
