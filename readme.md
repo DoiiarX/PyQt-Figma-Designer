@@ -110,7 +110,7 @@ options:
 Example usage:
 
 ```bash
-python pyqtfd-compile.py -p <project_directory> -s <scale> -oh <overwrite_handler>
+python pyqtfd-compile.py -p <project_directory> -s <scale>
 ```
 
 These CLI commands provide flexibility and automation for working with PyQt Figma Designer, allowing you to efficiently
