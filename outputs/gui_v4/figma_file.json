@@ -4563,7 +4563,7 @@
                                                     },
                                                     {
                                                         "id": "5:113",
-                                                        "name": "Checkbox overwrite styles",
+                                                        "name": "Checkbox overwrite config",
                                                         "type": "GROUP",
                                                         "scrollBehavior": "SCROLLS",
                                                         "blendMode": "PASS_THROUGH",
@@ -4582,9 +4582,9 @@
                                                                 },
                                                                 "absoluteRenderBounds": {
                                                                     "x": -275.6076965332031,
-                                                                    "y": -4.0,
-                                                                    "width": 113.5625,
-                                                                    "height": 15.4140625
+                                                                    "y": -4.1640625,
+                                                                    "width": 115.7421875,
+                                                                    "height": 15.5
                                                                 },
                                                                 "constraints": {
                                                                     "vertical": "TOP",
@@ -4623,7 +4623,7 @@
                                                                 "strokeAlign": "OUTSIDE",
                                                                 "strokeGeometry": [],
                                                                 "effects": [],
-                                                                "characters": "Overwrite styles",
+                                                                "characters": "Overwrite config",
                                                                 "style": {
                                                                     "fontFamily": "Roboto",
                                                                     "fontPostScriptName": "Roboto-Medium",
@@ -16919,8 +16919,8 @@
         }
     },
     "name": "Gui V4",
-    "lastModified": "2023-09-15T14:41:30Z",
-    "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/41978636-0354-4237-aac3-249e13f905cf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCZ4C6UUCC%2F20230914%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230914T000000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=0b449a4734bbb9546fd747551be60fab868f76c2d5bada4bb62a7150c55fea53",
+    "lastModified": "2023-09-15T14:48:44Z",
+    "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/eba4242c-b0f3-4de8-91e1-e58a6e89003f?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCZ4C6UUCC%2F20230914%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230914T000000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=495bec20f75895b7d728ab3c4756169b34f28005c92d05dbf6f0d53d5141ff18",
     "version": "4169924525",
     "role": "owner",
     "editorType": "figma",

@@ -1,3 +1,4 @@
+import config
 from generator.design.component_generator import ComponentGenerator
 from generator.utils import generate_link_controller
 
@@ -7,7 +8,8 @@ class TextFieldGenerator(ComponentGenerator):
     controller_set_text_function_name: str
 
     component_name = 'text_field'
-    component_config = {'text_color': "'rgba(255, 255, 255, 255)'", 'hint_color': "'rgba(255, 255, 255, 255)'", 'hint': "''"}
+    component_config = {'text_color': "'rgba(255, 255, 255, 255)'", 'hint_color': "'rgba(255, 255, 255, 255)'",
+                        'hint': "''"}
 
     def generate_design(self):
         self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'
@@ -21,6 +23,8 @@ self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
 self.{self.q_widget_name}.setMouseTracking(True)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
+# set text scale
+self.{self.q_widget_name}.setFont(QFont("Arial", 20 * {config.scale * config.text_scale}))
 self.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setText
 
 def __{self.handler_text_changed_function_name}(text):
