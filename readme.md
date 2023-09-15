@@ -268,4 +268,82 @@ For progress bars, maintain the following order:
 By adhering to these naming conventions and hierarchies, you can make the most of PyQt Figma Designer's capabilities to
 create rich and functional PyQt6 GUIs.
 
+### Writing Custom Components
 
+To create custom components for your GUIs, follow these steps:
+
+1. **Create a Python File**: Begin by creating a new Python file in the `generator/design/components` directory. This file will serve as the container for your custom component class.
+
+2. **Inherit from `ComponentGenerator`**: In your Python file, define a class that inherits from the `ComponentGenerator` class found in `generator.design.component_generator`.
+
+3. **Define Class Fields**:
+   - `component_name`: Define a class field named `component_name`. This field specifies the prefix used to identify the component in the Figma file. Ensure this prefix is unique, case-insensitive, and doesn't conflict with existing components.
+   - `component_config` (Optional): You can include an optional `component_config` field to extend the `component_config.py` file with additional configuration options. By default, this field should be an empty dictionary.
+
+4. **Implement the `generate_design` Method**: This method is required and should generate the design and behavior of your custom component. Use the `generate_q_widget` function to create a `QWidget` object. You can access the component's properties using the `self.q_widget_name` syntax. Additionally, use the `generate_activate_handler` function to call the handler's methods once. Finally, utilize the `generate_link_controller` function to connect the controller's methods to your lambda functions.
+
+5. **Implement the `generate_handler` Method** (Optional): This method is optional and should generate the handler's methods. Use the `generate_activate_handler` function to call the handler's methods from the generate_design function's generated code.
+
+6. **Implement the `generate_controller` Method** (Optional): This method is also optional and should generate the controller's methods. Use the `generate_link_controller` from the generate_design function to establish links between the controller's methods and your lambda functions. Note that controller functions should be overridden by the GUI and have no impact on the generated code.
+
+Here's an example of a custom component class:
+
+```python
+from generator.utils import generate_q_widget, generate_activate_handler, generate_link_controller, indent
+from generator.design.component_generator import ComponentGenerator
+
+class MyCustomComponent(ComponentGenerator):
+    # Required: Component name
+    component_name = "my_custom_component"
+    # Optional: Component config
+    component_config = {
+        "enabled": True,
+    }
+
+    # Required method to generate design.
+    def generate_design(self):
+        # Create an empty QWidget object
+        yield from generate_q_widget(self)
+        
+        # Set component properties
+        yield f'self.{self.q_widget_name}.setEnabled(ComponentsConfig.{self.config_class_path}.enabled)'
+        
+        # Call the handler's methods once
+        yield from generate_activate_handler(self, f'{self.short_class_name}_handler')
+        
+        # Link controller's methods to lambda functions
+        lambda_function_name = f'{self.short_class_name}_lambda1'
+        yield f'self.{lambda_function_name} = lambda: print("Lambda Function !")'
+        yield from generate_link_controller(self, lambda_function_name, f'{self.short_class_name}_controller')
+        
+        # Create a button and link it to the handler function
+        call_handler = '\n'.join(
+            indent(
+                generate_activate_handler(self, f'{self.short_class_name}_handler')
+            )
+        )
+        yield f"""self.{self.q_widget_name}_button = QPushButton(self.{self.q_widget_name})
+def __{self.short_class_name}_handler(self):
+{call_handler}
+self.{self.q_widget_name}_button.clicked.connect(__{self.short_class_name}_handler)""".splitlines()
+
+    # Optional method to generate handler.
+    def generate_handler(self):
+        yield f'def {self.short_class_name}_handler(self):'
+        yield f'    print("Handler Function !")'
+
+    # Optional method to generate controller
+    def generate_controller(self):
+        yield f'def {self.short_class_name}_controller():'
+        # The controller's functions should be overridden by the GUI
+        # and then their code will have no impact.
+        yield f'    pass'
+```
+
+You can find additional examples of custom components in the `generator/design/components` directory.
+
+Feel free to read the documentation in the `generator.design.component_generator.ComponentGenerator` class for more
+details.
+```bash
+python -m pydoc generator.design.component_generator.ComponentGenerator
+```
