@@ -7,7 +7,8 @@ class CheckboxGenerator(ComponentGenerator):
     handler_check_changed_function_name: str
     controller_set_checked_function_name: str
 
-    prefix_rule = 'checkbox'
+    component_name = 'checkbox'
+    component_config = {'default_checked': False}
 
     def generate_design(self):
         checked_generator = self.group_generator.children[-1]

@@ -8,7 +8,8 @@ class CustomButtonGenerator(ComponentGenerator):
     controller_enable_function_name: str
     controller_disable_function_name: str
 
-    prefix_rule = 'custom_button'
+    component_name = 'custom_button'
+    component_config = {'enabled': True}
 
     def generate_design(self):
         if len(self.group_generator.children) < 4:

@@ -1,4 +1,4 @@
-from typing import Dict, Iterator
+from typing import Dict, Iterator, Tuple
 
 import config
 from generator.design.design_generator import DesignGenerator
@@ -6,13 +6,18 @@ from generator.design.design_generator import DesignGenerator
 
 class TextGenerator(DesignGenerator):
     controller_set_text_function_name: str
-    strings: Dict[str, str] = {}
+
+    @property
+    def string(self):
+        return self.figma_node['characters'].replace('"', '\\"')
+
+    @property
+    def string_name(self):
+        return f'text_{self.q_widget_name}'.upper()
 
     def generate_design(self):
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
-        string_name = f'{self.q_widget_name}_text'.upper()
-        string = self.figma_node['characters'].replace('"', '\\"')
-        TextGenerator.strings[string_name] = string
+
         font = self.figma_node['style']['fontFamily']
         font_size = self.figma_node['style']['fontSize'] * config.text_scale * config.scale
         color = 'rgba(0, 0, 0, 0)'
@@ -44,7 +49,7 @@ class TextGenerator(DesignGenerator):
                 horizontal_alignment = 'Qt.AlignHCenter'
 
         yield from f"""self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
-self.{self.q_widget_name}.setText(Strings.{string_name})
+self.{self.q_widget_name}.setText(Strings.{self.strings_class_path}.{self.string_name})
 font = QFont()
 font.setFamilies([u"{font}"])
 font.setPointSize({int(font_size)})
@@ -71,11 +76,5 @@ except Exception as e:
 def {self.controller_set_text_function_name}(cls, text:str):
     print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")""".splitlines()
 
-    @classmethod
-    def generate_strings(cls) -> Iterator[str]:
-        strings = {cls.strings[s]:[] for s in cls.strings}
-        for s in cls.strings:
-            strings[cls.strings[s]].append(s)
-        for string, names in strings.items():
-            names = ' = '.join(names)
-            yield f'{names} = "{string}"'
+    def generate_strings(self) -> Iterator[str]:
+        yield f'{self.string_name} = \'{self.string}\''

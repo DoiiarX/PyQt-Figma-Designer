@@ -5,7 +5,8 @@ from generator.utils import generate_activate_handler, indent
 class ButtonGenerator(ComponentGenerator):
     handler_click_function_name: str
 
-    prefix_rule = 'button'
+    component_name = 'button'
+    component_config = {'pressed_color': 'rgba(255, 255, 255, 30)'}
 
     def generate_design(self):
         self.handler_click_function_name = f'{self.q_widget_name}_clicked'

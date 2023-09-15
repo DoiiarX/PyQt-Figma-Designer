@@ -1,5 +1,4 @@
 from generator.design.component_generator import ComponentGenerator
-from generator.design.core.group_generator import GroupGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.utils import indent, generate_link_controller, generate_activate_handler
 
@@ -9,6 +8,8 @@ class TabsViewGenerator(ComponentGenerator):
     controller_set_tab_function_name: str
 
     prefix_rule = 'tabs_view'
+    component_name = 'tabs_view'
+    component_config = {'default_tab': 0}
 
     def generate_design(self):
         self.handler_tab_changed_function_name = f'{self.q_widget_name}_tab_changed'
@@ -27,7 +28,7 @@ class TabsViewGenerator(ComponentGenerator):
             yield from indent(VisibilityGenerator(tab_bar_button).generate_set(f'i == {j}'), n=1)
         yield from indent(generate_activate_handler(self, self.handler_tab_changed_function_name, 'i'), n=1)
 
-        for i, (tab_bar_button, tab_content) in enumerate(tabs):
+        for i, _ in enumerate(tabs):
             yield f'__select_tab_{i} = lambda: __select_tab({i})'
         yield from f"""
 self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})

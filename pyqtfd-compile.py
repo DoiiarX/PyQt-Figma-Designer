@@ -2,7 +2,6 @@ import argparse
 import pickle
 import config
 import generator.design.core.script_generator
-from generator.design.core.text_generator import TextGenerator
 
 parser = argparse.ArgumentParser(
     prog='PyQt Figma Designer Compiler',
@@ -42,7 +41,7 @@ if __name__ == '__main__':
     python_code = '\n'.join(script_generator.generate_design())
     handler_code = '\n'.join(script_generator.generate_handler())
     controller_code = '\n'.join(script_generator.generate_controller())
-    strings_code = '\n'.join(TextGenerator.generate_strings())
+    strings_code = '\n'.join(script_generator.generate_strings())
     with open(config.gui_path, 'w', encoding="utf-8") as file:
         file.write(python_code)
     with open(config.gui_controller_path, 'w', encoding="utf-8") as file:

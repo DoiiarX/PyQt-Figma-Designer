@@ -8,7 +8,8 @@ class SliderGenerator(ComponentGenerator):
     controller_set_value_function_name: str
     handler_value_changed_function_name: str
 
-    prefix_rule = 'slider'
+    component_name = 'slider'
+    component_config = {'default_value': 0.5}
 
     def generate_design(self):
         self.controller_set_value_function_name = f'{self.q_widget_name}_set_value'

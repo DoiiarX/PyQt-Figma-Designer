@@ -1,14 +1,9 @@
-import importlib.util
-import inspect
-import os
-
-from generator.design.component_generator import ComponentGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.design.core.text_generator import TextGenerator
 from generator.design.core.vector_generator import VectorGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import generate_q_widget
+from generator.utils import generate_q_widget, get_generic_components
 
 
 class FactoryGenerator(DesignGenerator):
@@ -43,18 +38,7 @@ class FactoryGenerator(DesignGenerator):
 
     def generate_generic_components(self, group_generator):
         name = self.figma_node['name'].lower().replace(' ', '').replace('-', '').replace('_', '')
-        module_directory = 'generator/design/components'
-        module_files = [f for f in os.listdir(module_directory) if f.endswith('.py')]
-        # Remove the file extension to get module names.
-        module_names = [os.path.splitext(f)[0] for f in module_files]
-        # Import the modules and list them.
-        for module_name in module_names:
-            spec = importlib.util.spec_from_file_location(module_name,
-                                                          os.path.join(module_directory, module_name + '.py'))
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            for _, cls in inspect.getmembers(module, inspect.isclass):
-                if issubclass(cls, ComponentGenerator) and cls != ComponentGenerator:
-                    prefix_rule = cls.prefix_rule.lower().replace(' ', '').replace('-', '').replace('_', '')
-                    if name.startswith(prefix_rule):
-                        yield from cls(self.figma_node, self, group_generator).generate_design()
+        for cls in get_generic_components():
+            prefix_rule = cls.component_name.lower().replace(' ', '').replace('-', '').replace('_', '')
+            if name.startswith(prefix_rule):
+                yield from cls(self.figma_node, self, group_generator).generate_design()

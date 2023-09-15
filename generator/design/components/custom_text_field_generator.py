@@ -7,7 +7,8 @@ class CustomTextFieldGenerator(ComponentGenerator):
     handler_text_changed_function_name: str
     controller_set_text_function_name: str
 
-    prefix_rule = 'custom_text_field'
+    component_name = 'custom_text_field'
+    component_config = {}
 
     def generate_design(self):
         text_field_text = self.group_generator.children[-1]

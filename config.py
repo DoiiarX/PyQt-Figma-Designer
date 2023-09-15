@@ -13,12 +13,17 @@ gui_path: str
 gui_handler_path: str
 gui_controller_path: str
 strings_path: str
+components_config_path: str
+
 file_key: str
 
 text_scale = 0.7
 gui_handler_file_name = 'gui_handler.py'
 gui_controller_file_name = 'gui_controller.py'
 strings_file_name = 'strings.py'
+components_config_file_name = 'components_config.json'
+
+generic_components_directory = 'generator/design/components'
 
 
 def set_url(url: str):
@@ -28,7 +33,15 @@ def set_url(url: str):
 
 
 def set_project_directory(directory: str):
-    global project_directory, image_directory, svg_directory, gui_path, gui_handler_path, figma_file_path, gui_controller_path, strings_path
+    global project_directory, \
+        image_directory, \
+        svg_directory, \
+        gui_path, \
+        gui_handler_path, \
+        figma_file_path, \
+        gui_controller_path, \
+        strings_path, \
+        components_config_path
     project_directory = directory.strip()
     image_directory = f'{project_directory}/images'
     svg_directory = f'{project_directory}/svg'
@@ -37,6 +50,7 @@ def set_project_directory(directory: str):
     gui_handler_path = f'{project_directory}/{gui_handler_file_name}'
     gui_controller_path = f'{project_directory}/{gui_controller_file_name}'
     strings_path = f'{project_directory}/{strings_file_name}'
+    components_config_path = f'{project_directory}/{components_config_file_name}'
 
 
 def create_project_directories():

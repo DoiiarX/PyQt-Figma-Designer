@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from typing import List, Iterator
+
 import config
 
 
@@ -14,6 +15,7 @@ class DesignGenerator:
 
     handler_class_path: str = ''
     controller_class_path: str = ''
+    strings_class_path: str = ''
 
     def __init__(self, figma_node: dict, parent: 'DesignGenerator|None'):
         self.figma_node = figma_node
@@ -25,6 +27,7 @@ class DesignGenerator:
             self.parent.children.append(self)
             self.controller_class_path = parent.controller_class_path
             self.handler_class_path = parent.handler_class_path
+            self.strings_class_path = parent.strings_class_path
 
     @property
     def bounds(self):
@@ -70,10 +73,14 @@ class DesignGenerator:
     def generate_design(self) -> Iterator[str]:
         pass
 
-    def generate_handler(self):
+    def generate_handler(self) -> Iterator[str]:
         for child in self.children:
             yield from child.generate_handler()
 
-    def generate_controller(self):
+    def generate_controller(self) -> Iterator[str]:
         for child in self.children:
             yield from child.generate_controller()
+
+    def generate_strings(self) -> Iterator[str]:
+        for child in self.children:
+            yield from child.generate_strings()

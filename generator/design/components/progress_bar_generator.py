@@ -6,7 +6,8 @@ from generator.utils import indent, generate_link_controller
 class ProgressBarGenerator(ComponentGenerator):
     controller_set_progress_function_name: str
 
-    prefix_rule = 'progress_bar'
+    component_name = 'progress_bar'
+    component_config = {'default_progress': 0}
 
     def generate_design(self):
         fill_generator = self.group_generator.children[-1]

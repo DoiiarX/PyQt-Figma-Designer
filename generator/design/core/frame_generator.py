@@ -1,6 +1,8 @@
+from typing import Iterator
+
 import config
 from generator.design.core.vector_generator import VectorGenerator
-from generator.utils import indent
+from generator.utils import indent, generate_activate_handler
 
 from generator.design.design_generator import DesignGenerator
 
@@ -9,7 +11,7 @@ class FrameGenerator(DesignGenerator):
     short_class_name: str
     window_class_name: str
 
-    def generate_design(self):
+    def generate_design(self) -> Iterator[str]:
         # import it here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
         bounds = self.figma_node['absoluteBoundingBox']
@@ -17,7 +19,7 @@ class FrameGenerator(DesignGenerator):
         self.window_class_name = f'QWindow{self.short_class_name}'
         self.handler_class_path = f'{self.short_class_name}Handler'
         self.controller_class_path = f'{self.short_class_name}Controller'
-
+        self.strings_class_path = f'{self.short_class_name}Strings'
         yield from f"""
 
 
@@ -29,30 +31,14 @@ class {self.window_class_name}(object):
         self.{self.q_widget_name} = QWidget(MainWindow)
         MainWindow.setFixedSize({width * config.scale}, {height * config.scale})
         MainWindow.setWindowTitle("{self.figma_node['name']}")""".splitlines()
-        yield from indent(VectorGenerator(self.figma_node, self).generate_design(), n=2)
-        for child in self.figma_node['children']:
-            yield from indent(FactoryGenerator(child, self).generate_design(), n=2)
-
+        yield from indent(FactoryGenerator(self.figma_node, self).generate_design(), n=2)
         yield from indent(f'MainWindow.setCentralWidget(self.{self.q_widget_name})', n=2)
-        yield from f"""
-        try : 
-            GuiHandler.{self.handler_class_path}.window_started()            
-        except NameError:
-            print("No function {self.handler_class_path}.window_started defined.")
-        except Exception as e:
-            print("Caught exception while trying to call {self.handler_class_path}.window_started : " + str(e))
-        def __window_closed(*args, **kwargs):
-            try :
-                GuiHandler.{self.handler_class_path}.window_closed()
-            except NameError:
-                print("No function {self.handler_class_path}.window_closed defined.")
-            except Exception as e:
-                print("Caught exception while trying to call {self.handler_class_path}.window_closed : " + str(e))
-        MainWindow.closeEvent = __window_closed
-        
-""".splitlines()
+        yield from indent(generate_activate_handler(self, 'window_started'), n=2)
+        yield from indent('def __window_closed(*args, **kwargs):', n=2)
+        yield from indent(generate_activate_handler(self, 'window_closed'), n=3)
+        yield from indent('MainWindow.closeEvent = __window_closed', n=2)
 
-    def generate_handler(self):
+    def generate_handler(self) -> Iterator[str]:
         yield from f"""
 
 class {self.handler_class_path.split(".")[-1]}:
@@ -64,22 +50,18 @@ class {self.handler_class_path.split(".")[-1]}:
     @classmethod
     def window_closed(cls):
         pass""".splitlines()
-        has_handler = False
-        for child in self.children:
-            for handler in child.generate_handler():
-                yield from indent(handler, n=1)
-                has_handler = True
-        if not has_handler:
-            yield from indent('pass', n=1)
+        yield from indent(super().generate_handler())
 
-    def generate_controller(self):
-        yield from f"""
+    def generate_controller(self) -> Iterator[str]:
+        sub_controllers = list(indent(super().generate_controller()))
+        if len(sub_controllers) == 0:
+            return [].__iter__()
+        yield f'class {self.controller_class_path.split(".")[-1]}:'
+        yield from sub_controllers
 
-class {self.controller_class_path.split(".")[-1]}:""".splitlines()
-        has_controller = False
-        for child in self.children:
-            for controller in child.generate_controller():
-                yield from indent(controller, n=1)
-                has_controller = True
-        if not has_controller:
-            yield from indent('pass', n=1)
+    def generate_strings(self) -> Iterator[str]:
+        sub_strings = list(indent(super().generate_strings()))
+        if len(sub_strings) == 0:
+            return [].__iter__()
+        yield f'class {self.strings_class_path.split(".")[-1]}:'
+        yield from sub_strings
