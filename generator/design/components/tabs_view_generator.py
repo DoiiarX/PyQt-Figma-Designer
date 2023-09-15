@@ -30,9 +30,8 @@ class TabsViewGenerator(ComponentGenerator):
 
         for i, _ in enumerate(tabs):
             yield f'__select_tab_{i} = lambda: __select_tab({i})'
-        yield from f"""
-self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
-""".splitlines()
+
+        yield f'self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})'
         for i, (tab_bar_button, tab_content) in enumerate(tabs):
             button_name = f'{tab_bar_button.q_widget_name}_button'
             yield from f"""
@@ -44,10 +43,10 @@ self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
 {button_name}.setContextMenuPolicy(Qt.NoContextMenu)
 {button_name}.setAcceptDrops(False)
 {button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 100);")
-{button_name}.clicked.connect(__select_tab_{i})""".splitlines()
+{button_name}.clicked.connect(__select_tab_{i})
+__select_tab(ComponentsConfig.{self.config_class_path}.default_tab)
+""".splitlines()
             yield from generate_link_controller(self, f'__select_tab', self.controller_set_tab_function_name)
-            yield from VisibilityGenerator(tab_content).generate_set(str(i == 0))
-            yield from VisibilityGenerator(tab_bar_button).generate_set(str(i == 0))
 
     def generate_handler(self):
         yield from f"""

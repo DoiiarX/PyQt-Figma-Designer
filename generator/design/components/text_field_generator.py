@@ -8,8 +8,10 @@ class TextFieldGenerator(ComponentGenerator):
     controller_set_text_function_name: str
 
     component_name = 'text_field'
-    component_config = {'text_color': "'rgba(255, 255, 255, 255)'", 'hint_color': "'rgba(255, 255, 255, 255)'",
-                        'hint': "''"}
+    component_config = {
+        'text_color': "'rgba(255, 255, 255, 255)'",
+        'hint': "''"
+    }
 
     def generate_design(self):
         self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'
@@ -23,10 +25,11 @@ self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
 self.{self.q_widget_name}.setMouseTracking(True)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
-# set text scale
 self.{self.q_widget_name}.setFont(QFont("Arial", 20 * {config.scale * config.text_scale}))
 self.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setText
-
+# set text color, hint color and hint
+self.{self.q_widget_name}.setStyleSheet("color: " + ComponentsConfig.{self.config_class_path}.text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
+self.{self.q_widget_name}.setPlaceholderText(ComponentsConfig.{self.config_class_path}.hint)
 def __{self.handler_text_changed_function_name}(text):
     current_text = self.{self.q_widget_name}.text()
     try : 
@@ -36,8 +39,7 @@ def __{self.handler_text_changed_function_name}(text):
     except Exception as e:
         print("Caught exception while trying to call {self.handler_text_changed_function_name} : " + str(e))
 
-self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})
-self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 255); color: rgba(255, 255, 255, 255); ")""".splitlines()
+self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
         yield from generate_link_controller(self, f'self.{self.q_widget_name}.setText',
                                             self.controller_set_text_function_name)
 

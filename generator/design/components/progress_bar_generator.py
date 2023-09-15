@@ -7,7 +7,7 @@ class ProgressBarGenerator(ComponentGenerator):
     controller_set_progress_function_name: str
 
     component_name = 'progress_bar'
-    component_config = {'default_progress': 0}
+    component_config = {'default_progress': 0.5}
 
     def generate_design(self):
         fill_generator = self.group_generator.children[-1]
@@ -20,6 +20,7 @@ class ProgressBarGenerator(ComponentGenerator):
         yield from indent(geometry_generator.generate_set(new_bounds), n=1)
         yield from generate_link_controller(self, f'__{self.controller_set_progress_function_name}',
                                             self.controller_set_progress_function_name)
+        yield f'__{self.controller_set_progress_function_name}(ComponentsConfig.{self.config_class_path}.default_progress)'
 
     def generate_controller(self):
         yield from f"""

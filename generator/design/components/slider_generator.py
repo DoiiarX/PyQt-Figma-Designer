@@ -28,7 +28,7 @@ class SliderGenerator(ComponentGenerator):
         # capture mouse and deploy the thumb at the mouse position when clicked
         yield from f"""
 {captured_name} = False
-{value_name} = 0.5
+{value_name} = ComponentsConfig.{self.config_class_path}.default_value
 def __{self.q_widget_name}_update_thumb_position(*args, **kwargs):
     if {captured_name} and len(args) > 0 :
         x, y, width, height = {self.bounds}

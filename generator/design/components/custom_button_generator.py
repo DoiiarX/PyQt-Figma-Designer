@@ -32,7 +32,7 @@ self.{self.q_widget_name}.setMouseTracking(True)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
 self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
-self.{enabled_name} = True""".splitlines()
+self.{enabled_name} = ComponentsConfig.{self.config_class_path}.enabled""".splitlines()
 
         # Mouse over
         yield from f"""def __{self.q_widget_name}_mouse_over(*args, **kwargs):

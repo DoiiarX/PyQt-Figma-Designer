@@ -6,7 +6,10 @@ class ButtonGenerator(ComponentGenerator):
     handler_click_function_name: str
 
     component_name = 'button'
-    component_config = {'pressed_color': "'rgba(255, 255, 255, 30)'"}
+    component_config = {
+        'pressed_color': "'rgba(255, 255, 255, 30)'",
+        'enabled': True
+    }
 
     def generate_design(self):
         self.handler_click_function_name = f'{self.q_widget_name}_clicked'
@@ -20,6 +23,7 @@ self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
 self.{self.q_widget_name}.setMouseTracking(True)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
+self.{self.q_widget_name}.setEnabled(ComponentsConfig.{self.config_class_path}.enabled)
 def __{self.handler_click_function_name}(*args, **kwargs):""".splitlines()
         yield from indent(generate_activate_handler(self, self.handler_click_function_name))
         yield from f"""
