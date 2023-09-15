@@ -18,6 +18,7 @@ components_config_path: str
 file_key: str
 
 text_scale = 0.7
+figma_file_name = 'figma_file.json'
 gui_handler_file_name = 'gui_handler.py'
 gui_controller_file_name = 'gui_controller.py'
 strings_file_name = 'strings.py'
@@ -45,7 +46,7 @@ def set_project_directory(directory: str):
     project_directory = directory.strip()
     image_directory = f'{project_directory}/images'
     svg_directory = f'{project_directory}/svg'
-    figma_file_path = f'{project_directory}/figma_file.pickle'
+    figma_file_path = f'{project_directory}/{figma_file_name}'
     gui_path = f'{project_directory}/gui.py'
     gui_handler_path = f'{project_directory}/{gui_handler_file_name}'
     gui_controller_path = f'{project_directory}/{gui_controller_file_name}'
@@ -53,17 +54,10 @@ def set_project_directory(directory: str):
     components_config_path = f'{project_directory}/{components_config_file_name}'
 
 
-def create_project_directories():
+def check_project_directory():
     if not os.path.exists(project_directory):
-        os.makedirs(project_directory)
+        raise Exception(f'Project directory doesn\'t exists : "{project_directory}"')
     if not os.path.exists(image_directory):
-        os.makedirs(image_directory)
+        raise Exception(f'Image directory doesn\'t exists : "{image_directory}"')
     if not os.path.exists(svg_directory):
-        os.makedirs(svg_directory)
-
-
-"""set_url('https://www.figma.com/file/PExygXiMSTBEpXXEq0ZPyE')
-set_url('https://www.figma.com/file/DEtNOgq9OGnkGPfPpiQeEK/')
-set_url('https://www.figma.com/file/hKK2ZvSS9Xya0MBKvF9UER/')
-set_project_directory('../outputs/default_project')
-token = 'figd_-QMtU_8nZoTs48qAzWTqQecktPRyh3gCI9rR0Jx5'"""
+        raise Exception(f'Project directory doesn\'t exists : "{svg_directory}"')

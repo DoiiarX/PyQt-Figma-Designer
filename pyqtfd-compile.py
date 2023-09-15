@@ -1,5 +1,5 @@
 import argparse
-import pickle
+import json
 import config
 import generator.design.core.script_generator
 
@@ -33,9 +33,10 @@ if __name__ == '__main__':
     config.scale = args.scale
     config.overwrite_handler = args.overwrite_handler
     config.set_project_directory(args.path)
+    config.check_project_directory()
 
-    with open(config.figma_file_path, 'rb') as file:
-        figma_file = pickle.load(file)
+    with open(config.figma_file_path, 'r', encoding='utf-8') as file:
+        figma_file = json.load(file)
     figma_node = figma_file['document']['children'][0]
     script_generator = generator.design.core.script_generator.ScriptGenerator(figma_node, None)
     python_code = '\n'.join(script_generator.generate_design())
