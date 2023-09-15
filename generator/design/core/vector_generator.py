@@ -1,3 +1,6 @@
+"""
+This module contains the class VectorGenerator that is used to generate every vector in the design. (Images, Shapes, ...)
+"""
 from typing import Iterator
 
 import config
@@ -5,10 +8,20 @@ from generator.design.design_generator import DesignGenerator
 
 
 class SvgGenerator:
+    """
+    Class used to write svg files from figma geometry.
+    """
+    # The counter used to generate unique ids for the svg files.
     graphic_counter: int = 0
 
     @classmethod
     def create_svg_file(cls, figma_node: dict, filename: str):
+        """
+        Create a svg file from the figma node.
+        Args:
+            figma_node: The figma node that contains the fills and the strokes to be written in the svg file.
+            filename: The name of the svg file.
+        """
         bounds = f'0 0 {int(figma_node["absoluteBoundingBox"]["width"])} {int(figma_node["absoluteBoundingBox"]["height"])}'
         svg_file_data = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg version="1.2" baseProfile="tiny"  xmlns="http://www.w3.org/2000/svg">"""
@@ -28,6 +41,15 @@ class SvgGenerator:
 
     @classmethod
     def generate_path(cls, figma_node: dict, path_data: str, graphic: dict) -> Iterator[str]:
+        """
+        Generate the svg path from the figma node.
+        Args:
+            figma_node: The figma node that contains the fills and the strokes to be written in the svg file.
+            path_data: The path data of the svg path.
+            graphic: The graphic that contains the fill or the stroke.
+        returns:
+            An iterator of strings representing the svg path.
+        """
         cls.graphic_counter += 1
         stroke_width = figma_node.get('strokeWeight', 0)
         opacity = graphic.get('opacity', 1)
@@ -83,12 +105,13 @@ class SvgGenerator:
 
 
 class VectorGenerator(DesignGenerator):
+    """
+    Class used to generate every vector in the design. (Images, Shapes, ...)
+    """
     svg_counter: int = 0
 
-    def __init__(self, figma_node: dict, parent: DesignGenerator):
-        super().__init__(figma_node, parent)
-
     def generate_design(self):
+        __doc__ = super().generate_design().__doc__
         VectorGenerator.svg_counter += 1
 
         svg_filename = f'file{VectorGenerator.svg_counter}.svg'

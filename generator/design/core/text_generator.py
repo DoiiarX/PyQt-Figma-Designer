@@ -1,21 +1,39 @@
-from typing import Dict, Iterator, Tuple
+"""
+This module contains the class TextGenerator that is used to generate every text in the design.
+"""
+from typing import Iterator
 
 import config
 from generator.design.design_generator import DesignGenerator
 
 
 class TextGenerator(DesignGenerator):
+    """
+    Class used to generate every text in the design.
+    """
+    # The name of the function used to set the text of the text in the GuiController.
     controller_set_text_function_name: str
 
     @property
     def string(self):
+        """
+        Get the content of the text.
+        returns:
+            The content of the text.
+        """
         return self.figma_node['characters'].replace('"', '\\"')
 
     @property
     def string_name(self):
+        """
+        Get the name of the string variable.
+        returns:
+            The name of the string variable.
+        """
         return f'text_{self.q_widget_name}'.upper()
 
     def generate_design(self):
+        __doc__ = super().generate_design().__doc__
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
 
         font = self.figma_node['style']['fontFamily']
@@ -71,10 +89,12 @@ except Exception as e:
 """.splitlines()
 
     def generate_controller(self):
+        __doc__ = super().generate_controller().__doc__
         yield from f"""
 @classmethod
 def {self.controller_set_text_function_name}(cls, text:str):
     print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")""".splitlines()
 
     def generate_strings(self) -> Iterator[str]:
+        __doc__ = super().generate_strings().__doc__
         yield f'{self.string_name} = \'{self.string}\''

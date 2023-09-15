@@ -1,3 +1,7 @@
+"""
+This module contains FrameGenerator class responsible for generating
+ a pyqt6 window corresponding to a figma root-level frame.
+"""
 from typing import Iterator
 
 import config
@@ -7,10 +11,14 @@ from generator.design.design_generator import DesignGenerator
 
 
 class FrameGenerator(DesignGenerator):
+    """
+    Responsible for generating a pyqt6 window corresponding to a figma root-level frame.
+    """
     short_class_name: str
     window_class_name: str
 
     def generate_design(self) -> Iterator[str]:
+        __doc__ = super().generate_design().__doc__
         # import it here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
         bounds = self.figma_node['absoluteBoundingBox']
@@ -39,6 +47,7 @@ class {self.window_class_name}(object):
         yield from indent('MainWindow.closeEvent = __window_closed', n=2)
 
     def generate_handler(self) -> Iterator[str]:
+        __doc__ = super().generate_handler().__doc__
         yield from f"""
 
 class {self.handler_class_path.split(".")[-1]}:
@@ -53,6 +62,7 @@ class {self.handler_class_path.split(".")[-1]}:
         yield from indent(super().generate_handler())
 
     def generate_controller(self) -> Iterator[str]:
+        __doc__ = super().generate_controller().__doc__
         sub_controllers = list(indent(super().generate_controller()))
         if len(sub_controllers) == 0:
             return [].__iter__()
@@ -60,6 +70,7 @@ class {self.handler_class_path.split(".")[-1]}:
         yield from sub_controllers
 
     def generate_strings(self) -> Iterator[str]:
+        __doc__ = super().generate_strings().__doc__
         sub_strings = list(indent(super().generate_strings()))
         if len(sub_strings) == 0:
             return [].__iter__()
@@ -67,6 +78,7 @@ class {self.handler_class_path.split(".")[-1]}:
         yield from sub_strings
 
     def generate_config(self) -> Iterator[str]:
+        __doc__ = super().generate_config().__doc__
         sub_config = list(indent(super().generate_config()))
         if len(sub_config) == 0:
             return [].__iter__()

@@ -1,12 +1,23 @@
+"""
+Utility functions for the generator.
+"""
 import importlib.util
 import inspect
 import os
-from typing import Iterator, Tuple
+from typing import Iterator
 
 from config import generic_components_directory
 
 
 def indent(c: str | Iterator[str], n: int = 1) -> Iterator[str]:
+    """
+    Indent the given string or iterator of strings by n tabs.
+    Args:
+        c: The string or iterator of strings to indent.
+        n: The number of tabs to indent by.
+    returns:
+        An iterator of strings with n tabs prepended to each string.
+    """
     if isinstance(c, str):
         for line in c.splitlines():
             yield '    ' * n + line
@@ -17,6 +28,15 @@ def indent(c: str | Iterator[str], n: int = 1) -> Iterator[str]:
 
 
 def generate_link_controller(generator, lambda_function_name: str, controller_function_name: str):
+    """
+    Generate the code to link the given lambda function to the given controller function.
+    Args:
+        generator: The generator that will generate the code.
+        lambda_function_name: The name of the lambda function to link.
+        controller_function_name: The name of the controller function to link to.
+    returns:
+        An iterator of strings containing the code to link the given lambda function to the given controller function.
+    """
     yield from f"""try :
     GuiController.{generator.controller_class_path}.{controller_function_name} = {lambda_function_name}
 except NameError:
@@ -25,8 +45,17 @@ except Exception as e:
     print("Caught exception while trying to set the function {generator.controller_class_path}.{controller_function_name} : " + str(e))""".splitlines()
 
 
-def generate_activate_handler(generator, handler_function_name: str, value: str | None = None):
-    value = '' if value is None else value
+def generate_activate_handler(generator, handler_function_name: str, *args):
+    """
+    Generate the code to call the given handler function with the given value.
+    Args:
+        generator: The generator that will generate the code.
+        handler_function_name: The name of the handler function to call.
+        args: The arguments to pass to the handler function.
+    returns:
+        An iterator of strings containing the code to call the given handler function with the given args.
+    """
+    value = ', '.join(args)
     yield from f"""try :
     GuiHandler.{generator.handler_class_path}.{handler_function_name}({value})
 except NameError:
@@ -36,12 +65,25 @@ except Exception as e:
 
 
 def generate_q_widget(generator):
+    """
+    Generate the code to create an empty QWidget for the given generator (correct bounds). This QWidget will be used as
+    the parent of the generated subcomponents.
+    Args:
+        generator: The generator that will generate the code.
+    returns:
+        An iterator of strings containing the code to create an empty QWidget for the given generator.
+    """
     yield from f"""self.{generator.q_widget_name} = QWidget(self.{generator.parent.q_widget_name})
 self.{generator.q_widget_name}.setGeometry({generator.pyqt_bounds})
 self.{generator.q_widget_name}.setObjectName("{generator.q_widget_name}")""".splitlines()
 
 
 def get_generic_components():
+    """
+    Get all the generic components from the generic_components_directory.
+    returns:
+        An iterator of classes that are generic components (subclasses of ComponentGenerator).
+    """
     from generator.design.component_generator import ComponentGenerator
     module_files = [f for f in os.listdir(generic_components_directory) if f.endswith('.py')]
     # Remove the file extension to get module names.

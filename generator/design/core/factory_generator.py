@@ -1,3 +1,6 @@
+"""
+This module contains the class FactoryGenerator that is used to generate different types of components.
+"""
 from generator.design.core.group_generator import GroupGenerator
 from generator.design.core.text_generator import TextGenerator
 from generator.design.core.vector_generator import VectorGenerator
@@ -7,7 +10,16 @@ from generator.utils import generate_q_widget, get_generic_components
 
 
 class FactoryGenerator(DesignGenerator):
+    """
+    Class used to generate different types of components.
+    """
     def generate_design(self):
+        """
+        Generate the different generators for a figma node,
+        including : Vectors, Texts, Groups (Children), Custom Components.
+        returns:
+            An iterator of strings containing the code to generate the design of the component.
+        """
         yield from generate_q_widget(self)
 
         if not self.figma_node.get('visible', True):
