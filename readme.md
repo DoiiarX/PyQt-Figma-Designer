@@ -15,8 +15,8 @@ Follow these steps to install PyQt Figma Designer on your system:
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/rombirli/PyQT-figma-Designer.git
-   cd PyQT-figma-Designer
+   git clone https://github.com/rombirli/PyQT-Figma-Designer.git
+   cd PyQt-Figma-Designer
    ```
 
 2. Install the required Python packages using pip:
