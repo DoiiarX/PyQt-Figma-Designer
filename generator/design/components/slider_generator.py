@@ -1,7 +1,7 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
-from generator.utils import indent, generate_link_controller, generate_activate_handler
+from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print
 
 
 class SliderGenerator(ComponentGenerator):
@@ -79,12 +79,12 @@ self.{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move""".
         yield from f"""
 @classmethod
 def {self.controller_set_value_function_name}(cls, value:float) :
-    print("The function {self.controller_set_value_function_name} is unfortunately not linked to the controller")
+    {generate_print(f"'The function {self.controller_set_value_function_name} is unfortunately not linked to the controller'")}
 """.splitlines()
 
     def generate_handler(self):
         yield from f"""
 @classmethod
 def {self.handler_value_changed_function_name}(cls, value:float) :
-    print("Slider {self.q_widget_name} value changed = " + str(value))
+    {generate_print(f"'Slider {self.q_widget_name} value changed = ' + str(value)")}
 """.splitlines()

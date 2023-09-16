@@ -1,5 +1,5 @@
 from generator.design.component_generator import ComponentGenerator
-from generator.utils import generate_activate_handler, indent
+from generator.utils import generate_activate_handler, indent, generate_print
 
 
 class ButtonGenerator(ComponentGenerator):
@@ -35,4 +35,4 @@ self.{self.q_widget_name}.setStyleSheet(f"background-color:" + {background_color
         yield from f"""
 @classmethod
 def {self.handler_click_function_name}(cls) : 
-    print("Button {self.q_widget_name} clicked")""".splitlines()
+    {generate_print(f"'Button {self.q_widget_name} clicked'")}""".splitlines()

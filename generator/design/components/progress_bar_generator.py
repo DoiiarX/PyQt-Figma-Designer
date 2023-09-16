@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
-from generator.utils import indent, generate_link_controller
+from generator.utils import indent, generate_link_controller, generate_print
 
 
 class ProgressBarGenerator(ComponentGenerator):
@@ -26,4 +26,4 @@ class ProgressBarGenerator(ComponentGenerator):
         yield from f"""
 @classmethod
 def {self.controller_set_progress_function_name}(cls, progress:float) :
-    print("Progress bar {self.q_widget_name} progress = " + str(progress))""".splitlines()
+    {generate_print(f"'Progress bar {self.q_widget_name} progress = ' + str(progress)")}""".splitlines()

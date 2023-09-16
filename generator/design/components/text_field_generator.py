@@ -1,6 +1,6 @@
 import config
 from generator.design.component_generator import ComponentGenerator
-from generator.utils import generate_link_controller
+from generator.utils import generate_link_controller, generate_activate_handler, indent, generate_print
 
 
 class TextFieldGenerator(ComponentGenerator):
@@ -31,15 +31,9 @@ self.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setTex
 self.{self.q_widget_name}.setStyleSheet("color: " + ComponentsConfig.{self.config_class_path}.text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
 self.{self.q_widget_name}.setPlaceholderText(ComponentsConfig.{self.config_class_path}.hint)
 def __{self.handler_text_changed_function_name}(text):
-    current_text = self.{self.q_widget_name}.text()
-    try : 
-        GuiHandler.{self.handler_class_path}.{self.handler_text_changed_function_name}(current_text)
-    except NameError:
-        print("No function {self.handler_text_changed_function_name} defined. Current text : " + current_text)
-    except Exception as e:
-        print("Caught exception while trying to call {self.handler_text_changed_function_name} : " + str(e))
-
-self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})""".splitlines()
+    current_text = self.{self.q_widget_name}.text()""".splitlines()
+        yield from indent(generate_activate_handler(self, self.handler_text_changed_function_name, 'current_text'))
+        yield f'self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})'
         yield from generate_link_controller(self, f'self.{self.q_widget_name}.setText',
                                             self.controller_set_text_function_name)
 
@@ -47,10 +41,10 @@ self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_funct
         yield from f"""
 @classmethod
 def {self.handler_text_changed_function_name}(cls, text:str) :
-    print("Text field {self.handler_text_changed_function_name} text changed to text : " + text)""".splitlines()
+    {generate_print(f"'Text field {self.handler_text_changed_function_name} text changed to text : ' + text")}""".splitlines()
 
     def generate_controller(self):
         yield from f"""
 @classmethod
 def {self.controller_set_text_function_name}(cls, text:str):
-    print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")""".splitlines()
+    {generate_print(f"'The function {self.controller_set_text_function_name} is unfortunately not linked to the controller'")}""".splitlines()

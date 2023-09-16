@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_link_controller, generate_activate_handler
+from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print
 
 
 class TabsViewGenerator(ComponentGenerator):
@@ -52,10 +52,10 @@ __select_tab(ComponentsConfig.{self.config_class_path}.default_tab)
         yield from f"""
 @classmethod
 def {self.handler_tab_changed_function_name}(cls, tab:int) :
-    print("Tabs view {self.q_widget_name} tab changed to tab : " + str(tab))""".splitlines()
+    {generate_print(f"'Tabs view {self.q_widget_name} tab changed to tab : ' + str(tab)")}""".splitlines()
 
     def generate_controller(self):
         yield from f"""
 @classmethod
 def {self.controller_set_tab_function_name}(cls, tab:int):
-    print("The function {self.controller_set_tab_function_name} is unfortunately not linked to the controller")""".splitlines()
+    {generate_print(f"'The function {self.controller_set_tab_function_name} is unfortunately not linked to the controller'")}""".splitlines()

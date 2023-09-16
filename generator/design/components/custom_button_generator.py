@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_activate_handler, generate_link_controller
+from generator.utils import indent, generate_activate_handler, generate_link_controller, generate_print
 
 
 class CustomButtonGenerator(ComponentGenerator):
@@ -114,16 +114,16 @@ self.{self.q_widget_name}.enable = __{self.q_widget_name}_enable""".splitlines()
         yield from f"""
 @classmethod
 def {self.handler_click_function_name}(cls):
-    print("CustomButton {self.q_widget_name} clicked")
+    {generate_print(f"'CustomButton {self.q_widget_name} clicked'")}
 """.splitlines()
 
     def generate_controller(self):
         yield from f"""
 @classmethod
 def {self.controller_enable_function_name}(cls):
-     print("The function {self.controller_enable_function_name} is unfortunately not linked to the controller")
+     {generate_print(f"'The function {self.controller_enable_function_name} is unfortunately not linked to the controller'")}
  
 @classmethod
 def {self.controller_disable_function_name}(cls):
-        print("The function {self.controller_disable_function_name} is unfortunately not linked to the controller")
+        {generate_print(f"'The function {self.controller_disable_function_name} is unfortunately not linked to the controller'")}
 """.splitlines()

@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.design.core.text_generator import TextGenerator
-from generator.utils import generate_link_controller, indent, generate_activate_handler
+from generator.utils import generate_link_controller, indent, generate_activate_handler, generate_print
 
 
 class CustomTextFieldGenerator(ComponentGenerator):
@@ -61,11 +61,11 @@ self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_funct
         yield from f"""
 @classmethod
 def {self.handler_text_changed_function_name}(cls, text:str) :
-    print("Text field {self.handler_text_changed_function_name} text changed to text : " + text)""".splitlines()
+    {generate_print(f"'Text field {self.handler_text_changed_function_name} text changed to text : ' + text")}""".splitlines()
 
     def generate_controller(self):
         yield from f"""
 @classmethod
 def {self.controller_set_text_function_name}(cls, text:str):
-    print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")
+    {generate_print(f"'The function {self.controller_set_text_function_name} is unfortunately not linked to the controller'")}
     return ''""".splitlines()

@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_activate_handler, generate_link_controller
+from generator.utils import indent, generate_activate_handler, generate_link_controller, generate_print
 
 
 class CheckboxGenerator(ComponentGenerator):
@@ -52,10 +52,10 @@ def __{self.controller_set_checked_function_name}(checked:bool):
         yield from f"""
 @classmethod
 def {self.handler_check_changed_function_name}(cls, checked:bool) :
-    print("Checkbox {self.q_widget_name} checked = " + str(checked))""".splitlines()
+    {generate_print(f"'Checkbox {self.q_widget_name} checked = ' + str(checked)")}""".splitlines()
 
     def generate_controller(self):
         yield from f"""
 @classmethod
 def {self.controller_set_checked_function_name}(cls, checked:bool) :
-    print("The function {self.controller_set_checked_function_name} is unfortunately not linked to the controller")""".splitlines()
+    {generate_print(f"'The function {self.controller_set_checked_function_name} is unfortunately not linked to the controller'")}""".splitlines()

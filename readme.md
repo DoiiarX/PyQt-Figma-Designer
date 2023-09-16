@@ -323,6 +323,7 @@ class MyCustomComponent(ComponentGenerator):
             )
         )
         yield f"""self.{self.q_widget_name}_button = QPushButton(self.{self.q_widget_name})
+self.{self.q_widget_name}_button.setGeometry({self.pyqt_bounds})
 def __{self.short_class_name}_handler(self):
 {call_handler}
 self.{self.q_widget_name}_button.clicked.connect(__{self.short_class_name}_handler)""".splitlines()

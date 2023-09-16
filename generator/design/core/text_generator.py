@@ -5,6 +5,7 @@ from typing import Iterator
 
 import config
 from generator.design.design_generator import DesignGenerator
+from generator.utils import generate_link_controller, generate_print
 
 
 class TextGenerator(DesignGenerator):
@@ -78,22 +79,16 @@ self.{self.q_widget_name}.setAlignment({vertical_alignment} | {horizontal_alignm
 self.{self.q_widget_name}.setMouseTracking(False)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 def {self.controller_set_text_function_name}(text:str):
-    self.{self.q_widget_name}.setText(text)
-
-try :
-    GuiController.{self.controller_class_path}.{self.controller_set_text_function_name} = {self.controller_set_text_function_name}
-except NameError:
-    print("No function {self.controller_set_text_function_name} defined. Current text : " + self.{self.q_widget_name}.text())
-except Exception as e:
-    print("Caught exception while trying to call {self.controller_set_text_function_name} : " + str(e))
-""".splitlines()
+    self.{self.q_widget_name}.setText(text)""".splitlines()
+        yield from generate_link_controller(self, self.controller_set_text_function_name,
+                                            self.controller_set_text_function_name)
 
     def generate_controller(self):
         __doc__ = super().generate_controller().__doc__
         yield from f"""
 @classmethod
 def {self.controller_set_text_function_name}(cls, text:str):
-    print("The function {self.controller_set_text_function_name} is unfortunately not linked to the controller")""".splitlines()
+    {generate_print(f"'The function {self.controller_set_text_function_name} is unfortunately not linked to the controller'")}""".splitlines()
 
     def generate_strings(self) -> Iterator[str]:
         __doc__ = super().generate_strings().__doc__

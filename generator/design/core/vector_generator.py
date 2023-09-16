@@ -5,6 +5,7 @@ from typing import Iterator
 
 import config
 from generator.design.design_generator import DesignGenerator
+from generator.utils import logging
 
 
 class SvgGenerator:
@@ -100,7 +101,7 @@ class SvgGenerator:
                 yield f'</radialGradient>'
                 yield f'<path fill="url(#gradient{cls.graphic_counter})" stroke-width="{stroke_width}" fill-opacity="{opacity}" stroke-opacity="{opacity}" d="{path_data}"/>'
             case _:
-                print(f'Unknown graphic type: {graphic["type"]}')
+                logging.warning(f'Unknown graphic type : {graphic["type"]}')
                 return []
 
 
@@ -119,7 +120,8 @@ class VectorGenerator(DesignGenerator):
 
         SvgGenerator.create_svg_file(self.figma_node, svg_filename)
         svg_widget_name = 'q_svg_widget_' + self.q_widget_name
-        width, height = self.figma_node['absoluteBoundingBox']['width'], self.figma_node['absoluteBoundingBox']['height']
+        width, height = self.figma_node['absoluteBoundingBox']['width'], self.figma_node['absoluteBoundingBox'][
+            'height']
         yield from f"""
 self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})
 self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
