@@ -88,7 +88,7 @@ self.{enabled_name} = {enabled}""".splitlines()
         # Click handler
         yield from f"""
 def __{self.handler_click_function_name}(*args, **kwargs):""".splitlines()
-        yield from indent(generate_activate_handler(self, self.handler_click_function_name))
+        yield from indent(generate_handler_call(self, self.handler_click_function_name))
 
         # Connect signals
         yield from f"""
@@ -101,10 +101,10 @@ self.{self.q_widget_name}.disable = __{self.q_widget_name}_disable
 self.{self.q_widget_name}.enable = __{self.q_widget_name}_enable""".splitlines()
 
         # Connect controller
-        yield from generate_link_controller(self, f'__{self.controller_enable_function_name}',
-                                            self.controller_enable_function_name)
-        yield from generate_link_controller(self, f'__{self.controller_disable_function_name}',
-                                            self.controller_disable_function_name)
+        yield from generate_controller_setup(self, f'__{self.controller_enable_function_name}',
+                                             self.controller_enable_function_name)
+        yield from generate_controller_setup(self, f'__{self.controller_disable_function_name}',
+                                             self.controller_disable_function_name)
 
         # hide the mouse over, pressed and disabled children
         yield from hide_show_mouse_over_generator.generate_set('False')
@@ -112,8 +112,8 @@ self.{self.q_widget_name}.enable = __{self.q_widget_name}_enable""".splitlines()
         yield from hide_show_disabled_generator.generate_set('False')
 
     def generate_handler(self):
-        yield from generate_handler(self.handler_click_function_name)
+        yield from generate_handler_function(self.handler_click_function_name)
 
     def generate_controller(self):
-        yield from generate_controller(self.controller_enable_function_name)
-        yield from generate_controller(self.controller_disable_function_name)
+        yield from generate_controller_function(self.controller_enable_function_name)
+        yield from generate_controller_function(self.controller_disable_function_name)

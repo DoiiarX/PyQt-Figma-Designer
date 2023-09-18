@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
-from generator.utils import indent, generate_link_controller, generate_print, generate_controller, \
+from generator.utils import indent, generate_controller_setup, generate_print, generate_controller_function, \
     generate_get_component_config
 
 
@@ -20,9 +20,9 @@ class ProgressBarGenerator(ComponentGenerator):
 
         yield f'def __{self.controller_set_progress_function_name}(progress:float) :'
         yield from indent(geometry_generator.generate_set(new_bounds), n=1)
-        yield from generate_link_controller(self, f'__{self.controller_set_progress_function_name}',
-                                            self.controller_set_progress_function_name)
+        yield from generate_controller_setup(self, f'__{self.controller_set_progress_function_name}',
+                                             self.controller_set_progress_function_name)
         yield f'__{self.controller_set_progress_function_name}({progress})'
 
     def generate_controller(self):
-        yield from generate_controller(self.controller_set_progress_function_name, 'progress:float')
+        yield from generate_controller_function(self.controller_set_progress_function_name, 'progress:float')

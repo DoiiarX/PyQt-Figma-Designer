@@ -5,7 +5,7 @@ This module contains FrameGenerator class responsible for generating
 from typing import Iterator
 
 import config
-from generator.utils import indent, generate_activate_handler
+from generator.utils import indent, generate_handler_call
 
 from generator.design.design_generator import DesignGenerator
 
@@ -41,9 +41,9 @@ class {self.window_class_name}(object):
         MainWindow.setWindowTitle("{self.figma_node['name']}")""".splitlines()
         yield from indent(FactoryGenerator(self.figma_node, self).generate_design(), n=2)
         yield from indent(f'MainWindow.setCentralWidget(self.{self.q_widget_name})', n=2)
-        yield from indent(generate_activate_handler(self, 'window_started'), n=2)
+        yield from indent(generate_handler_call(self, 'window_started'), n=2)
         yield from indent('def __window_closed(*args, **kwargs):', n=2)
-        yield from indent(generate_activate_handler(self, 'window_closed'), n=3)
+        yield from indent(generate_handler_call(self, 'window_closed'), n=3)
         yield from indent('MainWindow.closeEvent = __window_closed', n=2)
 
     def generate_handler(self) -> Iterator[str]:

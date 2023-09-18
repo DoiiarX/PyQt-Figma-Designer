@@ -1,7 +1,7 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print, \
-    generate_controller, generate_handler, generate_get_component_config
+from generator.utils import indent, generate_controller_setup, generate_handler_call, generate_print, \
+    generate_controller_function, generate_handler_function, generate_get_component_config
 
 
 class TabsViewGenerator(ComponentGenerator):
@@ -28,7 +28,7 @@ class TabsViewGenerator(ComponentGenerator):
         for j, (tab_bar_button, tab_content) in enumerate(tabs):
             yield from indent(VisibilityGenerator(tab_content).generate_set(f'i == {j}'), n=1)
             yield from indent(VisibilityGenerator(tab_bar_button).generate_set(f'i == {j}'), n=1)
-        yield from indent(generate_activate_handler(self, self.handler_tab_changed_function_name, 'i'), n=1)
+        yield from indent(generate_handler_call(self, self.handler_tab_changed_function_name, 'i'), n=1)
 
         for i, _ in enumerate(tabs):
             yield f'__select_tab_{i} = lambda: __select_tab({i})'
@@ -48,10 +48,10 @@ class TabsViewGenerator(ComponentGenerator):
 {button_name}.clicked.connect(__select_tab_{i})
 __select_tab({default_tab})
 """.splitlines()
-            yield from generate_link_controller(self, f'__select_tab', self.controller_set_tab_function_name)
+            yield from generate_controller_setup(self, f'__select_tab', self.controller_set_tab_function_name)
 
     def generate_handler(self):
-        yield from generate_handler(self.handler_tab_changed_function_name, 'tab:int')
+        yield from generate_handler_function(self.handler_tab_changed_function_name, 'tab:int')
 
     def generate_controller(self):
-        yield from generate_controller(self.controller_set_tab_function_name, 'tab:int')
+        yield from generate_controller_function(self.controller_set_tab_function_name, 'tab:int')

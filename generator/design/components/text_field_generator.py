@@ -33,13 +33,13 @@ self.{self.q_widget_name}.setStyleSheet("color: " + {text_color} + "; background
 self.{self.q_widget_name}.setPlaceholderText({hint})
 def __{self.handler_text_changed_function_name}(text):
     current_text = self.{self.q_widget_name}.text()""".splitlines()
-        yield from indent(generate_activate_handler(self, self.handler_text_changed_function_name, 'current_text'))
+        yield from indent(generate_handler_call(self, self.handler_text_changed_function_name, 'current_text'))
         yield f'self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})'
-        yield from generate_link_controller(self, f'self.{self.q_widget_name}.setText',
-                                            self.controller_set_text_function_name)
+        yield from generate_controller_setup(self, f'self.{self.q_widget_name}.setText',
+                                             self.controller_set_text_function_name)
 
     def generate_handler(self):
-        yield from generate_handler(self.handler_text_changed_function_name, 'text:str')
+        yield from generate_handler_function(self.handler_text_changed_function_name, 'text:str')
 
     def generate_controller(self):
-        yield from generate_controller(self.controller_set_text_function_name, 'text:str')
+        yield from generate_controller_function(self.controller_set_text_function_name, 'text:str')

@@ -37,20 +37,20 @@ self.{self.q_widget_name}.setEnabled({enabled})
 def __{self.handler_check_changed_function_name}():
     self.{checked_name} = not self.{checked_name}""".splitlines()
         yield from indent(hide_show_checked_generator.generate_set(f'self.{checked_name}'), n=1)
-        yield from indent(generate_activate_handler(self, self.handler_check_changed_function_name,
+        yield from indent(generate_handler_call(self, self.handler_check_changed_function_name,
                                                     f'self.{checked_name}'), n=1)
         yield from f"""
 def __{self.controller_set_checked_function_name}(checked:bool):
     self.{checked_name} = checked""".splitlines()
         yield from indent(hide_show_checked_generator.generate_set(f'self.{checked_name}'), n=1)
         yield f'self.{self.q_widget_name}.clicked.connect(__{self.handler_check_changed_function_name})'
-        yield from generate_link_controller(self, f'__{self.controller_set_checked_function_name}',
-                                            self.controller_set_checked_function_name)
+        yield from generate_controller_setup(self, f'__{self.controller_set_checked_function_name}',
+                                             self.controller_set_checked_function_name)
         # hide the checked image if needed
         yield from hide_show_checked_generator.generate_set(f'self.{checked_name}')
 
     def generate_handler(self):
-        yield from generate_handler(self.handler_check_changed_function_name, 'checked:bool')
+        yield from generate_handler_function(self.handler_check_changed_function_name, 'checked:bool')
 
     def generate_controller(self):
-        yield from generate_controller(self.controller_set_checked_function_name, 'checked:bool')
+        yield from generate_controller_function(self.controller_set_checked_function_name, 'checked:bool')

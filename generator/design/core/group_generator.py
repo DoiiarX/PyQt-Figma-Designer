@@ -5,7 +5,7 @@ children of a figma group.
 from typing import Iterator, Tuple
 
 from generator.design.design_generator import DesignGenerator
-from generator.utils import indent, generate_q_widget
+from generator.utils import indent, generate_q_widget_create
 
 
 class GroupGenerator(DesignGenerator):
@@ -26,7 +26,7 @@ class GroupGenerator(DesignGenerator):
         self.config_class_path = f'{self.config_class_path}.{self.short_class_name}Config'
         # import here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
-        yield from generate_q_widget(self)
+        yield from generate_q_widget_create(self)
         for child in self.figma_node['children']:
             yield from FactoryGenerator(child, self).generate_design()
 

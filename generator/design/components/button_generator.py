@@ -1,5 +1,5 @@
 from generator.design.component_generator import ComponentGenerator
-from generator.utils import generate_activate_handler, indent, generate_handler, generate_get_component_config
+from generator.utils import generate_handler_call, indent, generate_handler_function, generate_get_component_config
 
 
 class ButtonGenerator(ComponentGenerator):
@@ -26,11 +26,11 @@ self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
 self.{self.q_widget_name}.setEnabled({enabled})
 def __{self.handler_click_function_name}(*args, **kwargs):""".splitlines()
-        yield from indent(generate_activate_handler(self, self.handler_click_function_name))
+        yield from indent(generate_handler_call(self, self.handler_click_function_name))
         yield from f"""
 self.{self.q_widget_name}.clicked.connect(__{self.handler_click_function_name})
 self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
 self.{self.q_widget_name}.setStyleSheet(f"background-color:" + {background_color})""".splitlines()
 
     def generate_handler(self):
-        yield from generate_handler(self.handler_click_function_name)
+        yield from generate_handler_function(self.handler_click_function_name)

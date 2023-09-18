@@ -6,7 +6,7 @@ from generator.design.core.text_generator import TextGenerator
 from generator.design.core.vector_generator import VectorGenerator
 from generator.design.design_generator import DesignGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import generate_q_widget, get_generic_components
+from generator.utils import generate_q_widget_create, get_generic_components
 
 
 class FactoryGenerator(DesignGenerator):
@@ -20,7 +20,7 @@ class FactoryGenerator(DesignGenerator):
         returns:
             An iterator of strings containing the code to generate the design of the component.
         """
-        yield from generate_q_widget(self)
+        yield from generate_q_widget_create(self)
 
         if not self.figma_node.get('visible', True):
             return

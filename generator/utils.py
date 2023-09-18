@@ -30,11 +30,19 @@ def indent(c: str | Iterator[str], n: int = 1) -> Iterator[str]:
         yield '    ' * n + line
 
 
-def generate_get_component_config(generator: 'DesignGenerator', component_name: str) -> str:
-    return f'{generator.config_class_path}.{component_name}'
+def generate_get_component_config(generator: 'DesignGenerator', component_config_key: str) -> str:
+    """
+    Generate the code to get the value of the given component config key.
+    Args:
+        generator: The generator that will generate the code.
+        component_config_key: The key of the component config to get.
+    returns:
+        A string containing the code to get the value of the given component config key.
+    """
+    return f'{generator.config_class_path}.{component_config_key}'
 
 
-def generate_handler(handler_function_name: str, *args) -> Iterator[str]:
+def generate_handler_function(handler_function_name: str, *args) -> Iterator[str]:
     """
     Generate the code for the given handler function with the given args.
     Args:
@@ -49,7 +57,7 @@ def {handler_function_name}({args}) :
     {generate_print(f"'Handler {handler_function_name} called with args ' + str(list(locals().items())[1:])")}""".splitlines()
 
 
-def generate_controller(controller_function_name: str, *args) -> Iterator[str]:
+def generate_controller_function(controller_function_name: str, *args) -> Iterator[str]:
     """
     Generate the code for the given controller function with the given args.
     Args:
@@ -64,7 +72,7 @@ def {controller_function_name}({args}) :
     {generate_print(f"'Controller {controller_function_name} is unfortunately not linked.'")}""".splitlines()
 
 
-def generate_link_controller(generator, lambda_function_name: str, controller_function_name: str) -> Iterator[str]:
+def generate_controller_setup(generator, lambda_function_name: str, controller_function_name: str) -> Iterator[str]:
     """
     Generate the code to link the given lambda function to the given controller function.
     Args:
@@ -82,7 +90,7 @@ except Exception as e:
     {generate_print(f"'Caught exception while trying to set the function {generator.controller_class_path}.{controller_function_name} : ' + str(e)")}""".splitlines()
 
 
-def generate_activate_handler(generator: 'DesignGenerator', handler_function_name: str, *args) -> Iterator[str]:
+def generate_handler_call(generator: 'DesignGenerator', handler_function_name: str, *args) -> Iterator[str]:
     """
     Generate the code to call the given handler function with the given value.
     Args:
@@ -101,7 +109,7 @@ except Exception as e:
     {generate_print(f"'Caught exception while trying to call {generator.handler_class_path}.{handler_function_name} : ' + str(e)")}""".splitlines()
 
 
-def generate_q_widget(generator: 'DesignGenerator') -> Iterator[str]:
+def generate_q_widget_create(generator: 'DesignGenerator') -> Iterator[str]:
     """
     Generate the code to create an empty QWidget for the given generator (correct bounds). This QWidget will be used as
     the parent of the generated subcomponents.
@@ -137,4 +145,12 @@ def get_generic_components() -> 'Iterator[ComponentGenerator]':
 
 
 def generate_print(msg, level='logging.DEBUG') -> str:
+    """
+    Generate the code to print the given message.
+    Args:
+        msg: The message to print.
+        level: The level of the message.
+    returns:
+        A string containing the code to print the given message.
+    """
     return f'logging.log({level}, {msg})'

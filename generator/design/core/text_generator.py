@@ -5,7 +5,7 @@ from typing import Iterator
 
 import config
 from generator.design.design_generator import DesignGenerator
-from generator.utils import generate_link_controller, generate_print
+from generator.utils import generate_controller_setup, generate_print
 
 
 class TextGenerator(DesignGenerator):
@@ -80,8 +80,8 @@ self.{self.q_widget_name}.setMouseTracking(False)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 def {self.controller_set_text_function_name}(text:str):
     self.{self.q_widget_name}.setText(text)""".splitlines()
-        yield from generate_link_controller(self, self.controller_set_text_function_name,
-                                            self.controller_set_text_function_name)
+        yield from generate_controller_setup(self, self.controller_set_text_function_name,
+                                             self.controller_set_text_function_name)
 
     def generate_controller(self):
         __doc__ = super().generate_controller().__doc__

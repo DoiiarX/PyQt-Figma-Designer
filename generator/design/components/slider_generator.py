@@ -1,8 +1,8 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
-from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print, \
-    generate_controller, generate_handler, generate_get_component_config
+from generator.utils import indent, generate_controller_setup, generate_handler_call, generate_print, \
+    generate_controller_function, generate_handler_function, generate_get_component_config
 
 
 class SliderGenerator(ComponentGenerator):
@@ -41,7 +41,7 @@ def __{self.q_widget_name}_update_thumb_position(*args, **kwargs):
             {value_name} = 0
         if {value_name} > 1 :
             {value_name} = 1""".splitlines()
-        yield from indent(generate_activate_handler(self, self.handler_value_changed_function_name, f'{value_name}'),
+        yield from indent(generate_handler_call(self, self.handler_value_changed_function_name, f'{value_name}'),
                           n=2)
         yield from indent(thumb_geometry_generator.generate_set(new_thumb_bounds), n=1)
         yield from f"""
@@ -72,13 +72,13 @@ self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0
 self.{self.q_widget_name}.mousePressEvent = __{self.q_widget_name}_mouse_press
 self.{self.q_widget_name}.mouseReleaseEvent = __{self.q_widget_name}_mouse_release
 self.{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move""".splitlines()
-        yield from generate_link_controller(self, f'__{self.controller_set_value_function_name}',
-                                            self.controller_set_value_function_name)
+        yield from generate_controller_setup(self, f'__{self.controller_set_value_function_name}',
+                                             self.controller_set_value_function_name)
         yield f'__{self.q_widget_name}_update_thumb_position()'
         yield from thumb_parent_generator.generate_set(f'self.{self.q_widget_name}')
 
     def generate_controller(self):
-        yield from generate_controller(self.controller_set_value_function_name, 'value:float')
+        yield from generate_controller_function(self.controller_set_value_function_name, 'value:float')
 
     def generate_handler(self):
-        yield from generate_handler(self.handler_value_changed_function_name, 'value:float')
+        yield from generate_handler_function(self.handler_value_changed_function_name, 'value:float')
