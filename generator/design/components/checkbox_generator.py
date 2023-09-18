@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_activate_handler, generate_link_controller, generate_print
+from generator.utils import *
 
 
 class CheckboxGenerator(ComponentGenerator):
@@ -19,9 +19,10 @@ class CheckboxGenerator(ComponentGenerator):
         self.handler_check_changed_function_name = f'{self.q_widget_name}_check_changed'
         self.controller_set_checked_function_name = f'{self.q_widget_name}_set_checked'
         checked_name = f'{self.q_widget_name}_checked'
-
+        default_checked = generate_get_component_config(self, 'default_checked')
+        enabled = generate_get_component_config(self, 'enabled')
         yield from f"""
-self.{checked_name} = ComponentsConfig.{self.config_class_path}.default_checked
+self.{checked_name} = {default_checked}
 self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
 self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
 self.{self.q_widget_name}.setFlat(True)
@@ -32,7 +33,7 @@ self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
 self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
 self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
-self.{self.q_widget_name}.setEnabled(ComponentsConfig.{self.config_class_path}.enabled)
+self.{self.q_widget_name}.setEnabled({enabled})
 def __{self.handler_check_changed_function_name}():
     self.{checked_name} = not self.{checked_name}""".splitlines()
         yield from indent(hide_show_checked_generator.generate_set(f'self.{checked_name}'), n=1)
@@ -49,13 +50,7 @@ def __{self.controller_set_checked_function_name}(checked:bool):
         yield from hide_show_checked_generator.generate_set(f'self.{checked_name}')
 
     def generate_handler(self):
-        yield from f"""
-@classmethod
-def {self.handler_check_changed_function_name}(cls, checked:bool) :
-    {generate_print(f"'Checkbox {self.q_widget_name} checked = ' + str(checked)")}""".splitlines()
+        yield from generate_handler(self.handler_check_changed_function_name, 'checked:bool')
 
     def generate_controller(self):
-        yield from f"""
-@classmethod
-def {self.controller_set_checked_function_name}(cls, checked:bool) :
-    {generate_print(f"'The function {self.controller_set_checked_function_name} is unfortunately not linked to the controller'")}""".splitlines()
+        yield from generate_controller(self.controller_set_checked_function_name, 'checked:bool')

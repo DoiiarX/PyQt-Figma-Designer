@@ -1,7 +1,8 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
-from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print
+from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print, \
+    generate_controller, generate_handler, generate_get_component_config
 
 
 class SliderGenerator(ComponentGenerator):
@@ -25,10 +26,11 @@ class SliderGenerator(ComponentGenerator):
         # place the thumb at the value position between the slider bounds
         new_thumb_bounds = (f'{slider_x} + {slider_width - thumb_width} * {value_name}',
                             thumb_y, thumb_width * 2, thumb_height * 2)
+        default_value = generate_get_component_config(self, 'default_value')
         # capture mouse and deploy the thumb at the mouse position when clicked
         yield from f"""
 {captured_name} = False
-{value_name} = ComponentsConfig.{self.config_class_path}.default_value
+{value_name} = {default_value}
 def __{self.q_widget_name}_update_thumb_position(*args, **kwargs):
     if {captured_name} and len(args) > 0 :
         x, y, width, height = {self.bounds}
@@ -76,15 +78,7 @@ self.{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move""".
         yield from thumb_parent_generator.generate_set(f'self.{self.q_widget_name}')
 
     def generate_controller(self):
-        yield from f"""
-@classmethod
-def {self.controller_set_value_function_name}(cls, value:float) :
-    {generate_print(f"'The function {self.controller_set_value_function_name} is unfortunately not linked to the controller'")}
-""".splitlines()
+        yield from generate_controller(self.controller_set_value_function_name, 'value:float')
 
     def generate_handler(self):
-        yield from f"""
-@classmethod
-def {self.handler_value_changed_function_name}(cls, value:float) :
-    {generate_print(f"'Slider {self.q_widget_name} value changed = ' + str(value)")}
-""".splitlines()
+        yield from generate_handler(self.handler_value_changed_function_name, 'value:float')

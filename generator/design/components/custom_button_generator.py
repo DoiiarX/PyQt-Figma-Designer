@@ -1,6 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_activate_handler, generate_link_controller, generate_print
+from generator.utils import *
 
 
 class CustomButtonGenerator(ComponentGenerator):
@@ -21,6 +21,7 @@ class CustomButtonGenerator(ComponentGenerator):
         self.controller_enable_function_name = f'{self.q_widget_name}_enable'
         self.controller_disable_function_name = f'{self.q_widget_name}_disable'
         enabled_name = f'{self.q_widget_name}_enabled'
+        enabled = generate_get_component_config(self, 'enabled')
 
         yield from f"""
 self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
@@ -32,7 +33,7 @@ self.{self.q_widget_name}.setMouseTracking(True)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
 self.{self.q_widget_name}.setAcceptDrops(False)
 self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
-self.{enabled_name} = ComponentsConfig.{self.config_class_path}.enabled""".splitlines()
+self.{enabled_name} = {enabled}""".splitlines()
 
         # Mouse over
         yield from f"""def __{self.q_widget_name}_mouse_over(*args, **kwargs):
@@ -111,19 +112,8 @@ self.{self.q_widget_name}.enable = __{self.q_widget_name}_enable""".splitlines()
         yield from hide_show_disabled_generator.generate_set('False')
 
     def generate_handler(self):
-        yield from f"""
-@classmethod
-def {self.handler_click_function_name}(cls):
-    {generate_print(f"'CustomButton {self.q_widget_name} clicked'")}
-""".splitlines()
+        yield from generate_handler(self.handler_click_function_name)
 
     def generate_controller(self):
-        yield from f"""
-@classmethod
-def {self.controller_enable_function_name}(cls):
-     {generate_print(f"'The function {self.controller_enable_function_name} is unfortunately not linked to the controller'")}
- 
-@classmethod
-def {self.controller_disable_function_name}(cls):
-        {generate_print(f"'The function {self.controller_disable_function_name} is unfortunately not linked to the controller'")}
-""".splitlines()
+        yield from generate_controller(self.controller_enable_function_name)
+        yield from generate_controller(self.controller_disable_function_name)

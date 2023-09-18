@@ -30,6 +30,40 @@ def indent(c: str | Iterator[str], n: int = 1) -> Iterator[str]:
         yield '    ' * n + line
 
 
+def generate_get_component_config(generator: 'DesignGenerator', component_name: str) -> str:
+    return f'{generator.config_class_path}.{component_name}'
+
+
+def generate_handler(handler_function_name: str, *args) -> Iterator[str]:
+    """
+    Generate the code for the given handler function with the given args.
+    Args:
+        handler_function_name: The name of the handler function to generate.
+        args: The arguments to pass to the handler function.
+    returns:
+        An iterator of strings containing the code for the given handler function with the given args.
+    """
+    args = 'cls' + (', ' + ', '.join(args) if args else '')
+    yield from f"""@classmethod
+def {handler_function_name}({args}) : 
+    {generate_print(f"'Handler {handler_function_name} called with args ' + str(list(locals().items())[1:])")}""".splitlines()
+
+
+def generate_controller(controller_function_name: str, *args) -> Iterator[str]:
+    """
+    Generate the code for the given controller function with the given args.
+    Args:
+        controller_function_name: The name of the controller function to generate.
+        args: The arguments to pass to the controller function.
+    returns:
+        An iterator of strings containing the code for the given controller function with the given args.
+    """
+    args = 'cls' + (', ' + ', '.join(args) if args else '')
+    yield from f"""@classmethod
+def {controller_function_name}({args}) : 
+    {generate_print(f"'Controller {controller_function_name} is unfortunately not linked.'")}""".splitlines()
+
+
 def generate_link_controller(generator, lambda_function_name: str, controller_function_name: str) -> Iterator[str]:
     """
     Generate the code to link the given lambda function to the given controller function.
@@ -41,7 +75,7 @@ def generate_link_controller(generator, lambda_function_name: str, controller_fu
         An iterator of strings containing the code to link the given lambda function to the given controller function.
     """
     yield from f"""try :
-    GuiController.{generator.controller_class_path}.{controller_function_name} = {lambda_function_name}
+    {generator.controller_class_path}.{controller_function_name} = {lambda_function_name}
 except NameError:
     {generate_print(f"'No function {controller_function_name} defined in class {generator.controller_class_path}'")}
 except Exception as e:
@@ -60,7 +94,7 @@ def generate_activate_handler(generator: 'DesignGenerator', handler_function_nam
     """
     value = ', '.join(args)
     yield from f"""try :
-    GuiHandler.{generator.handler_class_path}.{handler_function_name}({value})
+    {generator.handler_class_path}.{handler_function_name}({value})
 except NameError:
     {generate_print(f"'No function {handler_function_name} defined in class {generator.handler_class_path}'")}
 except Exception as e:
@@ -102,5 +136,5 @@ def get_generic_components() -> 'Iterator[ComponentGenerator]':
                 yield cls
 
 
-def generate_print(msg, level = 'logging.DEBUG') -> str:
+def generate_print(msg, level='logging.DEBUG') -> str:
     return f'logging.log({level}, {msg})'

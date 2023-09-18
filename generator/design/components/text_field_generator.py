@@ -1,6 +1,5 @@
-import config
 from generator.design.component_generator import ComponentGenerator
-from generator.utils import generate_link_controller, generate_activate_handler, indent, generate_print
+from generator.utils import *
 
 
 class TextFieldGenerator(ComponentGenerator):
@@ -16,6 +15,8 @@ class TextFieldGenerator(ComponentGenerator):
     def generate_design(self):
         self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
+        text_color = generate_get_component_config(self, 'text_color')
+        hint = generate_get_component_config(self, 'hint')
 
         yield from f"""
 self.{self.q_widget_name} = QLineEdit(self.{self.parent.q_widget_name})
@@ -28,8 +29,8 @@ self.{self.q_widget_name}.setAcceptDrops(False)
 self.{self.q_widget_name}.setFont(QFont("Arial", 20 * {config.scale * config.text_scale}))
 self.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setText
 # set text color, hint color and hint
-self.{self.q_widget_name}.setStyleSheet("color: " + ComponentsConfig.{self.config_class_path}.text_color + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
-self.{self.q_widget_name}.setPlaceholderText(ComponentsConfig.{self.config_class_path}.hint)
+self.{self.q_widget_name}.setStyleSheet("color: " + {text_color} + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
+self.{self.q_widget_name}.setPlaceholderText({hint})
 def __{self.handler_text_changed_function_name}(text):
     current_text = self.{self.q_widget_name}.text()""".splitlines()
         yield from indent(generate_activate_handler(self, self.handler_text_changed_function_name, 'current_text'))
@@ -38,13 +39,7 @@ def __{self.handler_text_changed_function_name}(text):
                                             self.controller_set_text_function_name)
 
     def generate_handler(self):
-        yield from f"""
-@classmethod
-def {self.handler_text_changed_function_name}(cls, text:str) :
-    {generate_print(f"'Text field {self.handler_text_changed_function_name} text changed to text : ' + text")}""".splitlines()
+        yield from generate_handler(self.handler_text_changed_function_name, 'text:str')
 
     def generate_controller(self):
-        yield from f"""
-@classmethod
-def {self.controller_set_text_function_name}(cls, text:str):
-    {generate_print(f"'The function {self.controller_set_text_function_name} is unfortunately not linked to the controller'")}""".splitlines()
+        yield from generate_controller(self.controller_set_text_function_name, 'text:str')

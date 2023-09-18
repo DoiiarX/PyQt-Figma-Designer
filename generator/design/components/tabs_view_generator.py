@@ -1,6 +1,7 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print
+from generator.utils import indent, generate_link_controller, generate_activate_handler, generate_print, \
+    generate_controller, generate_handler, generate_get_component_config
 
 
 class TabsViewGenerator(ComponentGenerator):
@@ -21,6 +22,7 @@ class TabsViewGenerator(ComponentGenerator):
         tab_bar = self.group_generator.children[-1].children[0].children
         tabs_content = self.group_generator.children[-2].children[0].children
         tabs = list(reversed(list(zip(tab_bar, tabs_content))))
+        default_tab = generate_get_component_config(self, 'default_tab')
 
         yield f'def __select_tab(i):'
         for j, (tab_bar_button, tab_content) in enumerate(tabs):
@@ -44,18 +46,12 @@ class TabsViewGenerator(ComponentGenerator):
 {button_name}.setAcceptDrops(False)
 {button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 100);")
 {button_name}.clicked.connect(__select_tab_{i})
-__select_tab(ComponentsConfig.{self.config_class_path}.default_tab)
+__select_tab({default_tab})
 """.splitlines()
             yield from generate_link_controller(self, f'__select_tab', self.controller_set_tab_function_name)
 
     def generate_handler(self):
-        yield from f"""
-@classmethod
-def {self.handler_tab_changed_function_name}(cls, tab:int) :
-    {generate_print(f"'Tabs view {self.q_widget_name} tab changed to tab : ' + str(tab)")}""".splitlines()
+        yield from generate_handler(self.handler_tab_changed_function_name, 'tab:int')
 
     def generate_controller(self):
-        yield from f"""
-@classmethod
-def {self.controller_set_tab_function_name}(cls, tab:int):
-    {generate_print(f"'The function {self.controller_set_tab_function_name} is unfortunately not linked to the controller'")}""".splitlines()
+        yield from generate_controller(self.controller_set_tab_function_name, 'tab:int')

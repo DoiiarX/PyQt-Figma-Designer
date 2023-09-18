@@ -24,10 +24,10 @@ class FrameGenerator(DesignGenerator):
         bounds = self.figma_node['absoluteBoundingBox']
         width, height = bounds['width'], bounds['height']
         self.window_class_name = f'QWindow{self.short_class_name}'
-        self.handler_class_path = f'{self.short_class_name}Handler'
-        self.controller_class_path = f'{self.short_class_name}Controller'
-        self.strings_class_path = f'{self.short_class_name}Strings'
-        self.config_class_path = f'{self.short_class_name}Config'
+        self.handler_class_path = f'{self.handler_class_path}.{self.short_class_name}Handler'
+        self.controller_class_path = f'{self.controller_class_path}.{self.short_class_name}Controller'
+        self.strings_class_path = f'{self.strings_class_path}.{self.short_class_name}Strings'
+        self.config_class_path = f'{self.config_class_path}.{self.short_class_name}Config'
         yield from f"""
 
 

@@ -12,6 +12,11 @@ class ScriptGenerator(DesignGenerator):
     Responsible for generating the script file, including imports, documentation and the main function.
     """
 
+    handler_class_path = 'GuiHandler'
+    controller_class_path = 'GuiController'
+    config_class_path = 'ComponentsConfig'
+    strings_class_path = 'Strings'
+
     def generate_design(self):
         __doc__ = super().generate_design().__doc__
         yield from f"""\"\"\"
@@ -24,22 +29,22 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 try:
-    import {config.gui_controller_file_name.split('.')[0]} as GuiController    
+    import {config.gui_controller_file_name.split('.')[0]} as {self.controller_class_path}    
 except Exception as e:
     {generate_print("'Exception while importing gui_controller.py'")}
     {generate_print("e")}
 try : 
-    import {config.gui_handler_file_name.split('.')[0]} as GuiHandler
+    import {config.gui_handler_file_name.split('.')[0]} as {self.handler_class_path}
 except Exception as e:
     {generate_print("'Exception while importing gui_handler.py'")}
     {generate_print("e")}
 try : 
-    import {config.strings_file_name.split('.')[0]} as Strings
+    import {config.strings_file_name.split('.')[0]} as {self.strings_class_path}
 except Exception as e:
     {generate_print("'Exception while importing strings.py'")}
     {generate_print("e")}  
 try :
-    import {config.components_config_file_name.split('.')[0]} as ComponentsConfig
+    import {config.components_config_file_name.split('.')[0]} as {self.config_class_path}
 except Exception as e:
     {generate_print("'Exception while importing components_config.py'")}
     
