@@ -276,7 +276,9 @@ To create custom components for your GUIs, follow these steps:
    file will serve as the container for your custom component class.
 
 2. **Inherit from `ComponentGenerator`**: In your Python file, define a class that inherits from
-   the `ComponentGenerator` class found in `generator.design.component_generator`.
+   the `ComponentGenerator` class found in `generator.design.component_generator`. This class receives a GroupGenerator
+   object as a parameter and keeps it. You can use this object
+   to access the children of the group with the syntax `self.group_generator.children[index]`.
 
 3. **Define Class Fields**:
     - `component_name`: This string field inherited from `ComponentGenerator` specifies the prefix used to identify
