@@ -149,7 +149,7 @@ recompilation.
 
 #### Figma Files
 
-The downloaded Figma file is saved in the output directory as `figma_file.pickle`. Additionally, project images are
+The downloaded Figma file is saved in the output directory as `figma_file.json`. Additionally, project images are
 stored in the `images` subdirectory in png format.
 
 #### SVG Files
@@ -272,79 +272,58 @@ create rich and functional PyQt6 GUIs.
 
 To create custom components for your GUIs, follow these steps:
 
-1. **Create a Python File**: Begin by creating a new Python file in the `generator/design/components` directory. This file will serve as the container for your custom component class.
+1. **Create a Python File**: Begin by creating a new Python file in the `generator/design/components` directory. This
+   file will serve as the container for your custom component class.
 
-2. **Inherit from `ComponentGenerator`**: In your Python file, define a class that inherits from the `ComponentGenerator` class found in `generator.design.component_generator`.
+2. **Inherit from `ComponentGenerator`**: In your Python file, define a class that inherits from
+   the `ComponentGenerator` class found in `generator.design.component_generator`.
 
 3. **Define Class Fields**:
-   - `component_name`: Define a class field named `component_name`. This field specifies the prefix used to identify the component in the Figma file. Ensure this prefix is unique, case-insensitive, and doesn't conflict with existing components.
-   - `component_config` (Optional): You can include an optional `component_config` field to extend the `component_config.py` file with additional configuration options. By default, this field should be an empty dictionary.
+    - `component_name`: This string field inherited from `ComponentGenerator` specifies the prefix used to identify
+      the component in the Figma file. Ensure this prefix is unique, case-insensitive, and doesn't conflict with
+      existing components.
+    - `component_config` (Optional): This dictionary field inherited from `ComponentGenerator` allows you to populate
+      the `component_config.py` file with additional configuration options. By default, this field should be an empty
+      dictionary. You can use `generate_get_component_config` from `generator.utils` to access this configuration in
+      your generated code.
 
-4. **Implement the `generate_design` Method**: This method is required and should generate the design and behavior of your custom component. Use the `generate_q_widget` function to create a `QWidget` object. You can access the component's properties using the `self.q_widget_name` syntax. Additionally, use the `generate_activate_handler` function to call the handler's methods once. Finally, utilize the `generate_link_controller` function to connect the controller's methods to your lambda functions.
+4. **Define Class Functions**
 
-5. **Implement the `generate_handler` Method** (Optional): This method is optional and should generate the handler's methods. Use the `generate_activate_handler` function to call the handler's methods from the generate_design function's generated code.
+    - `generate_design`: This function inherited from `DesignGenerator` is the first of the following functions called
+      during compilation and allows you to
+      generate the code for your component. This function should return an iterator of strings that will populate the
+      function `setupUi` from the file `gui.py`.
+    - `generate_handler`: This function inherited from `DesignGenerator` should
+      return an iterator of strings that will populate the file `gui_handler.py`. You should generate handler functions
+      using the function `generate_handler_function` from `generator.utils`. You must also call your handlers function
+      that you
+      define in `generate_design`.
+      For this, you can use the function `generate_handler_call` from `generator.utils`.
+    - `generate_controller`: This function inherited from `DesignGenerator` should
+      return an iterator of strings that will populate the file `gui_controller.py`. You should generate controller
+      functions
+      using the function `generate_controller_function` from `generator.utils`. You must also setup (connect) your controller
+      function that you define in `generate_design`. For this, you can use the function `generate_controller_setup`
+      from `generator.utils`.
 
-6. **Implement the `generate_controller` Method** (Optional): This method is also optional and should generate the controller's methods. Use the `generate_link_controller` from the generate_design function to establish links between the controller's methods and your lambda functions. Note that controller functions should be overridden by the GUI and have no impact on the generated code.
+You can find many examples of custom components in the `generator/design/components` directory.
 
-Here's an example of a custom component class:
+Feel free to read the documentation of the following classes for more details :
 
-```python
-from generator.utils import generate_q_widget, generate_activate_handler, generate_link_controller, indent
-from generator.design.component_generator import ComponentGenerator
+1`generator.utils`
 
-class MyCustomComponent(ComponentGenerator):
-    # Required: Component name
-    component_name = "my_custom_component"
-    # Optional: Component config
-    component_config = {
-        "enabled": True,
-    }
-
-    # Required method to generate design.
-    def generate_design(self):
-        # Create an empty QWidget object
-        yield from generate_q_widget(self)
-        
-        # Set component properties
-        yield f'self.{self.q_widget_name}.setEnabled(ComponentsConfig.{self.config_class_path}.enabled)'
-        
-        # Call the handler's methods once
-        yield from generate_activate_handler(self, f'{self.short_class_name}_handler')
-        
-        # Link controller's methods to lambda functions
-        lambda_function_name = f'{self.short_class_name}_lambda1'
-        yield f'self.{lambda_function_name} = lambda: print("Lambda Function !")'
-        yield from generate_link_controller(self, lambda_function_name, f'{self.short_class_name}_controller')
-        
-        # Create a button and link it to the handler function
-        call_handler = '\n'.join(
-            indent(
-                generate_activate_handler(self, f'{self.short_class_name}_handler')
-            )
-        )
-        yield f"""self.{self.q_widget_name}_button = QPushButton(self.{self.q_widget_name})
-self.{self.q_widget_name}_button.setGeometry({self.pyqt_bounds})
-def __{self.short_class_name}_handler(self):
-{call_handler}
-self.{self.q_widget_name}_button.clicked.connect(__{self.short_class_name}_handler)""".splitlines()
-
-    # Optional method to generate handler.
-    def generate_handler(self):
-        yield f'def {self.short_class_name}_handler(self):'
-        yield f'    print("Handler Function !")'
-
-    # Optional method to generate controller
-    def generate_controller(self):
-        yield f'def {self.short_class_name}_controller():'
-        # The controller's functions should be overridden by the GUI
-        # and then their code will have no impact.
-        yield f'    pass'
+```bash
+python -m pydoc generator.utils
 ```
 
-You can find additional examples of custom components in the `generator/design/components` directory.
+2`generator.design.design_generator.DesignGenerator`
 
-Feel free to read the documentation in the `generator.design.component_generator.ComponentGenerator` class for more
-details.
+```bash
+python -m pydoc generator.design.design_generator.DesignGenerator
+```
+
+3`generator.design.component_generator.ComponentGenerator`
+
 ```bash
 python -m pydoc generator.design.component_generator.ComponentGenerator
 ```
