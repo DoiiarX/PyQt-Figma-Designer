@@ -78,6 +78,7 @@ self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
 self.{self.q_widget_name}.setAlignment({vertical_alignment} | {horizontal_alignment})
 self.{self.q_widget_name}.setMouseTracking(False)
 self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+self.{self.q_widget_name}.setWordWrap(True)
 def {self.controller_set_text_function_name}(text:str):
     self.{self.q_widget_name}.setText(text)""".splitlines()
         yield from generate_controller_setup(self, self.controller_set_text_function_name,

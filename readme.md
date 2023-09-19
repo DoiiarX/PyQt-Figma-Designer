@@ -295,13 +295,13 @@ To create custom components for your GUIs, follow these steps:
       during compilation and allows you to
       generate the code for your component. This function should return an iterator of strings that will populate the
       function `setupUi` from the file `gui.py`.
-    - `generate_handler`: This function inherited from `DesignGenerator` should
+    - `generate_handler` (Optional): This function inherited from `DesignGenerator` should
       return an iterator of strings that will populate the file `gui_handler.py`. You should generate handler functions
       using the function `generate_handler_function` from `generator.utils`. You must also call your handlers function
       that you
       define in `generate_design`.
       For this, you can use the function `generate_handler_call` from `generator.utils`.
-    - `generate_controller`: This function inherited from `DesignGenerator` should
+    - `generate_controller` (Optional): This function inherited from `DesignGenerator` should
       return an iterator of strings that will populate the file `gui_controller.py`. You should generate controller
       functions
       using the function `generate_controller_function` from `generator.utils`. You must also setup (connect) your controller
