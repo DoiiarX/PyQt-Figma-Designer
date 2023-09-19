@@ -9,6 +9,8 @@ class SliderGenerator(ComponentGenerator):
     controller_set_value_function_name: str
     handler_value_changed_function_name: str
 
+    value_name : str
+
     component_name = 'slider'
     component_config = {'default_value': 0.5}
 
@@ -20,33 +22,33 @@ class SliderGenerator(ComponentGenerator):
         thumb_parent_generator = ParentGenerator(thumb_generator)
         thumb_geometry_generator = GeometryGenerator(thumb_generator)
 
-        value_name = f'self.{self.q_widget_name}_value'
+        self.value_name = f'self.{self.q_widget_name}_value'
         captured_name = f'self.{self.q_widget_name}_captured'
         slider_x, slider_y, slider_width, slider_height = self.bounds
         thumb_x, thumb_y, thumb_width, thumb_height = thumb_generator.bounds
         # place the thumb at the value position between the slider bounds
         if orientation == 'horizontal':
-            new_thumb_bounds = (f'{slider_x} + {slider_width - thumb_width} * {value_name}',
+            new_thumb_bounds = (f'{slider_x} + {slider_width - thumb_width} * {self.value_name}',
                                 thumb_y, thumb_width * 2, thumb_height * 2)
         else:
-            new_thumb_bounds = (thumb_x, f'{slider_y} + {slider_height - thumb_height} * {value_name}',
+            new_thumb_bounds = (thumb_x, f'{slider_y} + {slider_height - thumb_height} * {self.value_name}',
                                 thumb_width * 2, thumb_height * 2)
         default_value = generate_get_component_config(self, 'default_value')
         # capture mouse and deploy the thumb at the mouse position when clicked
         yield from f"""
 {captured_name} = False
-{value_name} = {default_value}
+{self.value_name} = {default_value}
 def {function_update_thumb_position_name}(*args, **kwargs):
     if {captured_name} and len(args) > 0 :
         x, y, width, height = {self.bounds}
         event = args[0]
         mouse_x, mouse_y = event.x(), event.y()
-        {value_name} = {'mouse_x / width' if orientation == 'horizontal' else 'mouse_y / height'}
-        if {value_name} < 0 :
-            {value_name} = 0
-        if {value_name} > 1 :
-            {value_name} = 1""".splitlines()
-        yield from indent(generate_handler_call(self, self.handler_value_changed_function_name, f'{value_name}'),
+        {self.value_name} = {'mouse_x / width' if orientation == 'horizontal' else 'mouse_y / height'}
+        if {self.value_name} < 0 :
+            {self.value_name} = 0
+        if {self.value_name} > 1 :
+            {self.value_name} = 1""".splitlines()
+        yield from indent(generate_handler_call(self, self.handler_value_changed_function_name, f'{self.value_name}'),
                           n=2)
         yield from indent(thumb_geometry_generator.generate_set(new_thumb_bounds), n=1)
         yield from f"""
@@ -61,7 +63,7 @@ def __{self.q_widget_name}_mouse_move(*args, **kwargs):
     {function_update_thumb_position_name}(*args, **kwargs)
 
 def __{self.controller_set_value_function_name}(value:float) :
-    {value_name} = value
+    {self.value_name} = value
     {function_update_thumb_position_name}()
 
 self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
