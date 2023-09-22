@@ -15,7 +15,11 @@ class GroupGenerator(DesignGenerator):
     """
 
     def generate_design(self):
-        __doc__ = super().generate_design().__doc__
+        """
+        Generates the children of a figma group.
+        returns:
+            An iterator of strings containing the code to generate the children of a figma group.
+        """
         if self.parent is None:
             return []
         if 'children' not in self.figma_node:

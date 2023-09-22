@@ -27,7 +27,7 @@ class Files:
                 "Invalid Input. Please check your input and try again.")
         except requests.ConnectionError:
             raise RuntimeError(
-                "Tkinter Designer requires internet access to work.")
+                "Pyqt Figma Designer requires internet access to work.")
         else:
             return response.json()
 

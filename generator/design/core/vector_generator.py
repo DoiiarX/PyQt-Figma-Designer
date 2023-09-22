@@ -112,7 +112,11 @@ class VectorGenerator(DesignGenerator):
     svg_counter: int = 0
 
     def generate_design(self):
-        __doc__ = super().generate_design().__doc__
+        """
+        Generates a QLabel containing a QSvgWidget.
+        returns:
+            An iterator of strings containing the code to generate a QLabel containing a QSvgWidget.
+        """
         VectorGenerator.svg_counter += 1
 
         svg_filename = f'file{VectorGenerator.svg_counter}.svg'

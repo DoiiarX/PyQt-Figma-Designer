@@ -5,7 +5,7 @@ from typing import Iterator
 
 import config
 from generator.design.design_generator import DesignGenerator
-from generator.utils import generate_controller_setup, generate_print
+from generator.utils import generate_controller_setup, generate_print, generate_controller_function
 
 
 class TextGenerator(DesignGenerator):
@@ -34,7 +34,11 @@ class TextGenerator(DesignGenerator):
         return f'text_{self.q_widget_name}'.upper()
 
     def generate_design(self):
-        __doc__ = super().generate_design().__doc__
+        """
+        Generates a PyQt QLabel.
+        returns:
+            An iterator of strings containing the code to generate a PyQt QLabel.
+        """
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
 
         font = self.figma_node['style']['fontFamily']
@@ -85,11 +89,12 @@ def {self.controller_set_text_function_name}(text:str):
                                              self.controller_set_text_function_name)
 
     def generate_controller(self):
-        __doc__ = super().generate_controller().__doc__
-        yield from f"""
-@classmethod
-def {self.controller_set_text_function_name}(cls, text:str):
-    {generate_print(f"'The function {self.controller_set_text_function_name} is unfortunately not linked to the controller'")}""".splitlines()
+        """
+        Generates the function used to set the text of the text in the GuiController.
+        returns:
+            An iterator of strings containing the code to generate the function used to set the text of the text in the GuiController.
+        """
+        yield from generate_controller_function(self.controller_set_text_function_name, 'text:str')
 
     def generate_strings(self) -> Iterator[str]:
         __doc__ = super().generate_strings().__doc__

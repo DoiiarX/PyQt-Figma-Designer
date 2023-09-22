@@ -18,7 +18,11 @@ class FrameGenerator(DesignGenerator):
     window_class_name: str
 
     def generate_design(self) -> Iterator[str]:
-        __doc__ = super().generate_design().__doc__
+        """
+        Generates a PyQt6 window (and its children).
+        returns:
+            An iterator of strings containing the code to generate a PyQt6 window.
+        """
         # import it here to avoid circular import
         from generator.design.core.factory_generator import FactoryGenerator
         bounds = self.figma_node['absoluteBoundingBox']

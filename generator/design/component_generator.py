@@ -18,6 +18,10 @@ class ComponentGenerator(DesignGenerator):
     # Abstract property to be defined in subclasses to specify the component name (prefix of the figma node name).
     component_name: str
 
+    # Abstract property to be defined in subclasses to specify the default component config.
+    # This config will be saved as json together with the design. It can be used to edit the style of the component.
+    component_config: dict = {}
+
     def __init__(self, group_generator: GroupGenerator):
         """
         Create a new component generator.
@@ -34,7 +38,11 @@ class ComponentGenerator(DesignGenerator):
         pass
 
     def generate_config(self) -> Iterator[str]:
-        __doc__ = super().generate_config().__doc__
+        """
+        Generates the code to create the config class for this component if it has a config (non empty component_config).
+        returns:
+            An iterator of strings containing the code to generate the config class for this component.
+        """
         if len(self.component_config) > 0:
             yield f'class {self.config_class_path.split(".")[-1]}:'
             for key, value in self.component_config.items():
