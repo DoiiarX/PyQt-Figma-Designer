@@ -136,8 +136,14 @@ def generate_q_push_button_create(generator: 'DesignGenerator') -> Iterator[str]
     generator.component_config['enabled'] = generator.component_config.get('enabled', True)
     background_color = generate_get_component_config(generator, 'pressed_color')
     enabled = generate_get_component_config(generator, 'enabled')
-    yield from f"""self.{generator.q_widget_name} = QPushButton(self.{generator.parent.q_widget_name})
+    yield from f"""try:
+    __temp = self.{generator.q_widget_name}
+except AttributeError:
+    __temp = None
+self.{generator.q_widget_name} = QPushButton(self.{generator.parent.q_widget_name})
 self.{generator.q_widget_name}.setGeometry({generator.pyqt_bounds})
+if __temp is not None:
+    __temp.setParent(self.{generator.q_widget_name})
 self.{generator.q_widget_name}.setFlat(True)
 self.{generator.q_widget_name}.setAutoFillBackground(False)
 self.{generator.q_widget_name}.setObjectName("{generator.q_widget_name}")
