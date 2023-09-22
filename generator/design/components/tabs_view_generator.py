@@ -1,5 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.design.components.button_generator import ButtonGenerator
+from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.utils import *
 
@@ -33,11 +34,12 @@ class TabsViewGenerator(ComponentGenerator):
         for i, _ in enumerate(tabs):
             yield f'__select_tab_{i} = lambda: __select_tab({i})'
 
-        yield from generate_q_widget_create(self)
+        sx, sy, sw, sh = self.bounds
         for i, (tab_bar_button, tab_content) in enumerate(tabs):
             tab_button_generator = ButtonGenerator(tab_bar_button)
+            tx, ty, tw, th = tab_bar_button.bounds
             yield from tab_button_generator.generate_design()
-            yield f'self.{tab_button_generator.q_widget_name}.setParent(self.{self.q_widget_name})'
+            yield from GeometryGenerator(tab_button_generator).generate_set((sx + tx, sy + ty, tw, th))
             yield f'self.{tab_button_generator.q_widget_name}.clicked.connect(__select_tab_{i})'
         yield f'__select_tab({default_tab})'
         yield from generate_controller_setup(self, f'__select_tab', self.controller_set_tab_function_name)
