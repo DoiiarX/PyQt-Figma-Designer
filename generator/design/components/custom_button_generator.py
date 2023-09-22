@@ -77,13 +77,11 @@ class CustomButtonGenerator(ComponentGenerator):
         yield from indent(f'self.{self.q_widget_name}.setMouseTracking(True)')
 
         # Click handler
-        yield from f"""
-def __{self.handler_click_function_name}(*args, **kwargs):""".splitlines()
+        yield f'def __{self.handler_click_function_name}(*args, **kwargs):'
         yield from indent(generate_handler_call(self, self.handler_click_function_name))
 
         # Connect signals
-        yield from f"""
-self.{self.q_widget_name}.clicked.connect(__{self.handler_click_function_name})
+        yield from f"""self.{self.q_widget_name}.clicked.connect(__{self.handler_click_function_name})
 self.{self.q_widget_name}.enterEvent = __{self.q_widget_name}_mouse_over
 self.{self.q_widget_name}.leaveEvent = __{self.q_widget_name}_mouse_leave
 self.{self.q_widget_name}.mousePressEvent = __{self.q_widget_name}_mouse_press
