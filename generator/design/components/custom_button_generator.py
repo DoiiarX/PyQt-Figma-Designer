@@ -9,6 +9,9 @@ class CustomButtonGenerator(ComponentGenerator):
     controller_disable_function_name: str
 
     component_name = 'custom_button'
+    component_config = {
+        'enabled': True
+    }
 
     def generate_design(self):
         if len(self.group_generator.children) < 4:
@@ -20,8 +23,9 @@ class CustomButtonGenerator(ComponentGenerator):
         self.controller_enable_function_name = f'{self.q_widget_name}_enable'
         self.controller_disable_function_name = f'{self.q_widget_name}_disable'
         enabled_name = f'{self.q_widget_name}_enabled'
+        default_enabled = generate_get_component_config(self, 'enabled')
         yield from generate_q_push_button_create(self)
-
+        yield f'self.{enabled_name} = {default_enabled}'
         # Mouse over
         yield from f"""def __{self.q_widget_name}_mouse_over(*args, **kwargs):
     if self.{enabled_name} :""".splitlines()
