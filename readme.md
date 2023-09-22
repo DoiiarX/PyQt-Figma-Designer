@@ -178,16 +178,17 @@ window.
 Component names must start with a prefix indicating their type. Component names are case-insensitive and disregard
 spaces, dashes, and underscores (`  , -, _`).
 
-| Component Type    | Prefix          |
-|-------------------|-----------------|
-| Button            | button          |
-| Custom Button     | custombutton    |
-| Text Field        | textfield       |
-| Custom Text Field | customtextfield |
-| Checkbox          | checkbox        |
-| Tabs view         | tabsview        |
-| Slider            | slider          |
-| Progress Bar      | progressbar     |
+| Component Type         | Prefix          |
+|------------------------|-----------------|
+| Button                 | button          |
+| Custom Button          | custombutton    |
+| Text Field             | textfield       |
+| Custom Text Field      | customtextfield |
+| Checkbox               | checkbox        |
+| Tabs view              | tabsview        |
+| Slider                 | slider          |
+| Progress Bar           | progressbar     |
+| (Vertical) Scroll View | vscrollview     |
 
 ### Hierarchy and Ordering
 
@@ -265,8 +266,19 @@ For progress bars, maintain the following order:
 | -1 (Topmost) | Fill           |
 | ...          | Background...  |
 
-By adhering to these naming conventions and hierarchies, you can make the most of PyQt Figma Designer's capabilities to
-create rich and functional PyQt6 GUIs.
+#### (Vertical) Scroll View
+
+The scroll view group must follow this ordering:
+
+| Child Index  | Child Function |
+|--------------|----------------|
+| -1 (Topmost) | Scroll bar     |
+| -2           | Scroll content |
+| ...          | Background...  |
+
+The scrollbar group must follow slider ordering conventions.
+The scroll view may be a frame inside a frame or a frame inside a group (for making content bigger than the scroll
+view).
 
 ### Writing Custom Components
 
@@ -304,7 +316,8 @@ To create custom components for your GUIs, follow these steps:
     - `generate_controller` (Optional): This function inherited from `DesignGenerator` should
       return an iterator of strings that will populate the file `gui_controller.py`. You should generate controller
       functions
-      using the function `generate_controller_function` from `generator.utils`. You must also setup (connect) your controller
+      using the function `generate_controller_function` from `generator.utils`. You must also setup (connect) your
+      controller
       function that you define in `generate_design`. For this, you can use the function `generate_controller_setup`
       from `generator.utils`.
 
