@@ -7,8 +7,7 @@ import generator.design.core.script_generator
 
 parser = argparse.ArgumentParser(
     prog='PyQt Figma Designer Compiler',
-    description='This program allows you to compile a PyQt-Figma-Designer to a Python project.',
-    epilog='This program was created by Romain Birling (github.com/rombirli)')
+    description='This program allows you to compile a PyQt-Figma-Designer to a Python project.')
 
 parser.add_argument('-p', '--project',
                     help='Project directory',

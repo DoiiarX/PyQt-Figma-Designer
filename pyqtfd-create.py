@@ -6,8 +6,7 @@ import config
 
 parser = argparse.ArgumentParser(
     prog='PyQt Figma Designer Project Creator',
-    description='This program allows you to create a PyQt-Figma-Designer project structure.',
-    epilog='This program was created by Romain Birling (github.com/rombirli)')
+    description='This program allows you to create a PyQt-Figma-Designer project structure.')
 
 parser.add_argument('-p', '--project',
                     help='Project directory',

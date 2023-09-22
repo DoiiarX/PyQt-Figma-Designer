@@ -7,8 +7,7 @@ from figma import endpoints
 
 parser = argparse.ArgumentParser(
     prog='PyQt Figma Designer Downloader',
-    description='This program allows you to generate a PyQt-Figma-Designer project from a Figma URL.',
-    epilog='This program was created by Romain Birling (github.com/rombirli)')
+    description='This program allows you to generate a PyQt-Figma-Designer project from a Figma URL.')
 
 parser.add_argument('-p', '--project',
                     help='Project directory',
