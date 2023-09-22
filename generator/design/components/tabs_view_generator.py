@@ -1,9 +1,7 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.design.components.button_generator import ButtonGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
-from generator.utils import indent, generate_controller_setup, generate_handler_call, generate_print, \
-    generate_controller_function, generate_handler_function, generate_get_component_config, \
-    generate_q_push_button_create, generate_q_widget_create
+from generator.utils import *
 
 
 class TabsViewGenerator(ComponentGenerator):

@@ -1,7 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
-from generator.utils import indent, generate_controller_setup, generate_print, generate_controller_function, \
-    generate_get_component_config
+from generator.utils import *
 
 
 class ProgressBarGenerator(ComponentGenerator):

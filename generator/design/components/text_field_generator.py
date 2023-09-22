@@ -15,23 +15,8 @@ class TextFieldGenerator(ComponentGenerator):
     def generate_design(self):
         self.handler_text_changed_function_name = f'{self.q_widget_name}_text_changed'
         self.controller_set_text_function_name = f'{self.q_widget_name}_set_text'
-        text_color = generate_get_component_config(self, 'text_color')
-        hint = generate_get_component_config(self, 'hint')
-
-        yield from f"""
-self.{self.q_widget_name} = QLineEdit(self.{self.parent.q_widget_name})
-self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-self.{self.q_widget_name}.setAutoFillBackground(False)
-self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
-self.{self.q_widget_name}.setMouseTracking(True)
-self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
-self.{self.q_widget_name}.setAcceptDrops(False)
-self.{self.q_widget_name}.setFont(QFont("Arial", 20 * {config.scale * config.text_scale}))
-self.{self.controller_set_text_function_name} = self.{self.q_widget_name}.setText
-# set text color, hint color and hint
-self.{self.q_widget_name}.setStyleSheet("color: " + {text_color} + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
-self.{self.q_widget_name}.setPlaceholderText({hint})
-def __{self.handler_text_changed_function_name}(text):
+        yield from generate_q_line_edit_create(self)
+        yield from f"""def __{self.handler_text_changed_function_name}(text):
     current_text = self.{self.q_widget_name}.text()""".splitlines()
         yield from indent(generate_handler_call(self, self.handler_text_changed_function_name, 'current_text'))
         yield f'self.{self.q_widget_name}.textChanged.connect(__{self.handler_text_changed_function_name})'

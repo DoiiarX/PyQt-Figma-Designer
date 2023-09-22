@@ -1,6 +1,5 @@
 from generator.design.component_generator import ComponentGenerator
-from generator.utils import generate_handler_call, indent, generate_handler_function, generate_get_component_config, \
-    generate_q_push_button_create
+from generator.utils import *
 
 
 class ButtonGenerator(ComponentGenerator):

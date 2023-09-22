@@ -1,9 +1,7 @@
 from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
-from generator.utils import indent, generate_controller_setup, generate_handler_call, generate_print, \
-    generate_controller_function, generate_handler_function, generate_get_component_config, \
-    generate_q_push_button_create
+from generator.utils import *
 
 
 class SliderGenerator(ComponentGenerator):

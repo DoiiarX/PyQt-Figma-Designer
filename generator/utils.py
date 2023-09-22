@@ -123,7 +123,7 @@ self.{generator.q_widget_name}.setGeometry({generator.pyqt_bounds})
 self.{generator.q_widget_name}.setObjectName("{generator.q_widget_name}")""".splitlines()
 
 
-def generate_q_push_button_create(generator: 'DesignGenerator') -> Iterator[str]:
+def generate_q_push_button_create(generator: 'ComponentGenerator') -> Iterator[str]:
     """
     Generate the code to create a QPushButton for the given generator (correct bounds). This QPushButton will be used
     as a source of events.
@@ -155,6 +155,51 @@ self.{generator.q_widget_name}.setFocusPolicy(Qt.NoFocus)
 self.{generator.q_widget_name}.setStyleSheet(f"background-color:" + {background_color})""".splitlines()
 
 
+def generate_q_line_edit_create(generator: 'ComponentGenerator') -> Iterator[str]:
+    """
+    Generate the code to create a QLineEdit for the given generator (correct bounds). This QLineEdit will be used as
+    a source of events.
+    Args:
+        generator: The generator that will generate the code.
+    returns:
+        An iterator of strings containing the code to create a QLineEdit for the given generator.
+    """
+    generator.component_config['text_color'] = generator.component_config.get('text_color',
+                                                                              "'rgba(255, 255, 255, 255)'")
+    generator.component_config['hint'] = generator.component_config.get('hint', "''")
+    text_color = generate_get_component_config(generator, 'text_color')
+    hint = generate_get_component_config(generator, 'hint')
+    yield from f"""try:
+    __temp = self.{generator.q_widget_name}
+except AttributeError:
+    __temp = None    
+self.{generator.q_widget_name} = QLineEdit(self.{generator.parent.q_widget_name})
+self.{generator.q_widget_name}.setGeometry({generator.pyqt_bounds})
+if __temp is not None:
+    self.{generator.q_widget_name}.setParent(__temp)
+self.{generator.q_widget_name}.setAutoFillBackground(False)
+self.{generator.q_widget_name}.setObjectName("{generator.q_widget_name}")
+self.{generator.q_widget_name}.setMouseTracking(True)
+self.{generator.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+self.{generator.q_widget_name}.setAcceptDrops(False)
+self.{generator.q_widget_name}.setFont(QFont("Arial", 20 * {config.scale * config.text_scale}))
+# set text color, hint color and hint
+self.{generator.q_widget_name}.setStyleSheet("color: " + {text_color} + "; background-color: rgba(255, 255, 255, 0); border: 0px solid rgba(255, 255, 255, 0);")
+self.{generator.q_widget_name}.setPlaceholderText({hint})""".splitlines()
+
+
+def generate_print(msg, level='logging.DEBUG') -> str:
+    """
+    Generate the code to print the given message.
+    Args:
+        msg: The message to print.
+        level: The level of the message.
+    returns:
+        A string containing the code to print the given message.
+    """
+    return f'logging.log({level}, {msg})'
+
+
 def get_generic_components() -> 'Iterator[ComponentGenerator]':
     """
     Get all the generic components from the generic_components_directory.
@@ -174,15 +219,3 @@ def get_generic_components() -> 'Iterator[ComponentGenerator]':
         for _, cls in inspect.getmembers(module, inspect.isclass):
             if issubclass(cls, ComponentGenerator) and cls != ComponentGenerator:
                 yield cls
-
-
-def generate_print(msg, level='logging.DEBUG') -> str:
-    """
-    Generate the code to print the given message.
-    Args:
-        msg: The message to print.
-        level: The level of the message.
-    returns:
-        A string containing the code to print the given message.
-    """
-    return f'logging.log({level}, {msg})'
