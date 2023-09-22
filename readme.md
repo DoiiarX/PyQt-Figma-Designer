@@ -38,10 +38,10 @@ Follow these steps to install PyQt Figma Designer on your system:
    python pyqtfd-gui.py
    ```
 
-2. In the "Create project" tab input the path to an empty directory where the project will be created.
+2. In the "Create project" tab input the path to an empty directory where the project will be created. Click the "Create project" button to create the project.
    ![GUI Screenshot](images/screenshot_gui_v4_0.png)
 
-3. Switch to the "Download" tab, input your Figma personal access token
+3. Switch to the "Download" tab, input your Figma personal access token and the Figma file URL. Click the "Download" button to download the Figma file.
    ![GUI Screenshot](images/screenshot_gui_v4_1.png)
 
 4. Switch to the "Compile" tab and click the "Compile" button to generate the PyQt6 code.
@@ -78,7 +78,7 @@ python pyqtfd-download.py -h
 This command allows you to download a Figma file as well as its images. It accepts the following options:
 
 - `-p PATH, --project PATH`: Specifies the project directory where the generated files will be stored.
-- `url URL, --url URL`: Specifies the Figma file URL.
+- `-url URL, --url URL`: Specifies the Figma file URL.
 - `-t TOKEN, --token TOKEN`: Specifies the Figma personal access token.
 - `-ni, --no-images`: (Optional) When specified, images are not downloaded.
 
@@ -323,7 +323,7 @@ To create custom components for your GUIs, follow these steps:
 
 You can find many examples of custom components in the `generator/design/components` directory.
 
-Feel free to read the documentation of the following classes for more details :
+Feel free to read the documentation of the following modules and classes for more details :
 
 1`generator.utils`
 
