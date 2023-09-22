@@ -1,7 +1,9 @@
 from generator.design.component_generator import ComponentGenerator
+from generator.design.components.button_generator import ButtonGenerator
 from generator.properties.visibility_generator import VisibilityGenerator
 from generator.utils import indent, generate_controller_setup, generate_handler_call, generate_print, \
-    generate_controller_function, generate_handler_function, generate_get_component_config
+    generate_controller_function, generate_handler_function, generate_get_component_config, \
+    generate_q_push_button_create, generate_q_widget_create
 
 
 class TabsViewGenerator(ComponentGenerator):
@@ -33,22 +35,14 @@ class TabsViewGenerator(ComponentGenerator):
         for i, _ in enumerate(tabs):
             yield f'__select_tab_{i} = lambda: __select_tab({i})'
 
-        yield f'self.{self.q_widget_name} = QLabel(self.{self.parent.q_widget_name})'
+        yield from generate_q_widget_create(self)
         for i, (tab_bar_button, tab_content) in enumerate(tabs):
-            button_name = f'{tab_bar_button.q_widget_name}_button'
-            yield from f"""
-{button_name} = QPushButton(self.{tab_bar_button.parent.q_widget_name})
-{button_name}.setGeometry({tab_bar_button.pyqt_bounds})
-{button_name}.setFlat(True)
-{button_name}.setObjectName("{button_name}")
-{button_name}.setMouseTracking(True)
-{button_name}.setContextMenuPolicy(Qt.NoContextMenu)
-{button_name}.setAcceptDrops(False)
-{button_name}.setStyleSheet("background-color: rgba(255, 255, 255, 100);")
-{button_name}.clicked.connect(__select_tab_{i})
-__select_tab({default_tab})
-""".splitlines()
-            yield from generate_controller_setup(self, f'__select_tab', self.controller_set_tab_function_name)
+            tab_button_generator = ButtonGenerator(tab_bar_button)
+            yield from tab_button_generator.generate_design()
+            yield f'self.{tab_button_generator.q_widget_name}.setParent(self.{self.q_widget_name})'
+            yield f'self.{tab_button_generator.q_widget_name}.clicked.connect(__select_tab_{i})'
+        yield f'__select_tab({default_tab})'
+        yield from generate_controller_setup(self, f'__select_tab', self.controller_set_tab_function_name)
 
     def generate_handler(self):
         yield from generate_handler_function(self.handler_tab_changed_function_name, 'tab:int')

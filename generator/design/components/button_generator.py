@@ -1,5 +1,6 @@
 from generator.design.component_generator import ComponentGenerator
-from generator.utils import generate_handler_call, indent, generate_handler_function, generate_get_component_config
+from generator.utils import generate_handler_call, indent, generate_handler_function, generate_get_component_config, \
+    generate_q_push_button_create
 
 
 class ButtonGenerator(ComponentGenerator):
@@ -13,24 +14,10 @@ class ButtonGenerator(ComponentGenerator):
 
     def generate_design(self):
         self.handler_click_function_name = f'{self.q_widget_name}_clicked'
-        background_color = generate_get_component_config(self, 'pressed_color')
-        enabled = generate_get_component_config(self, 'enabled')
-        yield from f"""
-self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
-self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-self.{self.q_widget_name}.setFlat(True)
-self.{self.q_widget_name}.setAutoFillBackground(False)
-self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
-self.{self.q_widget_name}.setMouseTracking(True)
-self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
-self.{self.q_widget_name}.setAcceptDrops(False)
-self.{self.q_widget_name}.setEnabled({enabled})
-def __{self.handler_click_function_name}(*args, **kwargs):""".splitlines()
+        yield f'def __{self.handler_click_function_name}(*args, **kwargs):'
         yield from indent(generate_handler_call(self, self.handler_click_function_name))
-        yield from f"""
-self.{self.q_widget_name}.clicked.connect(__{self.handler_click_function_name})
-self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
-self.{self.q_widget_name}.setStyleSheet(f"background-color:" + {background_color})""".splitlines()
+        yield from generate_q_push_button_create(self)
+        yield f'self.{self.q_widget_name}.clicked.connect(__{self.handler_click_function_name})'
 
     def generate_handler(self):
         yield from generate_handler_function(self.handler_click_function_name)

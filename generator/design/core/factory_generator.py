@@ -13,6 +13,7 @@ class FactoryGenerator(DesignGenerator):
     """
     Class used to generate different types of components.
     """
+
     def generate_design(self):
         """
         Generate the different generators for a figma node,
@@ -53,4 +54,4 @@ class FactoryGenerator(DesignGenerator):
         for cls in get_generic_components():
             prefix_rule = cls.component_name.lower().replace(' ', '').replace('-', '').replace('_', '')
             if name.startswith(prefix_rule):
-                yield from cls(self.figma_node, self, group_generator).generate_design()
+                yield from cls(group_generator).generate_design()

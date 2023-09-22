@@ -5,6 +5,7 @@ from abc import abstractmethod
 from typing import List, Iterator
 
 import config
+from generator.utils import indent
 
 
 class DesignGenerator:
@@ -25,6 +26,9 @@ class DesignGenerator:
     children: List['DesignGenerator']
     # The name of the generated q widget.
     q_widget_name: str
+    # Abstract property to be defined in subclasses to specify the default component config.
+    # This config will be saved as json together with the design. It can be used to edit the style of the component.
+    component_config: dict = {}
 
     # The path to the handler class.
     handler_class_path: str = ''

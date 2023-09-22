@@ -15,21 +15,16 @@ class ComponentGenerator(DesignGenerator):
     """
     # The group generator corresponding to the figma node that generated this component.
     group_generator: GroupGenerator
-    # Abstract property to be defined in subclasses to specify the default component config.
-    # This config will be saved as json together with the design. It can be used to edit the style of the component.
-    component_config: dict = {}
     # Abstract property to be defined in subclasses to specify the component name (prefix of the figma node name).
     component_name: str
 
-    def __init__(self, figma_node, parent, group_generator: GroupGenerator):
+    def __init__(self, group_generator: GroupGenerator):
         """
         Create a new component generator.
         Args:
-            figma_node: The figma node that generated this component generator.
-            parent: The parent design generator.
             group_generator: The group generator corresponding to the figma node that generated this component.
         """
-        super().__init__(figma_node, parent)
+        super().__init__(group_generator.figma_node, group_generator.parent)
         self.group_generator = group_generator
         self.config_class_path = f'{self.group_generator.parent.config_class_path}.{self.short_class_name}Config'
 

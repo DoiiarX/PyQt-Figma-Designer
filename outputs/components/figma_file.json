@@ -6772,7 +6772,7 @@
                                             "x": 291.0,
                                             "y": 17.0,
                                             "width": 112.0,
-                                            "height": 294.0
+                                            "height": 177.0
                                         },
                                         "absoluteRenderBounds": {
                                             "x": 291.30682373046875,
@@ -6798,7 +6798,7 @@
                                         ],
                                         "size": {
                                             "x": 112.0,
-                                            "y": 294.0
+                                            "y": 177.0
                                         },
                                         "fills": [
                                             {
@@ -7372,9 +7372,9 @@
         }
     },
     "name": "PyQtFigmaDesigner Components Pack",
-    "lastModified": "2023-09-18T23:30:29Z",
-    "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/62e54fdc-566f-4bb8-bf33-5441431e2982?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCZ4C6UUCC%2F20230917%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230917T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=b366b291c03d1ac2656060495e14d870831de18f0042429f02a237924129c8bf",
-    "version": "4183099066",
+    "lastModified": "2023-09-19T15:22:50Z",
+    "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/e35b3f71-ba91-41a0-bef0-cadd3c7f986d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCQQCYVXPR%2F20230917%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230917T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=c598aac6281268bc3cad2e26a02df658e606442eadc87165dd2d054e7d761969",
+    "version": "4188491055",
     "role": "owner",
     "editorType": "figma",
     "linkAccess": "view"

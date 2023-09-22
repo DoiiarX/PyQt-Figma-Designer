@@ -13,7 +13,7 @@ class ScrollViewGenerator(ComponentGenerator):
         scroll_bar_group: GroupGenerator = self.group_generator.children[-1].children[0]  # type: ignore
         content = self.group_generator.children[-2]
         content_geometry_generator = GeometryGenerator(content)
-        slider_generator = SliderGenerator(scroll_bar_group.figma_node, scroll_bar_group.parent, scroll_bar_group)
+        slider_generator = SliderGenerator(scroll_bar_group)
         slider_generator.component_config['default_value'] = 0
         cx, cy, cw, ch = content.bounds
         sx, sy, sw, sh = self.bounds

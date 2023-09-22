@@ -9,7 +9,6 @@ class CustomButtonGenerator(ComponentGenerator):
     controller_disable_function_name: str
 
     component_name = 'custom_button'
-    component_config = {'enabled': True}
 
     def generate_design(self):
         if len(self.group_generator.children) < 4:
@@ -21,19 +20,7 @@ class CustomButtonGenerator(ComponentGenerator):
         self.controller_enable_function_name = f'{self.q_widget_name}_enable'
         self.controller_disable_function_name = f'{self.q_widget_name}_disable'
         enabled_name = f'{self.q_widget_name}_enabled'
-        enabled = generate_get_component_config(self, 'enabled')
-
-        yield from f"""
-self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
-self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-self.{self.q_widget_name}.setFlat(True)
-self.{self.q_widget_name}.setAutoFillBackground(False)
-self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
-self.{self.q_widget_name}.setMouseTracking(True)
-self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
-self.{self.q_widget_name}.setAcceptDrops(False)
-self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
-self.{enabled_name} = {enabled}""".splitlines()
+        yield from generate_q_push_button_create(self)
 
         # Mouse over
         yield from f"""def __{self.q_widget_name}_mouse_over(*args, **kwargs):

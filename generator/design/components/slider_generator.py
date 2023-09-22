@@ -2,14 +2,15 @@ from generator.design.component_generator import ComponentGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
 from generator.utils import indent, generate_controller_setup, generate_handler_call, generate_print, \
-    generate_controller_function, generate_handler_function, generate_get_component_config
+    generate_controller_function, generate_handler_function, generate_get_component_config, \
+    generate_q_push_button_create
 
 
 class SliderGenerator(ComponentGenerator):
     controller_set_value_function_name: str
     handler_value_changed_function_name: str
 
-    value_name : str
+    value_name: str
 
     component_name = 'slider'
     component_config = {'default_value': 0.5}
@@ -64,19 +65,10 @@ def __{self.q_widget_name}_mouse_move(*args, **kwargs):
 
 def __{self.controller_set_value_function_name}(value:float) :
     {self.value_name} = value
-    {function_update_thumb_position_name}()
+    {function_update_thumb_position_name}()""".splitlines()
 
-self.{self.q_widget_name} = QPushButton(self.{self.parent.q_widget_name})
-self.{self.q_widget_name}.setGeometry({self.pyqt_bounds})
-self.{self.q_widget_name}.setFlat(True)
-self.{self.q_widget_name}.setAutoFillBackground(False)
-self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
-self.{self.q_widget_name}.setMouseTracking(True)
-self.{self.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
-self.{self.q_widget_name}.setAcceptDrops(False)
-self.{self.q_widget_name}.setFocusPolicy(Qt.NoFocus)
-self.{self.q_widget_name}.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
-self.{self.q_widget_name}.mousePressEvent = __{self.q_widget_name}_mouse_press
+        yield from generate_q_push_button_create(self)
+        yield from f"""self.{self.q_widget_name}.mousePressEvent = __{self.q_widget_name}_mouse_press
 self.{self.q_widget_name}.mouseReleaseEvent = __{self.q_widget_name}_mouse_release
 self.{self.q_widget_name}.mouseMoveEvent = __{self.q_widget_name}_mouse_move""".splitlines()
         yield from generate_controller_setup(self, f'__{self.controller_set_value_function_name}',

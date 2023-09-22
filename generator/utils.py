@@ -123,6 +123,32 @@ self.{generator.q_widget_name}.setGeometry({generator.pyqt_bounds})
 self.{generator.q_widget_name}.setObjectName("{generator.q_widget_name}")""".splitlines()
 
 
+def generate_q_push_button_create(generator: 'DesignGenerator') -> Iterator[str]:
+    """
+    Generate the code to create a QPushButton for the given generator (correct bounds). This QPushButton will be used
+    as a source of events.
+    Args:
+        generator: The generator that will generate the code.
+    returns:
+        An iterator of strings containing the code to create a QPushButton for the given generator.
+    """
+    generator.component_config['pressed_color'] = generator.component_config.get('pressed_color', "'rgba(0, 0, 0, 0)'")
+    generator.component_config['enabled'] = generator.component_config.get('enabled', True)
+    background_color = generate_get_component_config(generator, 'pressed_color')
+    enabled = generate_get_component_config(generator, 'enabled')
+    yield from f"""self.{generator.q_widget_name} = QPushButton(self.{generator.parent.q_widget_name})
+self.{generator.q_widget_name}.setGeometry({generator.pyqt_bounds})
+self.{generator.q_widget_name}.setFlat(True)
+self.{generator.q_widget_name}.setAutoFillBackground(False)
+self.{generator.q_widget_name}.setObjectName("{generator.q_widget_name}")
+self.{generator.q_widget_name}.setMouseTracking(True)
+self.{generator.q_widget_name}.setContextMenuPolicy(Qt.NoContextMenu)
+self.{generator.q_widget_name}.setAcceptDrops(False)
+self.{generator.q_widget_name}.setEnabled({enabled})
+self.{generator.q_widget_name}.setFocusPolicy(Qt.NoFocus)
+self.{generator.q_widget_name}.setStyleSheet(f"background-color:" + {background_color})""".splitlines()
+
+
 def get_generic_components() -> 'Iterator[ComponentGenerator]':
     """
     Get all the generic components from the generic_components_directory.
