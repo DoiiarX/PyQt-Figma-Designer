@@ -17,6 +17,7 @@ class ScrollViewGenerator(ComponentGenerator):
         slider_generator.component_config['default_value'] = 0
         cx, cy, cw, ch = content.bounds
         sx, sy, sw, sh = self.bounds
+        tx, ty, tw, th = scroll_bar_group.bounds
         y = f'{cy} - ({ch} - {sh}) * value'
         content_new_bounds = (cx, y, cw, ch)
         # generate empty button to capture mouse wheel events
@@ -50,3 +51,4 @@ self.{self.q_widget_name}.wheelEvent = __{self.q_widget_name}_wheel_event
 """.splitlines()
         yield from ParentGenerator(self).generate_set(f'self.{self.group_generator.q_widget_name}')
         yield from ParentGenerator(slider_generator).generate_set(f'self.{self.group_generator.q_widget_name}')
+        yield from GeometryGenerator(slider_generator).generate_set((sx + sw - tw, sy, tw, sh))
