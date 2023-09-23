@@ -79,9 +79,7 @@ class CustomButtonGenerator(ComponentGenerator):
         # Click handler
         yield f'def __{self.handler_click_function_name}(*args, **kwargs):'
         yield from indent(generate_handler_call(self, self.handler_click_function_name))
-        if self.figma_node.get('transitionNodeID', None) is not None:
-            window_node_id = self.figma_node['transitionNodeID']
-            yield from indent(generate_open_window(window_node_id))
+        yield from indent(generate_transitions(self))
 
         # Connect signals
         yield from f"""self.{self.q_widget_name}.clicked.connect(__{self.handler_click_function_name})

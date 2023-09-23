@@ -9232,7 +9232,7 @@
                         "children": [
                             {
                                 "id": "37:162",
-                                "name": "Button 3",
+                                "name": "Button other window",
                                 "type": "GROUP",
                                 "scrollBehavior": "SCROLLS",
                                 "blendMode": "PASS_THROUGH",
@@ -9677,9 +9677,9 @@
         }
     },
     "name": "PyQtFigmaDesigner Components Pack",
-    "lastModified": "2023-09-23T00:19:38Z",
-    "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/af1ddc9d-e7e7-4a26-92b3-22628bdfb441?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCQQCYVXPR%2F20230921%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230921T000000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=5e13415408a1a05742375ed52920720e7e377c810e152e2eb10169e7866ba604",
-    "version": "4211940036",
+    "lastModified": "2023-09-23T09:10:12Z",
+    "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/c497b71a-0eab-41ef-bc9d-56c04c877e90?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCQQCYVXPR%2F20230921%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230921T000000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=c23d33e2ed98813c489ef9aa97f00e02998d3d0040e41f743b9629f6264196ac",
+    "version": "4212682275",
     "role": "owner",
     "editorType": "figma",
     "linkAccess": "view"

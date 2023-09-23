@@ -3,7 +3,7 @@ from generator.design.components.slider_generator import SliderGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
-from generator.utils import generate_q_widget_create, indent
+from generator.utils import generate_q_widget_create, indent, generate_decorate_handler
 
 
 class ScrollViewGenerator(ComponentGenerator):
@@ -38,15 +38,11 @@ self.{self.q_widget_name}.setMouseTracking(True)""".splitlines()
         value = 1
     {slider_generator.controller_class_path}.{slider_generator.controller_set_value_function_name}(value)
     __{self.q_widget_name}_update_content_bounds(value)
-self.{self.q_widget_name}.wheelEvent = __{self.q_widget_name}_wheel_event
-def {self.q_widget_name}_link_slider():
-    f = {slider_generator.handler_class_path}.{slider_generator.handler_value_changed_function_name}
-    def decorator(value) : 
-        __{self.q_widget_name}_update_content_bounds(value)
-        f(value)
-    {slider_generator.handler_class_path}.{slider_generator.handler_value_changed_function_name} = decorator
-{self.q_widget_name}_link_slider()
-""".splitlines()
+self.{self.q_widget_name}.wheelEvent = __{self.q_widget_name}_wheel_event""".splitlines()
+        yield from generate_decorate_handler(slider_generator,
+                                             slider_generator.handler_value_changed_function_name,
+                                             [f'__{self.q_widget_name}_update_content_bounds(value)'].__iter__(),
+                                             'value')
         yield from ParentGenerator(self).generate_set(f'self.{self.group_generator.q_widget_name}')
         yield from ParentGenerator(slider_generator).generate_set(f'self.{self.group_generator.q_widget_name}')
         yield from GeometryGenerator(slider_generator).generate_set((sx + sw - tw, sy, tw, sh))

@@ -109,6 +109,19 @@ except Exception as e:
     {generate_print(f"'Caught exception while trying to call {generator.handler_class_path}.{handler_function_name} : ' + str(e)")}""".splitlines()
 
 
+def generate_decorate_handler(generator: 'DesignGenerator', handler_function_name: str,
+                              decorator_body: Iterator[str], *args) -> Iterator[str]:
+    decorator_body = '\n'.join(indent(decorator_body, n=2))
+    args = ', '.join(args)
+    yield from f"""def decorate_{generator.q_widget_name}_{handler_function_name}():
+    decorated = {generator.handler_class_path}.{handler_function_name}
+    def decorator({args}):
+{decorator_body}
+        decorated({args})
+    {generator.handler_class_path}.{handler_function_name} = decorator
+decorate_{generator.q_widget_name}_{handler_function_name}()""".splitlines()
+
+
 def generate_q_widget_create(generator: 'DesignGenerator') -> Iterator[str]:
     """
     Generate the code to create an empty QWidget for the given generator (correct bounds). This QWidget will be used as
@@ -188,17 +201,19 @@ self.{generator.q_widget_name}.setStyleSheet("color: " + {text_color} + "; backg
 self.{generator.q_widget_name}.setPlaceholderText({hint})""".splitlines()
 
 
-def generate_open_window(window_node_id: str) -> Iterator[str]:
+def generate_transitions(generator: 'DesignGenerator') -> Iterator[str]:
+    figma_node = generator.figma_node
+    window_node_id = figma_node.get('transitionNodeID', None)
+    if window_node_id is None:
+        return []
+
     from generator.design.core.frame_generator import FrameGenerator
     window_name = FrameGenerator.get_window_name(window_node_id)
     yield from f"""window = {window_name}()
-# close current window
-MainWindow.close()
-# open new window
-self.MainWindow = QMainWindow()        
-window.setupUi(self.MainWindow)
-self.MainWindow.show()
-app.exec()""".splitlines()
+self.{window_name} = QMainWindow()
+window.setupUi(self.{window_name})
+self.{window_name}.setWindowModality(Qt.ApplicationModal)
+self.{window_name}.show()""".splitlines()
 
 
 def generate_print(msg, level='logging.DEBUG') -> str:

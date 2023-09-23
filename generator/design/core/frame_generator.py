@@ -42,12 +42,17 @@ class FrameGenerator(DesignGenerator):
 
 
 class {self.window_class_name}(object):
+    is_singleton_open = False
     def setupUi(self, MainWindow):
+        if not {self.window_class_name}.is_singleton_open:
+            {self.window_class_name}.is_singleton_open = True
+        else:
+            raise Exception('Only one instance of {self.window_class_name} can be opened at a time')
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         self.MainWindow = MainWindow
         MainWindow.resize({width * config.scale}, {height * config.scale})
-        self.{self.q_widget_name} = QWidget(MainWindow)
+        self.{self.q_widget_name} = QWidget(MainWindow)        
         MainWindow.setFixedSize({width * config.scale}, {height * config.scale})
         MainWindow.setWindowTitle("{self.figma_node['name']}")""".splitlines()
         yield from indent(FactoryGenerator(self.figma_node, self).generate_design(), n=2)
@@ -55,6 +60,7 @@ class {self.window_class_name}(object):
         yield from indent(generate_handler_call(self, 'window_started'), n=2)
         yield from indent('def __window_closed(*args, **kwargs):', n=2)
         yield from indent(generate_handler_call(self, 'window_closed'), n=3)
+        yield from indent(f'{self.window_class_name}.is_singleton_open = False', n=3)
         yield from indent('MainWindow.closeEvent = __window_closed', n=2)
 
     def generate_handler(self) -> Iterator[str]:
