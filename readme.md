@@ -38,10 +38,12 @@ Follow these steps to install PyQt Figma Designer on your system:
    python pyqtfd-gui.py
    ```
 
-2. In the "Create project" tab input the path to an empty directory where the project will be created. Click the "Create project" button to create the project.
+2. In the "Create project" tab input the path to an empty directory where the project will be created. Click the "Create
+   project" button to create the project.
    ![GUI Screenshot](images/screenshot_gui_v4_0.png)
 
-3. Switch to the "Download" tab, input your Figma personal access token and the Figma file URL. Click the "Download" button to download the Figma file.
+3. Switch to the "Download" tab, input your Figma personal access token and the Figma file URL. Click the "Download"
+   button to download the Figma file.
    ![GUI Screenshot](images/screenshot_gui_v4_1.png)
 
 4. Switch to the "Compile" tab and click the "Compile" button to generate the PyQt6 code.
@@ -168,10 +170,13 @@ For a quick components overview, you can access the Component
 Pack [here](https://www.figma.com/file/AZD7bWnCwce9uAuTqa6aY5/Untitled?type=design&node-id=0%3A1&mode=design&t=0jee9KtQMinbOkMd-1)
 ![Component Pack](images/screenshot_component_test_frame.png)
 
-### Window
+### Windows & Transitions
 
 To create a window, place a frame at the root level of the Figma file. The frame will be automatically converted into a
-window.
+window (`QWindow` class). The first frame in the Figma file (bottom-most) will be the main window. The main window will be automatically
+displayed when the GUI is launched (`python gui.py`). Other windows will be hidden by default and can be displayed using
+Figma transitions. Your transition must start from a button or a custom button (see below) and end at a root
+level frame. 
 
 ### Naming Conventions
 

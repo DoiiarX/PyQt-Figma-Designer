@@ -188,6 +188,19 @@ self.{generator.q_widget_name}.setStyleSheet("color: " + {text_color} + "; backg
 self.{generator.q_widget_name}.setPlaceholderText({hint})""".splitlines()
 
 
+def generate_open_window(window_node_id: str) -> Iterator[str]:
+    from generator.design.core.frame_generator import FrameGenerator
+    window_name = FrameGenerator.get_window_name(window_node_id)
+    yield from f"""window = {window_name}()
+# close current window
+MainWindow.close()
+# open new window
+self.MainWindow = QMainWindow()        
+window.setupUi(self.MainWindow)
+self.MainWindow.show()
+app.exec()""".splitlines()
+
+
 def generate_print(msg, level='logging.DEBUG') -> str:
     """
     Generate the code to print the given message.
