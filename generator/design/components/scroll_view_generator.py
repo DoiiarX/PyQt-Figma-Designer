@@ -3,7 +3,7 @@ from generator.design.components.slider_generator import SliderGenerator
 from generator.design.core.group_generator import GroupGenerator
 from generator.properties.geometry_generator import GeometryGenerator
 from generator.properties.parent_generator import ParentGenerator
-from generator.utils import generate_q_widget_create, indent, generate_decorate_handler
+from generator.utils import *
 
 
 class ScrollViewGenerator(ComponentGenerator):
@@ -46,3 +46,4 @@ self.{self.q_widget_name}.wheelEvent = __{self.q_widget_name}_wheel_event""".spl
         yield from ParentGenerator(self).generate_set(f'self.{self.group_generator.q_widget_name}')
         yield from ParentGenerator(slider_generator).generate_set(f'self.{self.group_generator.q_widget_name}')
         yield from GeometryGenerator(slider_generator).generate_set((sx + sw - tw, sy, tw, sh))
+        yield from generate_handler_call(slider_generator, slider_generator.handler_value_changed_function_name, '0')

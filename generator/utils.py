@@ -216,8 +216,7 @@ try :
     self.{window_name}.setWindowModality(Qt.ApplicationModal)
     self.{window_name}.show()
 except : 
-    self.MainWindow.close()
-""".splitlines()
+    self.MainWindow.close()""".splitlines()
 
 
 def generate_print(msg, level='logging.DEBUG') -> str:
