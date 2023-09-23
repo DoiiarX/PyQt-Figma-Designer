@@ -22,7 +22,7 @@ class TextGenerator(DesignGenerator):
         returns:
             The content of the text.
         """
-        return self.figma_node['characters'].replace('"', '\\"')
+        return self.figma_node['characters'].replace('"', '\\"').replace('\n', '\\n')
 
     @property
     def string_name(self):

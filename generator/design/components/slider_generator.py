@@ -11,6 +11,7 @@ class SliderGenerator(ComponentGenerator):
     value_name: str
 
     component_name = 'slider'
+    orientable = True
     component_config = {'default_value': 0.5}
 
     def generate_design(self, orientation='horizontal'):

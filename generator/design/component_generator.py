@@ -17,6 +17,9 @@ class ComponentGenerator(DesignGenerator):
     group_generator: GroupGenerator
     # Abstract property to be defined in subclasses to specify the component name (prefix of the figma node name).
     component_name: str
+    # Abstract property to be defined in subclasses to specify if the component is orientable (horizontal or vertical).
+    # This affects the way its name is matched with the figma node name. (adds v_ or h_ optional prefix)
+    orientable: bool = False
 
     # Abstract property to be defined in subclasses to specify the default component config.
     # This config will be saved as json together with the design. It can be used to edit the style of the component.

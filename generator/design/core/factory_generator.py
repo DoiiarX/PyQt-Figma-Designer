@@ -52,6 +52,17 @@ class FactoryGenerator(DesignGenerator):
     def generate_generic_components(self, group_generator):
         name = self.figma_node['name'].lower().replace(' ', '').replace('-', '').replace('_', '')
         for cls in get_generic_components():
-            prefix_rule = cls.component_name.lower().replace(' ', '').replace('-', '').replace('_', '')
-            if name.startswith(prefix_rule):
-                yield from cls(group_generator).generate_design()
+            prefix_rule = cls.component_name
+            if cls.orientable:
+                prefix_rules = [f'v_{prefix_rule}', f'h_{prefix_rule}', prefix_rule]
+            else:
+                prefix_rules = [prefix_rule]
+            for prefix_rule in prefix_rules:
+                prefix_rule = prefix_rule.lower().replace(' ', '').replace('-', '').replace('_', '')
+                if name.startswith(prefix_rule):
+                    orientation = 'vertical' if name.startswith('v') else 'horizontal' if name.startswith('h') else None
+                    if cls.orientable and orientation is not None:
+                        yield from cls(group_generator).generate_design(orientation=orientation)
+                    else:
+                        yield from cls(group_generator).generate_design()
+                    break
