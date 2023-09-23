@@ -90,6 +90,7 @@ You can edit it but be careful to not overwrite it afterward.
 Each function is connected to a specific event of a specific widget in the GUI.
 \"\"\"
 # imports
+from gui_controller import *
 import logging
 logging.basicConfig(level=logging.DEBUG)
 """.splitlines()
