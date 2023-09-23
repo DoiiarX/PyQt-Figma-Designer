@@ -26,7 +26,6 @@ class ScrollViewGenerator(ComponentGenerator):
 self.{self.q_widget_name}.setStyleSheet("background-color: rgba(0, 0, 0, 0);")
 self.{self.q_widget_name}.setObjectName("{self.q_widget_name}")
 self.{self.q_widget_name}.setMouseTracking(True)""".splitlines()
-
         yield from slider_generator.generate_design(orientation='vertical')
         yield f'def __{self.q_widget_name}_update_content_bounds(value):'
         yield from indent(content_geometry_generator.generate_set(content_new_bounds))
@@ -40,8 +39,7 @@ self.{self.q_widget_name}.setMouseTracking(True)""".splitlines()
     {slider_generator.controller_class_path}.{slider_generator.controller_set_value_function_name}(value)
     __{self.q_widget_name}_update_content_bounds(value)
 self.{self.q_widget_name}.wheelEvent = __{self.q_widget_name}_wheel_event
-""".splitlines()
-        yield from f"""def {self.q_widget_name}_link_slider():
+def {self.q_widget_name}_link_slider():
     f = {slider_generator.handler_class_path}.{slider_generator.handler_value_changed_function_name}
     def decorator(value) : 
         __{self.q_widget_name}_update_content_bounds(value)

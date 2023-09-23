@@ -17,6 +17,15 @@ class ScriptGenerator(DesignGenerator):
     config_class_path = 'ComponentsConfig'
     strings_class_path = 'Strings'
 
+    def __init__(self, figma_node, parent=None):
+        super().__init__(figma_node, parent)
+        figma_frames = self.figma_node['children']
+        frames = []
+        for frame in figma_frames:
+            frame = FrameGenerator(frame, self)
+            frames.append(frame)
+        self.frames = frames
+
     def generate_design(self):
         __doc__ = super().generate_design().__doc__
         yield from f"""\"\"\"
@@ -60,18 +69,14 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform, QPen, QPainterPath)
 from PySide6.QtWidgets import (QApplication, QFrame, QHeaderView, QLabel,
     QLineEdit, QMainWindow, QPushButton, QSizePolicy,
-    QStatusBar, QTableView, QWidget)""".splitlines()
-        figma_frames = self.figma_node['children']
-        frames = []
-        for frame in figma_frames:
-            frame = FrameGenerator(frame, self)
-            frames.append(frame)
+    QStatusBar, QTableView, QWidget, QVBoxLayout)""".splitlines()
+        for frame in self.frames:
             yield from frame.generate_design()
         yield from """import sys
 
 app = QApplication(sys.argv)""".splitlines()
-        for frame in frames:
-            yield from f"""MainWindow = QMainWindow()
+        frame = self.frames[0]
+        yield from f"""MainWindow = QMainWindow()
 ui = {frame.window_class_name}()
 ui.setupUi(MainWindow)
 MainWindow.show()

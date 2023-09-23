@@ -17,6 +17,13 @@ class FrameGenerator(DesignGenerator):
     short_class_name: str
     window_class_name: str
 
+    windows = {}  # node id -> window name
+
+    def __init__(self, figma_node, parent=None):
+        super().__init__(figma_node, parent)
+        self.window_class_name = f'QWindow{self.short_class_name}'
+        FrameGenerator.windows[self.figma_node['id']] = self.window_class_name
+
     def generate_design(self) -> Iterator[str]:
         """
         Generates a PyQt6 window (and its children).
@@ -27,7 +34,6 @@ class FrameGenerator(DesignGenerator):
         from generator.design.core.factory_generator import FactoryGenerator
         bounds = self.figma_node['absoluteBoundingBox']
         width, height = bounds['width'], bounds['height']
-        self.window_class_name = f'QWindow{self.short_class_name}'
         self.handler_class_path = f'{self.handler_class_path}.{self.short_class_name}Handler'
         self.controller_class_path = f'{self.controller_class_path}.{self.short_class_name}Controller'
         self.strings_class_path = f'{self.strings_class_path}.{self.short_class_name}Strings'
@@ -39,6 +45,7 @@ class {self.window_class_name}(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
+        self.MainWindow = MainWindow
         MainWindow.resize({width * config.scale}, {height * config.scale})
         self.{self.q_widget_name} = QWidget(MainWindow)
         MainWindow.setFixedSize({width * config.scale}, {height * config.scale})
@@ -88,3 +95,7 @@ class {self.handler_class_path.split(".")[-1]}:
             return [].__iter__()
         yield f'class {self.config_class_path.split(".")[-1]}:'
         yield from sub_config
+
+    @classmethod
+    def get_window_name(cls, node_id):
+        return cls.windows.get(node_id, None)
