@@ -211,9 +211,13 @@ def generate_transitions(generator: 'DesignGenerator') -> Iterator[str]:
     window_name = FrameGenerator.get_window_name(window_node_id)
     yield from f"""window = {window_name}()
 self.{window_name} = QMainWindow()
-window.setupUi(self.{window_name})
-self.{window_name}.setWindowModality(Qt.ApplicationModal)
-self.{window_name}.show()""".splitlines()
+try : 
+    window.setupUi(self.{window_name})
+    self.{window_name}.setWindowModality(Qt.ApplicationModal)
+    self.{window_name}.show()
+except : 
+    self.MainWindow.close()
+""".splitlines()
 
 
 def generate_print(msg, level='logging.DEBUG') -> str:
