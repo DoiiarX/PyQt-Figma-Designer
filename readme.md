@@ -173,27 +173,30 @@ Pack [here](https://www.figma.com/file/AZD7bWnCwce9uAuTqa6aY5/Untitled?type=desi
 ### Windows & Transitions
 
 To create a window, place a frame at the root level of the Figma file. The frame will be automatically converted into a
-window (`QWindow` class). The first frame in the Figma file (bottom-most) will be the main window. The main window will be automatically
+window (`QWindow` class). The first frame in the Figma file (bottom-most) will be the main window. The main window will
+be automatically
 displayed when the GUI is launched (`python gui.py`). Other windows will be hidden by default and can be displayed using
 Figma transitions. Your transition must start from a button or a custom button (see below) and end at a root
-level frame. 
+level frame.
 
 ### Naming Conventions
 
 Component names must start with a prefix indicating their type. Component names are case-insensitive and disregard
 spaces, dashes, and underscores (`  , -, _`).
+The prefix of some components can be preceded by the letter v or h to indicate vertical or horizontal orientation. For
+example, a vertical slider would have the prefix `vslider`.
 
-| Component Type         | Prefix          |
-|------------------------|-----------------|
-| Button                 | button          |
-| Custom Button          | custombutton    |
-| Text Field             | textfield       |
-| Custom Text Field      | customtextfield |
-| Checkbox               | checkbox        |
-| Tabs view              | tabsview        |
-| Slider                 | slider          |
-| Progress Bar           | progressbar     |
-| (Vertical) Scroll View | vscrollview     |
+| Component Type    | Prefix            |
+|-------------------|-------------------|
+| Button            | button            |
+| Custom Button     | custombutton      |
+| Text Field        | textfield         |
+| Custom Text Field | customtextfield   |
+| Checkbox          | checkbox          |
+| Tabs view         | tabsview          |
+| Slider            | (v/h) slider      |
+| Progress Bar      | (v/h) progressbar |
+| Scroll View       | (v/h) scrollview  |
 
 ### Hierarchy and Ordering
 
@@ -271,7 +274,7 @@ For progress bars, maintain the following order:
 | -1 (Topmost) | Fill           |
 | ...          | Background...  |
 
-#### (Vertical) Scroll View
+#### Scroll View
 
 The scroll view group must follow this ordering:
 
