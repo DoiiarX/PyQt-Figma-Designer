@@ -15,11 +15,11 @@ class ProgressBarGenerator(ComponentGenerator):
         geometry_generator = GeometryGenerator(fill_generator)
         self.controller_set_progress_function_name = f'{self.q_widget_name}_set_progress'
         progress = generate_get_component_config(self, 'default_progress')
-        x, y, width, height = self.bounds
+        x, y, width, height = fill_generator.bounds
         if orientation == 'horizontal':
             new_bounds = (x, y, f'{width} * progress', height)
         else:
-            new_bounds = (x, y, width, f'{height} * progress')
+            new_bounds = (x, f'({height} * (1 - progress) / 2)', width, height)
 
         yield f'def __{self.controller_set_progress_function_name}(progress:float) :'
         yield from indent(geometry_generator.generate_set(new_bounds), n=1)
