@@ -177,7 +177,11 @@ window (`QWindow` class). The first frame in the Figma file (bottom-most) will b
 be automatically
 displayed when the GUI is launched (`python gui.py`). Other windows will be hidden by default and can be displayed using
 Figma transitions. Your transition must start from a button or a custom button (see below) and end at a root
-level frame.
+level frame. Here is an example of a transition from a button to a window:
+![Transition Example](images/screenshot_transitions_instructions.png)
+Any transition to a window that is still open will close the window that is currently open.
+You can use this to create a back button that closes the current window and returns to the previous one.
+![Transition Example](images/screenshot_transitions_close_instructions.png)
 
 ### Naming Conventions
 
